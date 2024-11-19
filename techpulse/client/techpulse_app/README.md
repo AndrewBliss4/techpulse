@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# TechPulse App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+When running for the first time, run ###'npm i' in the techpulse_app terminal.
 
 ## Available Scripts
 
