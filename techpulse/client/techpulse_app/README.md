@@ -1,6 +1,6 @@
 # TechPulse App
 
-When running for the first time, run ### `npm i` in the techpulse_app terminal.
+When running for the first time, run `npm i` in the techpulse_app terminal.
 
 ## Available Scripts
 
