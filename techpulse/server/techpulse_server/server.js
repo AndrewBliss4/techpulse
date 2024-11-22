@@ -67,6 +67,3 @@ const response = await openai.chat.completions.create({
 });
     return response.choices[0].message.content;
 };
-
-//Testing API
-promptAI("Quantum computing").then((res) => console.log(res));

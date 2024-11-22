@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
+import axios from 'axios';
 import '../styles/globals.css';
-import { Bell, Search, TrendingUp, Zap, Globe, Users, BarChart, Lightbulb } from 'lucide-react';
+import { Bell, Search, TrendingUp, Zap, Globe, Users, BarChart, Lightbulb, LoaderCircle } from 'lucide-react';
 
 const Home = () => {
   const trendingTopics = [
@@ -19,17 +20,27 @@ const Home = () => {
 
   const [textResult, setTextResult] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const [renderText, setRenderText] = useState(false);
 
-  function handleSubmit() {
+  const handleSubmit = async (e) => {
 
-    setSearchTerm("");
+    setLoading(true);
+    setRenderText(false);
 
-    setRenderText(true);
+    e.preventDefault()
+    axios.post('http://localhost:4000/gpt', { prompt: searchTerm }).then((resp) => {
+      setTextResult(resp.data);
+      setRenderText(true);
 
-    setTextResult("");
+    }).catch((err) => {
+      console.log(err);
 
-  }
+    }).finally(() => {
+      setLoading(false);
+    })
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -130,11 +141,21 @@ const Home = () => {
                      rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 
                      focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
               onClick={handleSubmit}
+              disabled={loading}
             >
               View Insights
             </button>
           </div>
         </div>
+
+        {loading && <div className="flex justify-center items-center h-[200px]">
+        <label
+          htmlFor="loading"
+          className="block text-lg font-medium text-blue-700"
+        >
+          Loading...
+        </label>
+        </div>}
 
         {/*GPT Output*/}
 
@@ -148,15 +169,15 @@ const Home = () => {
               >
                 Insights
               </label>
-              </div>
-              <div className="mt-4 p-4 bg-white/80 rounded-lg shadow-sm border border-blue-200">
-                <p className="text-gray-700 leading-relaxed">
-                  {textResult}
-                </p>
-              </div>
+            </div>
+            <div className="mt-4 p-4 bg-white/80 rounded-lg shadow-sm border border-blue-200">
+              <p className="text-gray-700 leading-relaxed">
+                {textResult}
+              </p>
             </div>
           </div>
-          }
+        </div>
+        }
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Trending Topics */}
