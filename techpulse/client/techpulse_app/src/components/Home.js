@@ -91,7 +91,7 @@ const Home = () => {
               <p className="text-gray-600">Coverage across 50+ data sources</p>
             </div>
             <div className="bg-blue-100 p-6 rounded-xl">
-              <img src={rbcLogo} alt="rbc-logo" className='h-10 w-18 -ml-4 mb-2'></img>
+              <img src={rbcLogo} alt="rbc-logo" className='h-10 w-18 -ml-[18px] mb-2'></img>
               <h3 className="text-2xl font-bold text-gray-900">Built for Banking</h3>
               <p className="text-gray-600">Designed for RBC analysts</p>
             </div>
