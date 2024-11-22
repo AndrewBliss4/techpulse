@@ -97,8 +97,8 @@ const Home = () => {
             </div>
             <div className="bg-blue-200 p-6 rounded-xl">
               <BarChart className="h-8 w-8 text-blue-600 mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900">Daily Updates</h3>
-              <p className="text-gray-600">Insights updated daily</p>
+              <h3 className="text-2xl font-bold text-gray-900">Weekly Updates</h3>
+              <p className="text-gray-600">Insights updated every week</p>
             </div>
           </div>
         </div>
@@ -140,7 +140,8 @@ const Home = () => {
               type="submit"
               className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-medium 
                      rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 
-                     focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                     focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200
+                     disabled:bg-blue-400 disabled:text-gray-200 disabled:cursor-not-allowed"
               onClick={handleSubmit}
               disabled={loading}
             >
@@ -149,12 +150,13 @@ const Home = () => {
           </div>
         </div>
 
-        {loading && <div className="flex justify-center items-center h-[200px]">
+        {loading && <div className="flex justify-center items-center h-[150px]">
+        <Zap className="h-6 w-6 text-blue-600 mr-1"></Zap>
         <label
           htmlFor="loading"
           className="block text-lg font-medium text-blue-700"
         >
-          Loading...
+        Loading...
         </label>
         </div>}
 
