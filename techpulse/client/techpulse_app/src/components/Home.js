@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import axios from 'axios';
 import '../styles/globals.css';
-import { Bell, Search, TrendingUp, Zap, Globe, Users, BarChart, Lightbulb, LoaderCircle } from 'lucide-react';
+import rbcLogo from '../assets/Royal-Bank-of-Canada-Logo.png';
+import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb } from 'lucide-react';
 
 const Home = () => {
   const trendingTopics = [
@@ -90,7 +91,7 @@ const Home = () => {
               <p className="text-gray-600">Coverage across 50+ data sources</p>
             </div>
             <div className="bg-blue-100 p-6 rounded-xl">
-              <Users className="h-8 w-8 text-blue-500 mb-4" />
+              <img src={rbcLogo} alt="rbc-logo" className='h-10 w-18 -ml-4 mb-2'></img>
               <h3 className="text-2xl font-bold text-gray-900">Built for Banking</h3>
               <p className="text-gray-600">Designed for RBC analysts</p>
             </div>
