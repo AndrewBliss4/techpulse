@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import '../styles/globals.css';
-import { Bell, Search, TrendingUp, Zap, Globe, Users, BarChart } from 'lucide-react';
+import { Bell, Search, TrendingUp, Zap, Globe, Users, BarChart, Lightbulb } from 'lucide-react';
 
 const Home = () => {
   const trendingTopics = [
@@ -15,9 +15,19 @@ const Home = () => {
     { title: "Cybersecurity Best Practices", category: "Security", readTime: "6 min" }
   ];
 
-  const [searchTerm, setSearchTerm] = useState("Enter insights");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [textResult, setTextResult] = useState("");
+
+  const [renderText, setRenderText] = useState(false);
 
   function handleSubmit() {
+
+    setSearchTerm("");
+
+    setRenderText(true);
+
+    setTextResult("");
 
   }
 
@@ -82,46 +92,71 @@ const Home = () => {
         </div>
       </div>
 
+
+
       {/* Content Section */}
       <div className="max-w-7xl mx-auto px-4 py-12">
-      <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
-        <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
-          <div className="flex-grow space-y-2">
-            <div className='flex items-center space-x-2'>
-            <Zap className="h-5 w-5 text-blue-600" />
-            <label 
-              htmlFor="search" 
-              className="block text-lg font-medium text-gray-700"
-            >
-              Generate Insights
-            </label>
-            </div>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
+        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
+          <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
+            <div className="flex-grow space-y-2">
+              <div className='flex items-center space-x-2'>
+                <Zap className="h-5 w-5 text-blue-600" />
+                <label
+                  htmlFor="search"
+                  className="block text-lg font-medium text-gray-700"
+                >
+                  Generate Insights
+                </label>
               </div>
-              <input
-                id="search"
-                type="text"
-                placeholder="Enter keywords to generate..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg 
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="search"
+                  type="text"
+                  placeholder="Enter keywords to generate..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg 
                           shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
                           text-sm placeholder:text-gray-400"
-              />
+                />
+              </div>
             </div>
-          </div>
-          <button
-            type="submit"
-            className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-medium 
+            <button
+              type="submit"
+              className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-medium 
                      rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 
                      focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-          >
-            View Insights
-          </button>
-        </form>
-      </div>
+              onClick={handleSubmit}
+            >
+              View Insights
+            </button>
+          </div>
+        </div>
+
+        {/*GPT Output*/}
+
+        {renderText && <div className="mb-8 p-6 bg-blue-100 rounded-xl shadow-lg">
+          <div>
+            <div className='flex items-center space-x-2'>
+              <Lightbulb className="h-5 w-5 text-blue-600" />
+              <label
+                htmlFor="search"
+                className="block text-lg font-medium text-gray-700"
+              >
+                Insights
+              </label>
+              </div>
+              <div className="mt-4 p-4 bg-white/80 rounded-lg shadow-sm border border-blue-200">
+                <p className="text-gray-700 leading-relaxed">
+                  {textResult}
+                </p>
+              </div>
+            </div>
+          </div>
+          }
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Trending Topics */}
