@@ -13,3 +13,9 @@ run article_scraper.py
 cd into techpulse_app
 npm i
 npm start
+
+##
+cd into techpulse_server
+npm i
+node server.js
+make a file name .env and drop a the API key in there
