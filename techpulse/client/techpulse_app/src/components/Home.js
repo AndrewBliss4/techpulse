@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import axios from 'axios';
 import '../styles/globals.css';
 import rbcLogo from '../assets/Royal-Bank-of-Canada-Logo.png';
-import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb } from 'lucide-react';
+import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb } from 'lucide-react'
+import parse from 'html-react-parser';
 
 const Home = () => {
   const trendingTopics = [
@@ -33,6 +34,7 @@ const Home = () => {
     e.preventDefault()
     axios.post('http://localhost:4000/gpt', { prompt: searchTerm }).then((resp) => {
       setTextResult(resp.data);
+      console.log(resp.data);
       setRenderText(true);
 
     }).catch((err) => {
@@ -174,9 +176,9 @@ const Home = () => {
               </label>
             </div>
             <div className="mt-4 p-4 bg-white/80 rounded-lg shadow-sm border border-blue-200">
-              <p className="text-gray-700 leading-relaxed">
-                {textResult}
-              </p>
+              {/* <p className="text-gray-700 leading-relaxed"> */}
+                { parse ( textResult ) }
+              {/* </p> */}
             </div>
           </div>
         </div>

@@ -42,7 +42,7 @@ const response = await openai.chat.completions.create({
       "content": [
         {
           "type": "text",
-          "text": "Summarize content you are provided with for technology insights catered to banking."
+          "text": "Summarize the topic you are provided with for technology insights catered to RBC's business. Generate the insights by topic. 1. The trend and why it matters. 2. Latest developments. 3. Adoption developments across the globe. 4. Real-world examples 5. Underlying technologies 6. Key uncertainties 7. Big questions about the future. The total response should be at least 500 words. Format the titles with <strong>title</strong> and the text with <p>text</p>."
         }
       ]
     },
