@@ -158,7 +158,7 @@ const Home = () => {
           htmlFor="loading"
           className="block text-lg font-medium text-blue-700"
         >
-        Loading...
+        Generating...
         </label>
         </div>}
 
