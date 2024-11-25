@@ -18,20 +18,22 @@ const Home = () => {
     { title: "Cybersecurity Best Practices", category: "Security", readTime: "6 min" }
   ];
 
+  //useStates for GPT output
   const [searchTerm, setSearchTerm] = useState("");
-
   const [textResult, setTextResult] = useState("");
-
   const [loading, setLoading] = useState(false);
-
   const [renderText, setRenderText] = useState(false);
 
+  //function to fetch gpt data from server
   const handleSubmit = async (e) => {
 
+    //display loading sign
     setLoading(true);
+    //reset the old output
     setRenderText(false);
 
     e.preventDefault()
+
     axios.post('http://localhost:4000/gpt', { prompt: searchTerm }).then((resp) => {
       setTextResult(resp.data);
       console.log(resp.data);
@@ -41,8 +43,10 @@ const Home = () => {
       console.log(err);
 
     }).finally(() => {
+      //Remove loading sign
       setLoading(false);
     })
+
   };
 
   return (
