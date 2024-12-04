@@ -6,11 +6,11 @@ import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb } from 'lucid
 import parse from 'html-react-parser';
 
 const Home = () => {
-  const trendingTopics = [
-    { title: "AI Advances", sources: "BCG, Mckinsey", trend: "+24%" },
-    { title: "Web3 Updates", sources: "Bloomberg", trend: "+15%" },
-    { title: "Cloud Computing", sources: "JPMorgan, Web of Science", trend: "+18%" }
-  ];
+  // const trendingTopics = [
+  //   { title: "AI Advances", sources: "BCG, Mckinsey", trend: "+24%" },
+  //   { title: "Web3 Updates", sources: "Bloomberg", trend: "+15%" },
+  //   { title: "Cloud Computing", sources: "JPMorgan, Web of Science", trend: "+18%" }
+  // ];
 
   const latestInsights = [
     { title: "The Future of Quantum Computing", category: "Emerging Tech", readTime: "5 min" },
@@ -21,8 +21,10 @@ const Home = () => {
   //useStates for GPT output
   const [searchTerm, setSearchTerm] = useState("");
   const [textResult, setTextResult] = useState("");
+  const [trendingTopics, setTrendingTopics] = useState([]);
   const [loading, setLoading] = useState(false);
   const [renderText, setRenderText] = useState(false);
+  const [renderTrends, setRenderTrends] = useState(false);
 
   //function to fetch gpt data from server
   const handleSubmit = async (e) => {
@@ -35,7 +37,20 @@ const Home = () => {
     e.preventDefault()
 
     axios.post('http://localhost:4000/gpt', { prompt: searchTerm }).then((resp) => {
-      setTextResult(resp.data);
+
+      let resultArr = resp.data.split("***");
+      let tempTrendingTopics = [];
+
+      setTextResult(resultArr[0]);
+
+      //Handle trends
+      for (const entry of resultArr[1].split("/")) {
+        tempTrendingTopics.push(JSON.parse(entry));
+      };
+
+      setTrendingTopics(tempTrendingTopics);
+      setRenderTrends(true);
+
       console.log(resp.data);
       setRenderText(true);
 
@@ -190,7 +205,7 @@ const Home = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Trending Topics */}
-          <div className="lg:col-span-2">
+          { renderTrends && <div className="lg:col-span-2">
             <div className="bg-white p-6 rounded-xl shadow-sm">
               <div className="flex items-center space-x-2 mb-6">
                 <TrendingUp className="h-5 w-5 text-blue-500" />
@@ -208,7 +223,7 @@ const Home = () => {
                 ))}
               </div>
             </div>
-          </div>
+          </div>}
 
           {/* Latest Insights */}
           <div className="bg-white p-6 rounded-xl shadow-sm">

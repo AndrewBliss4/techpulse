@@ -1,5 +1,6 @@
 const OpenAI = require('openai');
 const dontenv = require("dotenv");
+const fs = require('fs');
 
 dontenv.config();
 
@@ -34,6 +35,17 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+//Set the prompt
+let promptText;
+
+fs.readFile('prompt.txt', 'utf8', (err, data) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    promptText = data;
+});
+
 //Prompt function
 let promptAI = async (prompt) => {
 const response = await openai.chat.completions.create({
@@ -45,7 +57,7 @@ const response = await openai.chat.completions.create({
         {
           "type": "text",
           //Initial prompt
-          "text": "Summarize the topic you are provided with for technology insights catered to RBC's business, including implications for the banking industry. Generate the insights by topic. 1. The trend and why it matters. 2. Latest developments. 3. Adoption developments across the globe. 4. Real-world examples 5. Underlying technologies 6. Key uncertainties 7. Big questions about the future. The total response should be at least 500 words. Format the titles with <strong>title</strong> and the text with <p>text</p>."
+          "text": promptText,
         }
       ]
     },
