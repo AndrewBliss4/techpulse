@@ -5,7 +5,7 @@
 -- Dumped from database version 17.2
 -- Dumped by pg_dump version 17.2
 
--- Started on 2024-12-03 23:03:18
+-- Started on 2024-12-04 17:51:57
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -24,7 +24,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 228 (class 1259 OID 49392)
+-- TOC entry 228 (class 1259 OID 49489)
 -- Name: feedback; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -41,7 +41,7 @@ CREATE TABLE public.feedback (
 ALTER TABLE public.feedback OWNER TO postgres;
 
 --
--- TOC entry 227 (class 1259 OID 49391)
+-- TOC entry 227 (class 1259 OID 49488)
 -- Name: feedback_feedback_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -66,7 +66,7 @@ ALTER SEQUENCE public.feedback_feedback_id_seq OWNED BY public.feedback.feedback
 
 
 --
--- TOC entry 218 (class 1259 OID 49324)
+-- TOC entry 218 (class 1259 OID 49421)
 -- Name: field; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -80,7 +80,7 @@ CREATE TABLE public.field (
 ALTER TABLE public.field OWNER TO postgres;
 
 --
--- TOC entry 217 (class 1259 OID 49323)
+-- TOC entry 217 (class 1259 OID 49420)
 -- Name: field_field_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -105,7 +105,7 @@ ALTER SEQUENCE public.field_field_id_seq OWNED BY public.field.field_id;
 
 
 --
--- TOC entry 226 (class 1259 OID 49376)
+-- TOC entry 226 (class 1259 OID 49473)
 -- Name: insight; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -122,7 +122,7 @@ CREATE TABLE public.insight (
 ALTER TABLE public.insight OWNER TO postgres;
 
 --
--- TOC entry 225 (class 1259 OID 49375)
+-- TOC entry 225 (class 1259 OID 49472)
 -- Name: insight_insight_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -147,7 +147,7 @@ ALTER SEQUENCE public.insight_insight_id_seq OWNED BY public.insight.insight_id;
 
 
 --
--- TOC entry 230 (class 1259 OID 49408)
+-- TOC entry 230 (class 1259 OID 49505)
 -- Name: keyword; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -162,7 +162,7 @@ CREATE TABLE public.keyword (
 ALTER TABLE public.keyword OWNER TO postgres;
 
 --
--- TOC entry 229 (class 1259 OID 49407)
+-- TOC entry 229 (class 1259 OID 49504)
 -- Name: keyword_keyword_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -187,7 +187,7 @@ ALTER SEQUENCE public.keyword_keyword_id_seq OWNED BY public.keyword.keyword_id;
 
 
 --
--- TOC entry 224 (class 1259 OID 49354)
+-- TOC entry 224 (class 1259 OID 49451)
 -- Name: scrapeddata; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -198,6 +198,7 @@ CREATE TABLE public.scrapeddata (
     title character varying(255),
     content text,
     scraped_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    published_date date,
     citation_count integer DEFAULT 0,
     job_postings_count integer DEFAULT 0
 );
@@ -206,7 +207,7 @@ CREATE TABLE public.scrapeddata (
 ALTER TABLE public.scrapeddata OWNER TO postgres;
 
 --
--- TOC entry 223 (class 1259 OID 49353)
+-- TOC entry 223 (class 1259 OID 49450)
 -- Name: scrapeddata_data_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -231,7 +232,7 @@ ALTER SEQUENCE public.scrapeddata_data_id_seq OWNED BY public.scrapeddata.data_i
 
 
 --
--- TOC entry 222 (class 1259 OID 49342)
+-- TOC entry 222 (class 1259 OID 49439)
 -- Name: source; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -244,7 +245,7 @@ CREATE TABLE public.source (
 ALTER TABLE public.source OWNER TO postgres;
 
 --
--- TOC entry 221 (class 1259 OID 49341)
+-- TOC entry 221 (class 1259 OID 49438)
 -- Name: source_source_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -269,7 +270,7 @@ ALTER SEQUENCE public.source_source_id_seq OWNED BY public.source.source_id;
 
 
 --
--- TOC entry 220 (class 1259 OID 49333)
+-- TOC entry 220 (class 1259 OID 49430)
 -- Name: url; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -284,7 +285,7 @@ CREATE TABLE public.url (
 ALTER TABLE public.url OWNER TO postgres;
 
 --
--- TOC entry 219 (class 1259 OID 49332)
+-- TOC entry 219 (class 1259 OID 49429)
 -- Name: url_url_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -309,7 +310,7 @@ ALTER SEQUENCE public.url_url_id_seq OWNED BY public.url.url_id;
 
 
 --
--- TOC entry 4734 (class 2604 OID 49395)
+-- TOC entry 4734 (class 2604 OID 49492)
 -- Name: feedback feedback_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -317,7 +318,7 @@ ALTER TABLE ONLY public.feedback ALTER COLUMN feedback_id SET DEFAULT nextval('p
 
 
 --
--- TOC entry 4725 (class 2604 OID 49327)
+-- TOC entry 4725 (class 2604 OID 49424)
 -- Name: field field_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -325,7 +326,7 @@ ALTER TABLE ONLY public.field ALTER COLUMN field_id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 4732 (class 2604 OID 49379)
+-- TOC entry 4732 (class 2604 OID 49476)
 -- Name: insight insight_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -333,7 +334,7 @@ ALTER TABLE ONLY public.insight ALTER COLUMN insight_id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 4736 (class 2604 OID 49411)
+-- TOC entry 4736 (class 2604 OID 49508)
 -- Name: keyword keyword_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -341,7 +342,7 @@ ALTER TABLE ONLY public.keyword ALTER COLUMN keyword_id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 4728 (class 2604 OID 49357)
+-- TOC entry 4728 (class 2604 OID 49454)
 -- Name: scrapeddata data_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -349,7 +350,7 @@ ALTER TABLE ONLY public.scrapeddata ALTER COLUMN data_id SET DEFAULT nextval('pu
 
 
 --
--- TOC entry 4727 (class 2604 OID 49345)
+-- TOC entry 4727 (class 2604 OID 49442)
 -- Name: source source_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -357,7 +358,7 @@ ALTER TABLE ONLY public.source ALTER COLUMN source_id SET DEFAULT nextval('publi
 
 
 --
--- TOC entry 4726 (class 2604 OID 49336)
+-- TOC entry 4726 (class 2604 OID 49433)
 -- Name: url url_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -365,7 +366,7 @@ ALTER TABLE ONLY public.url ALTER COLUMN url_id SET DEFAULT nextval('public.url_
 
 
 --
--- TOC entry 4751 (class 2606 OID 49401)
+-- TOC entry 4751 (class 2606 OID 49498)
 -- Name: feedback feedback_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -374,7 +375,7 @@ ALTER TABLE ONLY public.feedback
 
 
 --
--- TOC entry 4741 (class 2606 OID 49331)
+-- TOC entry 4741 (class 2606 OID 49428)
 -- Name: field field_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -383,7 +384,7 @@ ALTER TABLE ONLY public.field
 
 
 --
--- TOC entry 4749 (class 2606 OID 49385)
+-- TOC entry 4749 (class 2606 OID 49482)
 -- Name: insight insight_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -392,7 +393,7 @@ ALTER TABLE ONLY public.insight
 
 
 --
--- TOC entry 4753 (class 2606 OID 49414)
+-- TOC entry 4753 (class 2606 OID 49511)
 -- Name: keyword keyword_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -401,7 +402,7 @@ ALTER TABLE ONLY public.keyword
 
 
 --
--- TOC entry 4747 (class 2606 OID 49364)
+-- TOC entry 4747 (class 2606 OID 49461)
 -- Name: scrapeddata scrapeddata_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -410,7 +411,7 @@ ALTER TABLE ONLY public.scrapeddata
 
 
 --
--- TOC entry 4745 (class 2606 OID 49347)
+-- TOC entry 4745 (class 2606 OID 49444)
 -- Name: source source_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -419,7 +420,7 @@ ALTER TABLE ONLY public.source
 
 
 --
--- TOC entry 4743 (class 2606 OID 49340)
+-- TOC entry 4743 (class 2606 OID 49437)
 -- Name: url url_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -428,7 +429,7 @@ ALTER TABLE ONLY public.url
 
 
 --
--- TOC entry 4758 (class 2606 OID 49402)
+-- TOC entry 4758 (class 2606 OID 49499)
 -- Name: feedback feedback_insight_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -437,7 +438,7 @@ ALTER TABLE ONLY public.feedback
 
 
 --
--- TOC entry 4757 (class 2606 OID 49386)
+-- TOC entry 4757 (class 2606 OID 49483)
 -- Name: insight insight_field_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -446,7 +447,7 @@ ALTER TABLE ONLY public.insight
 
 
 --
--- TOC entry 4759 (class 2606 OID 49415)
+-- TOC entry 4759 (class 2606 OID 49512)
 -- Name: keyword keyword_data_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -455,7 +456,7 @@ ALTER TABLE ONLY public.keyword
 
 
 --
--- TOC entry 4755 (class 2606 OID 49365)
+-- TOC entry 4755 (class 2606 OID 49462)
 -- Name: scrapeddata scrapeddata_field_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -464,7 +465,7 @@ ALTER TABLE ONLY public.scrapeddata
 
 
 --
--- TOC entry 4756 (class 2606 OID 49370)
+-- TOC entry 4756 (class 2606 OID 49467)
 -- Name: scrapeddata scrapeddata_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -473,7 +474,7 @@ ALTER TABLE ONLY public.scrapeddata
 
 
 --
--- TOC entry 4754 (class 2606 OID 49348)
+-- TOC entry 4754 (class 2606 OID 49445)
 -- Name: source source_url_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -481,7 +482,7 @@ ALTER TABLE ONLY public.source
     ADD CONSTRAINT source_url_id_fkey FOREIGN KEY (url_id) REFERENCES public.url(url_id) ON DELETE CASCADE;
 
 
--- Completed on 2024-12-03 23:03:19
+-- Completed on 2024-12-04 17:51:57
 
 --
 -- PostgreSQL database dump complete
