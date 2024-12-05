@@ -6,15 +6,18 @@ import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb } from 'lucid
 import parse from 'html-react-parser';
 
 //Loaders
-import { ring } from 'ldrs';
+import { tailChase } from 'ldrs';
 import { quantum } from 'ldrs'
 import { grid } from 'ldrs';
+import { helix } from 'ldrs';
 
-ring.register();
+tailChase.register();
 quantum.register();
 grid.register();
+helix.register();
 
 const Home = () => {
+
   // const trendingTopics = [
   //   { title: "AI Advances", sources: "BCG, Mckinsey", trend: "+24%" },
   //   { title: "Web3 Updates", sources: "Bloomberg", trend: "+15%" },
@@ -52,13 +55,13 @@ const Home = () => {
       text: 'Fetching Sources...'
     },
     {
-      loader: <l-ring
+      loader: <l-tail-chase
         size="30"
         stroke="3"
         bg-opacity="0"
         speed="2"
         color="#2466e0"
-      ></l-ring>,
+      ></l-tail-chase>,
       text: 'Collecting Data...'
     },
     {
@@ -69,6 +72,16 @@ const Home = () => {
         speed="2"
         color="#2466e0"
       ></l-grid>,
+      text: 'Parsing Keywords...'
+    },
+    {
+      loader: <l-helix
+        size="30"
+        stroke="3"
+        bg-opacity="0"
+        speed="2"
+        color="#2466e0"
+      ></l-helix>,
       text: 'Generating Insights...'
     }
   ]
