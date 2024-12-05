@@ -1,9 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import '../styles/globals.css';
 import rbcLogo from '../assets/Royal-Bank-of-Canada-Logo.png';
 import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb } from 'lucide-react'
 import parse from 'html-react-parser';
+
+//Loaders
+import { ring } from 'ldrs';
+import { quantum } from 'ldrs'
+import { grid } from 'ldrs';
+
+ring.register();
+quantum.register();
+grid.register();
 
 const Home = () => {
   // const trendingTopics = [
@@ -28,12 +37,65 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [renderText, setRenderText] = useState(false);
   const [renderTrends, setRenderTrends] = useState(false);
-  
+
+  //loader states
+
+  const loaders = [
+    {
+      loader: <l-quantum
+        size="30"
+        stroke="3"
+        bg-opacity="0"
+        speed="2"
+        color="#2466e0"
+      ></l-quantum>,
+      text: 'Fetching Sources...'
+    },
+    {
+      loader: <l-ring
+        size="30"
+        stroke="3"
+        bg-opacity="0"
+        speed="2"
+        color="#2466e0"
+      ></l-ring>,
+      text: 'Collecting Data...'
+    },
+    {
+      loader: <l-grid
+        size="30"
+        stroke="3"
+        bg-opacity="0"
+        speed="2"
+        color="#2466e0"
+      ></l-grid>,
+      text: 'Generating Insights...'
+    }
+  ]
+
+  const [currentLoaderIndex, setCurrentLoaderIndex] = useState(0);
+
+  useEffect(() => {
+    // Set up interval to rotate loaders every 3 seconds
+    const intervalId = setInterval(() => {
+      setCurrentLoaderIndex((prevIndex) => 
+        (prevIndex + 1) % loaders.length
+      );
+    }, 5000);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const currentLoader = loaders[currentLoaderIndex].loader;
+  const currentLoaderText = loaders[currentLoaderIndex].text;
+
   //function to fetch gpt data from server
   const handleSubmit = async (e) => {
 
     //display loading sign
     setLoading(true);
+    setCurrentLoaderIndex(0);
     //reset the old output
     setRenderText(false);
     //reset trends
@@ -185,14 +247,14 @@ const Home = () => {
           </div>
         </div>
 
-        {loading && <div className="flex justify-center items-center h-[150px]">
-        <Zap className="h-6 w-6 text-blue-600 mr-1"></Zap>
-        <label
-          htmlFor="loading"
-          className="block text-lg font-medium text-blue-700"
-        >
-        Generating...
-        </label>
+        {loading && <div className="flex justify-center items-center gap-2 h-[150px]">
+          {currentLoader}
+          <label
+            htmlFor="loading"
+            className="block text-lg font-medium text-blue-700"
+          >
+            {currentLoaderText}
+          </label>
         </div>}
 
         {/*GPT Output*/}
@@ -210,7 +272,7 @@ const Home = () => {
             </div>
             <div className="mt-4 p-4 bg-white/80 rounded-lg shadow-sm border border-blue-200">
               {/* <p className="text-gray-700 leading-relaxed"> */}
-                { parse ( textResult ) }
+              {parse(textResult)}
               {/* </p> */}
             </div>
           </div>
@@ -219,7 +281,7 @@ const Home = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Trending Topics */}
-          { renderTrends && <div className="lg:col-span-2">
+          {renderTrends && <div className="lg:col-span-2">
             <div className="bg-white p-6 rounded-xl shadow-sm">
               <div className="flex items-center space-x-2 mb-6">
                 <TrendingUp className="h-5 w-5 text-blue-500" />
@@ -240,7 +302,7 @@ const Home = () => {
           </div>}
 
           {/* Latest Insights */}
-          { renderTrends && <div className="bg-white p-6 rounded-xl shadow-sm">
+          {renderTrends && <div className="bg-white p-6 rounded-xl shadow-sm">
             <h2 className="text-xl font-bold text-gray-900 mb-6">Latest Insights</h2>
             <div className="space-y-4">
               {latestInsights.map((insight, index) => (

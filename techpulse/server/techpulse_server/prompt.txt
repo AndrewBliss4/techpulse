@@ -14,3 +14,4 @@ Second section:
 Provide a list of the 3 trending topics from this data, in this format for example: {"title": "AI Advances", "sources": "BCG, Mckinsey", "trend": "+24%" } seperated by / for each entry.
 Third section:
 Provide a list of the 3 most impactful insights from this data, in this format for example: {"title": "The Future of Quantum Computing", "category": "Emerging Tech", "date": "Nov. 18 2024"} seperated by / for each entry.
+Ensure the sources dates are from this current year.
