@@ -12,20 +12,23 @@ const Home = () => {
   //   { title: "Cloud Computing", sources: "JPMorgan, Web of Science", trend: "+18%" }
   // ];
 
-  const latestInsights = [
-    { title: "The Future of Quantum Computing", category: "Emerging Tech", readTime: "5 min" },
-    { title: "AI in Healthcare: 2024 Trends", category: "AI & ML", readTime: "8 min" },
-    { title: "Cybersecurity Best Practices", category: "Security", readTime: "6 min" }
-  ];
+  // const latestInsights = [
+  //   { title: "The Future of Quantum Computing", category: "Emerging Tech", readTime: "5 min" },
+  //   { title: "AI in Healthcare: 2024 Trends", category: "AI & ML", readTime: "8 min" },
+  //   { title: "Cybersecurity Best Practices", category: "Security", readTime: "6 min" }
+  // ];
 
   //useStates for GPT output
   const [searchTerm, setSearchTerm] = useState("");
   const [textResult, setTextResult] = useState("");
+
   const [trendingTopics, setTrendingTopics] = useState([]);
+  const [latestInsights, setLatestInsights] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [renderText, setRenderText] = useState(false);
   const [renderTrends, setRenderTrends] = useState(false);
-
+  
   //function to fetch gpt data from server
   const handleSubmit = async (e) => {
 
@@ -33,26 +36,37 @@ const Home = () => {
     setLoading(true);
     //reset the old output
     setRenderText(false);
+    //reset trends
+    setRenderTrends(false);
 
     e.preventDefault()
 
     axios.post('http://localhost:4000/gpt', { prompt: searchTerm }).then((resp) => {
 
       let resultArr = resp.data.split("***");
-      let tempTrendingTopics = [];
 
       setTextResult(resultArr[0]);
 
       //Handle trends
+      let tempTrendingTopics = [];
       for (const entry of resultArr[1].split("/")) {
         tempTrendingTopics.push(JSON.parse(entry));
       };
 
       setTrendingTopics(tempTrendingTopics);
-      setRenderTrends(true);
+
+      //Handle Top Insights
+      let tempInsights = [];
+      for (const entry of resultArr[2].split("/")) {
+        tempInsights.push(JSON.parse(entry));
+      };
+
+      setLatestInsights(tempInsights);
 
       console.log(resp.data);
+
       setRenderText(true);
+      setRenderTrends(true);
 
     }).catch((err) => {
       console.log(err);
@@ -226,7 +240,7 @@ const Home = () => {
           </div>}
 
           {/* Latest Insights */}
-          <div className="bg-white p-6 rounded-xl shadow-sm">
+          { renderTrends && <div className="bg-white p-6 rounded-xl shadow-sm">
             <h2 className="text-xl font-bold text-gray-900 mb-6">Latest Insights</h2>
             <div className="space-y-4">
               {latestInsights.map((insight, index) => (
@@ -234,12 +248,12 @@ const Home = () => {
                   <h3 className="font-medium text-gray-900 mb-1">{insight.title}</h3>
                   <div className="flex items-center text-sm text-gray-600">
                     <span className="bg-gray-100 px-2 py-1 rounded">{insight.category}</span>
-                    <span className="ml-2">{insight.readTime} read</span>
+                    <span className="ml-2">{insight.date}</span>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+          </div>}
         </div>
       </div>
     </div>
