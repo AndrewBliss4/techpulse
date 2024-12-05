@@ -568,7 +568,8 @@ Read port: 62933
 1733421146936	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
 [GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
 console.error: ({})
-1733421490604	geckodriver	INFO	Listening on 127.0.0.1:63140
+console.error: "buildList failed: " ({})
+n 127.0.0.1:63140
 1733421493666	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--headless" "--window-size=1920,1080" "--r ... 1" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\andre\\AppData\\Local\\Temp\\rust_mozprofileGV5xJB"
 *** You are running in headless mode.
 console.warn: services.settings: Ignoring preference override of remote settings server
@@ -627,3 +628,26 @@ JavaScript warning: https://www.bcg.com/wOy0Bw/3/b/ig3hxLa3Bmfn/Xc/LiUSAg/IUBjUm
 JavaScript warning: https://www.bcg.com/wOy0Bw/3/b/ig3hxLa3Bmfn/G7XibSGrmcmJ/Fhk5Ag/bw11J3/AtdEgB, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
 JavaScript warning: https://www.bcg.com/wOy0Bw/3/b/ig3hxLa3Bmfn/G7XibSGrmcmJ/Fhk5Ag/bw11J3/AtdEgB, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
 1733422800522	geckodriver	INFO	Listening on 127.0.0.1:64176
+1733422803574	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--headless" "--window-size=1920,1080" "--r ... 7" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\andre\\AppData\\Local\\Temp\\rust_mozprofilehb2u2d"
+*** You are running in headless mode.
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+Dynamically enable window occlusion 0
+1733422803830	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-window-size"
+1733422803902	Marionette	INFO	Listening on port 64184
+WebDriver BiDi listening on ws://127.0.0.1:64177
+Read port: 64184
+1733422804004	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: ({})
+JavaScript warning: https://www.bcg.com/wOy0Bw/3/b/ig3hxLa3Bmfn/G7XibSGrmcmJ/Fhk5Ag/bw11J3/AtdEgB, line 1: unreachable code after return statement
+JavaScript warning: https://www.bcg.com/wOy0Bw/3/b/ig3hxLa3Bmfn/G7XibSGrmcmJ/Fhk5Ag/bw11J3/AtdEgB, line 1: unreachable code after return statement
+JavaScript warning: https://www.bcg.com/wOy0Bw/3/b/ig3hxLa3Bmfn/Xc/LiUSAg/IUBjUm/hQG04o, line 1: unreachable code after return statement
+JavaScript warning: https://www.bcg.com/wOy0Bw/3/b/ig3hxLa3Bmfn/G7XibSGrmcmJ/Fhk5Ag/bw11J3/AtdEgB, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.bcg.com/wOy0Bw/3/b/ig3hxLa3Bmfn/G7XibSGrmcmJ/Fhk5Ag/bw11J3/AtdEgB, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.bcg.com/wOy0Bw/3/b/ig3hxLa3Bmfn/G7XibSGrmcmJ/Fhk5Ag/bw11J3/AtdEgB, line 1: unreachable code after return statement
+JavaScript warning: https://www.bcg.com/wOy0Bw/3/b/ig3hxLa3Bmfn/G7XibSGrmcmJ/Fhk5Ag/bw11J3/AtdEgB, line 1: unreachable code after return statement
+JavaScript warning: https://www.bcg.com/wOy0Bw/3/b/ig3hxLa3Bmfn/Xc/LiUSAg/IUBjUm/hQG04o, line 1: unreachable code after return statement
+JavaScript warning: https://www.bcg.com/wOy0Bw/3/b/ig3hxLa3Bmfn/G7XibSGrmcmJ/Fhk5Ag/bw11J3/AtdEgB, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.bcg.com/wOy0Bw/3/b/ig3hxLa3Bmfn/G7XibSGrmcmJ/Fhk5Ag/bw11J3/AtdEgB, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.

@@ -18,7 +18,7 @@ def main():
     
     scraper = ArticleScraper(db_config=db_config)  # Pass db_config here
     articles = scraper.scrape_articles(base_urls[0])  # Use the first URL as an example
-    print(f"\nExtracted {len(articles)} articles successfully!")
+    print(f"\nExtracted all articles successfully!")
 
 if __name__ == "__main__":
     main()

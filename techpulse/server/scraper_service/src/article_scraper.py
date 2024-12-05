@@ -127,7 +127,7 @@ class ArticleScraper(BaseScraper):
         VALUES (%s, %s, %s);
         """
         with self.connection.cursor() as cursor:
-            for keyword, count in keywords.items():
+            for keyword, count in keywords.items():  # No change needed here since extract_keywords now returns a dict
                 cursor.execute(query, (data_id, keyword, count))
 
     def extract_article(self, url):
