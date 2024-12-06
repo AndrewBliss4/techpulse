@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, ResponsiveContainer } from 'recharts';
 
 const Radar = ({handleSubmit, setSearchTerm}) => {
 
@@ -75,8 +75,16 @@ const queryInsight = (dataPoint, index) => {
       <ResponsiveContainer width="100%" height="100%">
         <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
           <CartesianGrid />
-          <XAxis type="number" dataKey="x" name="Interest" domain={[0, 1]} />
-          <YAxis type="number" dataKey="y" name="Innovation" domain={[0, 1]} />
+
+          <XAxis type="number" dataKey="x" name="Interest"
+           domain={[0, 1]} label={{ value: 'Interest, score (0 = lower; 1 = higher)',
+           position: 'bottom', offset: 0, fontWeight: 'bold' }}/>
+
+          <YAxis type="number" dataKey="y" name="Innovation"
+           domain={[0, 1]}>
+          <Label value="Innovation, score (0 = lower; 1 = higher)" position="insideLeft" angle={-90} style={{ textAnchor: 'middle', fontWeight: 'bold' }} />
+          </YAxis>
+
           <ZAxis type="number" dataKey="z" range={[100, 5000]} name="Investment" />
           <Tooltip 
             cursor={{ strokeDasharray: '3 3' }}
