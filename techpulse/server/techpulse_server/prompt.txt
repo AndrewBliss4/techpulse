@@ -15,3 +15,4 @@ Provide a list of the 3 trending topics from this data, in this format for examp
 Third section:
 Provide a list of the 3 most impactful insights from this data, in this format for example: {"title": "The Future of Quantum Computing", "category": "Emerging Tech", "date": "Nov. 18 2024"} seperated by / for each entry.
 Ensure the sources dates are from this current year.
+THIS FORMAT IS VERY IMPORTANT AND MUST BE FOLLOWED FOR EVERY PROMPT.

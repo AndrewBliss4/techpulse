@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import '../styles/globals.css';
 import rbcLogo from '../assets/Royal-Bank-of-Canada-Logo.png';
-import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb } from 'lucide-react'
+import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, CircleAlert } from 'lucide-react'
 import parse from 'html-react-parser';
 
 //Loaders
@@ -40,6 +40,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [renderText, setRenderText] = useState(false);
   const [renderTrends, setRenderTrends] = useState(false);
+  const [error, setError] = useState(false);
 
   //loader states
 
@@ -108,7 +109,10 @@ const Home = () => {
 
     //display loading sign
     setLoading(true);
+    //Reset loader cycle
     setCurrentLoaderIndex(0);
+    //Reset error state
+    setError(false);
     //reset the old output
     setRenderText(false);
     //reset trends
@@ -140,11 +144,14 @@ const Home = () => {
 
       console.log(resp.data);
 
+      //Render the output
       setRenderText(true);
       setRenderTrends(true);
 
     }).catch((err) => {
       console.log(err);
+      //Set error state
+      setError(true);
 
     }).finally(() => {
       //Remove loading sign
@@ -267,6 +274,16 @@ const Home = () => {
             className="block text-lg font-medium text-blue-700"
           >
             {currentLoaderText}
+          </label>
+        </div>}
+
+        {error && <div className="flex justify-center items-center gap-2 h-[150px]">
+          <CircleAlert className="h-8 w-8 text-blue-600" />
+          <label
+            htmlFor="loading"
+            className="block text-lg font-medium text-blue-700"
+          >
+            Invalid Input! Please try a different prompt.
           </label>
         </div>}
 
