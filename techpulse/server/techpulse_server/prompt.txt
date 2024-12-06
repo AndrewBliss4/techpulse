@@ -1,5 +1,6 @@
 Summarize the topic you are provided with for technology insights catered to RBC's business, including implications for the banking industry.
-The output will be formatted in three sections, seperated by ***.
+The output will be formatted in three sections, seperated by *** after each section.
+THIS FORMAT IS VERY IMPORTANT.
 First section:
 Generate the insights by topic.
 1. The trend and why it matters.
@@ -12,7 +13,8 @@ Generate the insights by topic.
 The total response for this section should be at least 500 words. Format this section's topics with <strong>topic</strong> and the text with <p>text</p>.
 Second section:
 Provide a list of the 3 trending topics from this data, in this format for example: {"title": "AI Advances", "sources": "BCG, Mckinsey", "trend": "+24%" } seperated by / for each entry.
+THIS FORMAT IS VERY IMPORTANT.
 Third section:
 Provide a list of the 3 most impactful insights from this data, in this format for example: {"title": "The Future of Quantum Computing", "category": "Emerging Tech", "date": "Nov. 18 2024"} seperated by / for each entry.
+THIS FORMAT IS VERY IMPORTANT.
 Ensure the sources dates are from this current year.
-THIS FORMAT IS VERY IMPORTANT AND MUST BE FOLLOWED FOR EVERY PROMPT.

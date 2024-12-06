@@ -1,57 +1,72 @@
 import React from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const Radar = () => {
+const Radar = ({handleSubmit, setSearchTerm}) => {
+
+const queryInsight = (dataPoint, index) => {
+
+  setSearchTerm(dataPoint.name);
+
+  handleSubmit();
+
+  setTimeout(() => {
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth'
+    });
+}, 100);
+
+}
 
 //Filler data
   const data = [
     { 
-      name: 'Artificial Intelligence', 
-      x: 0.9, 
-      y: 0.95, 
-      z: 36.8 // Investment in billions
+      name: 'Generative AI', 
+      x: 0.64, 
+      y: 0.08, 
+      z: 36 // Investment in billions
     },
     { 
-      name: 'Quantum Computing', 
-      x: 0.6, 
-      y: 0.8, 
-      z: 22.5 
+      name: 'Quantum Technologies', 
+      x: 0.02, 
+      y: 0.04, 
+      z: 1 
     },
     { 
-      name: 'Blockchain', 
+      name: 'Bioengineering', 
+      x: 0.14, 
+      y: 0.52, 
+      z: 62
+    },
+    { 
+      name: 'Cloud Computing', 
+      x: 0.05, 
+      y: 0.2, 
+      z: 54
+    },
+    { 
+      name: 'Applied AI', 
       x: 0.5, 
-      y: 0.6, 
-      z: 16.3 
+      y: 0.98, 
+      z: 86
     },
     { 
-      name: 'Augmented Reality', 
-      x: 0.7, 
-      y: 0.7, 
-      z: 12.9 
+      name: 'Cybersecurity', 
+      x: 0.41, 
+      y: 0.18, 
+      z: 34 
     },
     { 
-      name: 'Edge Computing', 
-      x: 0.65, 
-      y: 0.75, 
-      z: 15.7 
-    },
-    { 
-      name: 'Biotechnology', 
-      x: 0.55, 
-      y: 0.85, 
-      z: 28.4 
-    },
-    { 
-      name: '5G Technology', 
-      x: 0.75, 
-      y: 0.65, 
-      z: 19.6 
+      name: 'AR/VR Technology', 
+      x: 0.12, 
+      y: 0.24, 
+      z: 6 
     },
     { 
       name: 'Renewable Energy Tech', 
-      x: 0.8, 
-      y: 0.7, 
-      z: 23.1 
+      x: 0.73, 
+      y: 0.36,
+      z: 183
     }
   ];
 
@@ -62,7 +77,7 @@ const Radar = () => {
           <CartesianGrid />
           <XAxis type="number" dataKey="x" name="Interest" domain={[0, 1]} />
           <YAxis type="number" dataKey="y" name="Innovation" domain={[0, 1]} />
-          <ZAxis type="number" dataKey="z" range={[100, 500]} name="Investment" />
+          <ZAxis type="number" dataKey="z" range={[100, 5000]} name="Investment" />
           <Tooltip 
             cursor={{ strokeDasharray: '3 3' }}
             content={({ active, payload }) => {
@@ -90,6 +105,8 @@ const Radar = () => {
             data={data} 
             fill="#2466e0"
             fillOpacity={0.7}
+            onClick={queryInsight}
+            cursor='pointer'
           />
         </ScatterChart>
       </ResponsiveContainer>

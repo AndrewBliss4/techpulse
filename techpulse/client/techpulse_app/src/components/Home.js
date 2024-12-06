@@ -106,7 +106,8 @@ const Home = () => {
   const currentLoaderText = loaders[currentLoaderIndex].text;
 
   //function to fetch gpt data from server
-  const handleSubmit = async (e) => {
+
+  const handleSubmit = async () => {
 
     //display loading sign
     setLoading(true);
@@ -118,8 +119,6 @@ const Home = () => {
     setRenderText(false);
     //reset trends
     setRenderTrends(false);
-
-    e.preventDefault()
 
     axios.post('http://localhost:4000/gpt', { prompt: searchTerm }).then((resp) => {
 
@@ -226,7 +225,7 @@ const Home = () => {
 
       {/* Content Section */}
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <Radar></Radar>
+        <Radar handleSubmit={handleSubmit} setSearchTerm={setSearchTerm}></Radar>
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
             <div className="flex-grow space-y-2">
