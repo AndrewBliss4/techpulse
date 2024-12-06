@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import '../styles/globals.css';
 import rbcLogo from '../assets/Royal-Bank-of-Canada-Logo.png';
-import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, CircleAlert } from 'lucide-react'
+import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, CircleAlert, RadarIcon } from 'lucide-react'
 import parse from 'html-react-parser';
 import Radar from './Radar.js';
 
@@ -93,7 +93,7 @@ const Home = () => {
   useEffect(() => {
     // Set up interval to rotate loaders every 3 seconds
     const intervalId = setInterval(() => {
-      setCurrentLoaderIndex((prevIndex) => 
+      setCurrentLoaderIndex((prevIndex) =>
         (prevIndex + 1) % loaders.length
       );
     }, 5000);
@@ -193,7 +193,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 py-16">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              AI-Powered Technology Radar
+              AI-Powered Technology Insights
             </h1>
             <p className="text-xl text-gray-600 mb-8">
               Real-time analytics and insights from articles, industry reports, and competitors
@@ -224,9 +224,23 @@ const Home = () => {
 
 
       {/* Content Section */}
+
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <Radar handleSubmit={handleSubmit} setSearchTerm={setSearchTerm}></Radar>
-        <br></br>
+        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
+          <div className='flex items-center space-x-2'>
+            <RadarIcon className="h-5 w-5 text-blue-600" />
+            <label
+              htmlFor="search"
+              className="block text-lg font-medium text-gray-700"
+            >
+              Industry Radar
+            </label>
+          </div>
+          <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
+            <Radar handleSubmit={handleSubmit} setSearchTerm={setSearchTerm}></Radar>
+          </div>
+        </div>
+
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
             <div className="flex-grow space-y-2">
