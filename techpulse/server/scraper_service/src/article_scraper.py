@@ -192,25 +192,3 @@ class ArticleScraper(BaseScraper):
             print(f"Error in scrape_articles: {e}")
         finally:
             self.close_db_connection()
-
-
-# Database configuration
-db_config = {
-    "dbname": "techpulse",
-    "user": "your_username",
-    "password": "your_password",
-    "host": "localhost",
-    "port": 5432,
-}
-
-# Running the scraper
-if __name__ == "__main__":
-    base_urls = [
-        "https://www.bcg.com/publications",
-        "https://www.bcg.com/publications/latest",
-        "https://www.bcg.com/publications?sort=date",
-        "https://www.bcg.com/publications?fi2=00000177-2b73-deac-ad7f-3bf7870b0000",
-    ]
-
-    scraper = ArticleScraper(db_config=db_config)
-    scraper.scrape_articles(base_urls[0])
