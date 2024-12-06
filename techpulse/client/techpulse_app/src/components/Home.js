@@ -4,6 +4,7 @@ import '../styles/globals.css';
 import rbcLogo from '../assets/Royal-Bank-of-Canada-Logo.png';
 import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, CircleAlert } from 'lucide-react'
 import parse from 'html-react-parser';
+import Radar from './Radar.js';
 
 //Loaders
 import { tailChase } from 'ldrs';
@@ -225,6 +226,7 @@ const Home = () => {
 
       {/* Content Section */}
       <div className="max-w-7xl mx-auto px-4 py-12">
+        <Radar></Radar>
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
             <div className="flex-grow space-y-2">
