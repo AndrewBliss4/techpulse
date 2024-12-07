@@ -102,10 +102,16 @@ const Home = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+
   const currentLoader = loaders[currentLoaderIndex].loader;
   const currentLoaderText = loaders[currentLoaderIndex].text;
 
   //function to fetch gpt data from server
+
+  const radarSearch = (radarTerm) => {
+    setSearchTerm(radarTerm);
+    handleRadarSubmit(radarTerm);
+  };
 
   const handleSubmit = async () => {
 
@@ -121,6 +127,59 @@ const Home = () => {
     setRenderTrends(false);
 
     axios.post('http://localhost:4000/gpt', { prompt: searchTerm }).then((resp) => {
+
+      let resultArr = resp.data.split("***");
+
+      setTextResult(resultArr[0]);
+
+      //Handle trends
+      let tempTrendingTopics = [];
+      for (const entry of resultArr[1].split("/")) {
+        tempTrendingTopics.push(JSON.parse(entry));
+      };
+
+      setTrendingTopics(tempTrendingTopics);
+
+      //Handle Top Insights
+      let tempInsights = [];
+      for (const entry of resultArr[2].split("/")) {
+        tempInsights.push(JSON.parse(entry));
+      };
+
+      setLatestInsights(tempInsights);
+
+      console.log(resp.data);
+
+      //Render the output
+      setRenderText(true);
+      setRenderTrends(true);
+
+    }).catch((err) => {
+      console.log(err);
+      //Set error state
+      setError(true);
+
+    }).finally(() => {
+      //Remove loading sign
+      setLoading(false);
+    })
+
+  };
+
+  const handleRadarSubmit = async (radarTerm) => {
+
+    //display loading sign
+    setLoading(true);
+    //Reset loader cycle
+    setCurrentLoaderIndex(0);
+    //Reset error state
+    setError(false);
+    //reset the old output
+    setRenderText(false);
+    //reset trends
+    setRenderTrends(false);
+
+    axios.post('http://localhost:4000/gpt', { prompt: radarTerm }).then((resp) => {
 
       let resultArr = resp.data.split("***");
 
@@ -237,7 +296,7 @@ const Home = () => {
             </label>
           </div>
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
-            <Radar handleSubmit={handleSubmit} setSearchTerm={setSearchTerm}></Radar>
+            <Radar radarSearch={radarSearch} ></Radar>
           </div>
         </div>
 

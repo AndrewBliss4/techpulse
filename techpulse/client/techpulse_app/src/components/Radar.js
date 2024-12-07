@@ -1,70 +1,68 @@
 import React from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, ResponsiveContainer } from 'recharts';
 
-const Radar = ({handleSubmit, setSearchTerm}) => {
+const Radar = ({ radarSearch }) => {
 
-const queryInsight = (dataPoint, index) => {
+  const queryInsight = (dataPoint, index) => {
 
-  setSearchTerm(dataPoint.name);
+    radarSearch(dataPoint.name);
 
-  handleSubmit();
-
-  setTimeout(() => {
-    window.scrollTo({
+    setTimeout(() => {
+      window.scrollTo({
         top: document.body.scrollHeight,
         behavior: 'smooth'
-    });
-}, 100);
+      });
+    }, 100);
 
-}
+  }
 
-//Filler data
+  //Filler data
   const data = [
-    { 
-      name: 'Generative AI', 
-      x: 0.64, 
-      y: 0.08, 
+    {
+      name: 'Generative AI',
+      x: 0.64,
+      y: 0.08,
       z: 36 // Investment in billions
     },
-    { 
-      name: 'Quantum Technologies', 
-      x: 0.02, 
-      y: 0.04, 
-      z: 1 
+    {
+      name: 'Quantum Technologies',
+      x: 0.02,
+      y: 0.04,
+      z: 1
     },
-    { 
-      name: 'Bioengineering', 
-      x: 0.14, 
-      y: 0.52, 
+    {
+      name: 'Bioengineering',
+      x: 0.14,
+      y: 0.52,
       z: 62
     },
-    { 
-      name: 'Cloud Computing', 
-      x: 0.05, 
-      y: 0.2, 
+    {
+      name: 'Cloud Computing',
+      x: 0.05,
+      y: 0.2,
       z: 54
     },
-    { 
-      name: 'Applied AI', 
-      x: 0.5, 
-      y: 0.98, 
+    {
+      name: 'Applied AI',
+      x: 0.5,
+      y: 0.98,
       z: 86
     },
-    { 
-      name: 'Cybersecurity', 
-      x: 0.41, 
-      y: 0.18, 
-      z: 34 
+    {
+      name: 'Cybersecurity',
+      x: 0.41,
+      y: 0.18,
+      z: 34
     },
-    { 
-      name: 'AR/VR Technology', 
-      x: 0.12, 
-      y: 0.24, 
-      z: 6 
+    {
+      name: 'AR/VR Technology',
+      x: 0.12,
+      y: 0.24,
+      z: 6
     },
-    { 
-      name: 'Renewable Energy Tech', 
-      x: 0.73, 
+    {
+      name: 'Renewable Energy Tech',
+      x: 0.73,
       y: 0.36,
       z: 183
     }
@@ -77,24 +75,26 @@ const queryInsight = (dataPoint, index) => {
           <CartesianGrid />
 
           <XAxis type="number" dataKey="x" name="Interest"
-           domain={[0, 1]} label={{ value: 'Interest, score (0 = lower; 1 = higher)',
-           position: 'bottom', offset: 0, fontWeight: 'bold' }}/>
+            domain={[0, 1]} label={{
+              value: 'Interest, score (0 = lower; 1 = higher)',
+              position: 'bottom', offset: 0, fontWeight: 'bold'
+            }} />
 
           <YAxis type="number" dataKey="y" name="Innovation"
-           domain={[0, 1]}>
-          <Label value="Innovation, score (0 = lower; 1 = higher)" position="insideLeft" angle={-90} style={{ textAnchor: 'middle', fontWeight: 'bold' }} />
+            domain={[0, 1]}>
+            <Label value="Innovation, score (0 = lower; 1 = higher)" position="insideLeft" angle={-90} style={{ textAnchor: 'middle', fontWeight: 'bold' }} />
           </YAxis>
 
           <ZAxis type="number" dataKey="z" range={[100, 5000]} name="Investment" />
-          <Tooltip 
+          <Tooltip
             cursor={{ strokeDasharray: '3 3' }}
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
                 const data = payload[0].payload;
                 return (
-                  <div style={{ 
-                    backgroundColor: 'white', 
-                    padding: '10px', 
+                  <div style={{
+                    backgroundColor: 'white',
+                    padding: '10px',
                     border: '1px solid #ccc',
                     borderRadius: '5px'
                   }}>
@@ -108,9 +108,9 @@ const queryInsight = (dataPoint, index) => {
               return null;
             }}
           />
-          <Scatter 
-            name="Tech Trends" 
-            data={data} 
+          <Scatter
+            name="Tech Trends"
+            data={data}
             fill="#2466e0"
             fillOpacity={0.7}
             onClick={queryInsight}
