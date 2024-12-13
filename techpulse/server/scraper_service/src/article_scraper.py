@@ -96,15 +96,15 @@ class ArticleScraper(BaseScraper):
             print(f"Error getting article URLs: {e}")
             return []
 
-    def insert_url(self, url, source_type, source_name):
+    def insert_url(self, url, scraped_source_id):
         """Insert a URL into the URL table."""
         query = """
-        INSERT INTO URL (url, source_type, source_name) 
-        VALUES (%s, %s, %s) 
+        INSERT INTO URL (url, scraped_source_id) 
+        VALUES (%s, %s) 
         RETURNING url_id;
         """
         with self.connection.cursor() as cursor:
-            cursor.execute(query, (url, source_type, source_name))
+            cursor.execute(query, (url, scraped_source_id))
             return cursor.fetchone()[0]
 
     def insert_scraped_data(self, field_id, source_id, title, content, scraped_at, published_date):
@@ -173,7 +173,7 @@ class ArticleScraper(BaseScraper):
                     continue
 
                 # Insert URL and associated data
-                url_id = self.insert_url(url=article_data["url"], source_type="Web", source_name="BCG")
+                url_id = self.insert_url(url=article_data["url"], scraped_source_id=0)  # Default scraped_source_id for now
                 with self.connection.cursor() as cursor:
                     cursor.execute("INSERT INTO Source (url_id) VALUES (%s) RETURNING source_id;", (url_id,))
                     source_id = cursor.fetchone()[0]
