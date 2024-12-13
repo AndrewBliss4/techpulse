@@ -18,7 +18,12 @@ def extract_keywords(text, num_keywords=15):
         stop_words = set(stopwords.words("english"))
         tokens = [token for token in tokens if token.isalnum() and len(token) > 2 and token not in stop_words]
         keywords = [word for word, pos in pos_tag(tokens) if pos in ["NN", "NNS", "NNP", "NNPS", "JJ"]]
-        return [(word, freq) for word, freq in Counter(keywords).most_common(num_keywords) if freq > 1]
+        keyword_counts = dict(Counter(keywords).most_common(num_keywords))
+        
+        # Only keep keywords with count > 1 (to avoid too many common terms)
+        keyword_counts = {k: v for k, v in keyword_counts.items() if v > 1}
+        
+        return keyword_counts
     except Exception as e:
         print(f"Error extracting keywords: {e}")
-        return []
+        return {}
