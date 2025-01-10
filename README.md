@@ -1,20 +1,20 @@
 # techpulse
-LLM
+AI-Powered Insight Generation Tool
 
 ### SCRAPER ###
-First donwload FireFox
+First download Firefox for driver
 
 # create venv using
 pip install -r requirements
 run main.py
 
 ### FRONT END ###
-cd into techpulse_app
+cd into /techpulse_app
 npm i
 npm start
 
-##
-cd into techpulse_server
+### BACK END SERVER ###
+cd into /techpulse_server
 npm i
 node server.js
-make a file name .env and drop a the API key in there
+make a file named .env with OpenAI Key
