@@ -1,5 +1,5 @@
-# techpulse
-AI-Powered Insight Generation Tool
+# TechPulse
+AI-Powered Insight Generation Tool for RBC
 
 ### SCRAPER ###
 First download Firefox for driver
