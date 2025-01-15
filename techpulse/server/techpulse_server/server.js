@@ -1,7 +1,7 @@
-import pool from './db';
 const OpenAI = require('openai');
 const dontenv = require("dotenv");
 const fs = require('fs');
+const { Pool } = require('pg');
 
 dontenv.config();
 
@@ -9,6 +9,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const app = express();
+const pool = new Pool({
+  host: 'db',
+  port: 5432,
+  user: "admin",
+  password: "admin",
+  database: "techpulse_db"
+});
 
 app.use(bodyParser.json());
 
