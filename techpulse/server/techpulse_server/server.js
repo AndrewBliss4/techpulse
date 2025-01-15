@@ -2,6 +2,7 @@ const OpenAI = require('openai');
 const dontenv = require("dotenv");
 const fs = require('fs');
 const { Pool } = require('pg');
+const cors = require('cors');
 
 dontenv.config();
 
@@ -10,33 +11,47 @@ const bodyParser = require("body-parser");
 
 const app = express();
 const pool = new Pool({
-  host: 'db',
+  host: 'localhost',
   port: 5432,
   user: "admin",
   password: "admin",
-  database: "techpulse_db"
+  database: "techpulse"
+});
+
+pool.on('error', (err) => {
+  console.error('Unexpected database error', err);
+});
+
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+      console.error('Database connection error:', err);
+  } else {
+      console.log('Database connected:', res.rows[0]);
+  }
 });
 
 app.use(bodyParser.json());
-
-//app.use(express.json());
+app.use(cors());
+app.use(express.json());
 
 // Example API endpoint to fetch data from database
 app.get('/api/data', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM your_table');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error fetching data');
-    }
+  try {
+      console.log('Attempting to fetch data from the database...');
+      const result = await pool.query('SELECT * FROM public.field');
+      console.log('Data fetched successfully:', result.rows);
+      res.json(result.rows);
+  } catch (error) {
+      console.error('Error fetching data:', error.message);
+      res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 // Example API endpoint to insert data from database
 app.post('/api/data', async (req, res) => {
     const { field1, field2 } = req.body;
     try {
-        await pool.query('INSERT INTO your_table (field1, field2) VALUES ($1, $2)', [field1, field2]);
+        await pool.query('INSERT INTO public.feedback (feedback_text, rating) VALUES ($1, $2)', [field1, field2]);
         res.status(201).send('Data inserted');
     } catch (err) {
         console.error(err);

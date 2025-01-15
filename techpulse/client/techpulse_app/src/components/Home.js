@@ -219,6 +219,25 @@ const Home = () => {
 
   };
 
+  //DataBase get and post methods
+  axios.defaults.headers.post['Content-Type'] = 'application/json';
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:4000/api/data')
+        .then(response => {
+            console.log('Fetched data:', response.data);
+            setData(response.data);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
+  const addData = () => {
+      axios.post('http://localhost:4000/api/data', { feedback_text: 'Value1', rating: '5' })
+          .then(() => alert('Data added successfully'))
+          .catch(error => console.error('Error adding data:', error));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
@@ -421,6 +440,15 @@ const Home = () => {
               ))}
             </div>
           </div>}
+        </div>
+        <div className='databaseTest'>
+          <h1>Data from PostgreSQL</h1>
+          <ul>
+              {data.map(item => (
+                <li key={item.id}>{item.field_id} - {item.field_name}</li>
+              ))}
+          </ul>
+          <button onClick={addData}>Add Data</button>
         </div>
       </div>
     </div>
