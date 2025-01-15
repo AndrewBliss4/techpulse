@@ -1,3 +1,4 @@
+import pool from './db';
 const OpenAI = require('openai');
 const dontenv = require("dotenv");
 const fs = require('fs');
@@ -10,6 +11,31 @@ const bodyParser = require("body-parser");
 const app = express();
 
 app.use(bodyParser.json());
+
+//app.use(express.json());
+
+// Example API endpoint to fetch data from database
+app.get('/api/data', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM your_table');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error fetching data');
+    }
+});
+
+// Example API endpoint to insert data from database
+app.post('/api/data', async (req, res) => {
+    const { field1, field2 } = req.body;
+    try {
+        await pool.query('INSERT INTO your_table (field1, field2) VALUES ($1, $2)', [field1, field2]);
+        res.status(201).send('Data inserted');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error inserting data');
+    }
+});
 
 //CORS settings
 app.use(function (req, res, next) {
