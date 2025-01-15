@@ -5,9 +5,11 @@ const fs = require('fs');
 dontenv.config();
 
 const express = require("express");
+const { PrismaClient } = require('@prisma/client');
 const bodyParser = require("body-parser");
 
 const app = express();
+const prisma = new PrismaClient();
 
 app.use(bodyParser.json());
 

@@ -18,3 +18,15 @@ cd into /techpulse_server
 npm i
 node server.js
 make a file named .env with OpenAI Key
+
+### PRISMA SETUP ###
+cd into /techpulse_server
+
+npm install prisma @prisma/client
+npx prisma init
+
+In .env folder change the database url to match your own
+DATABASE_URL="postgresql://user:password@localhost:5432/your_database"
+
+npx prisma db pull
+npx prisma generate
