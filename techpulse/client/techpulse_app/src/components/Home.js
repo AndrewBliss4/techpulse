@@ -219,7 +219,7 @@ const Home = () => {
 
   };
 
-  //DataBase get and post methods
+  // ---------- DataBase get and post methods ---------- //
   axios.defaults.headers.post['Content-Type'] = 'application/json';
   const [data, setData] = useState([]);
 
@@ -232,8 +232,9 @@ const Home = () => {
         .catch(error => console.error('Error fetching data:', error));
   }, []);
 
+  //Inserts feedback_text: 'Value1', rating: '5' into feedbacktable
   const addData = () => {
-      axios.post('http://localhost:4000/api/data', { feedback_text: 'Value1', rating: '5' })
+      axios.post('http://localhost:4000/api/data1', { feedback_text: 'Value1', rating: '5' })
           .then(() => alert('Data added successfully'))
           .catch(error => console.error('Error adding data:', error));
   };

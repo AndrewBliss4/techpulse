@@ -8,8 +8,9 @@ dontenv.config();
 
 const express = require("express");
 const bodyParser = require("body-parser");
-
 const app = express();
+
+//Connection to postgres, may need to change values to get methods working
 const pool = new Pool({
   host: 'localhost',
   port: 5432,
@@ -18,26 +19,15 @@ const pool = new Pool({
   database: "techpulse"
 });
 
-pool.on('error', (err) => {
-  console.error('Unexpected database error', err);
-});
-
-pool.query('SELECT NOW()', (err, res) => {
-  if (err) {
-      console.error('Database connection error:', err);
-  } else {
-      console.log('Database connected:', res.rows[0]);
-  }
-});
-
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json());
 
-// Example API endpoint to fetch data from database
+// ----------- POSTGRES BACKEND ----------- //
+
+// Example API endpoint to fetch data from public.field
 app.get('/api/data', async (req, res) => {
   try {
-      console.log('Attempting to fetch data from the database...');
       const result = await pool.query('SELECT * FROM public.field');
       console.log('Data fetched successfully:', result.rows);
       res.json(result.rows);
@@ -47,17 +37,19 @@ app.get('/api/data', async (req, res) => {
   }
 });
 
-// Example API endpoint to insert data from database
-app.post('/api/data', async (req, res) => {
-    const { field1, field2 } = req.body;
+// Example API endpoint to insert data into feeback table
+app.post('/api/data1', async (req, res) => {
+    const { feedback_text, rating } = req.body;
     try {
-        await pool.query('INSERT INTO public.feedback (feedback_text, rating) VALUES ($1, $2)', [field1, field2]);
+        await pool.query('INSERT INTO public.feedback (feedback_text, rating) VALUES ($1, $2)', [feedback_text, rating]);
         res.status(201).send('Data inserted');
     } catch (err) {
         console.error(err);
         res.status(500).send('Error inserting data');
     }
 });
+
+// ----------- AI BACKEND ----------- //
 
 //CORS settings
 app.use(function (req, res, next) {
