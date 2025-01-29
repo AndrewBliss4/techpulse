@@ -2,12 +2,9 @@ import time
 from datetime import datetime
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
 import psycopg2
 from psycopg2 import sql
 from .scraper import BaseScraper
-from .utils import extract_keywords
-
 
 class ArticleScraper(BaseScraper):
     def __init__(self, db_config):
@@ -120,16 +117,6 @@ class ArticleScraper(BaseScraper):
             cursor.execute(query, (field_id, source_id, title, content, scraped_at, published_date))
             return cursor.fetchone()[0]
 
-    def insert_keywords(self, data_id, keywords):
-        """Insert keywords into the Keyword table."""
-        query = """
-        INSERT INTO Keyword (data_id, keyword, keyword_count) 
-        VALUES (%s, %s, %s);
-        """
-        with self.connection.cursor() as cursor:
-            for keyword, count in keywords.items():  # No change needed here since extract_keywords now returns a dict
-                cursor.execute(query, (data_id, keyword, count))
-
     def extract_article(self, url):
         """Extract content from a single article."""
         try:
@@ -153,7 +140,6 @@ class ArticleScraper(BaseScraper):
                 "title": title_text,
                 "date": datetime.strptime(date_text, "%B %d, %Y") if date_text else None,
                 "content": content_text,
-                "keywords": extract_keywords(content_text),
                 "url": url,
             }
         except Exception as e:
@@ -177,7 +163,7 @@ class ArticleScraper(BaseScraper):
                 with self.connection.cursor() as cursor:
                     cursor.execute("INSERT INTO Source (url_id) VALUES (%s) RETURNING source_id;", (url_id,))
                     source_id = cursor.fetchone()[0]
-                data_id = self.insert_scraped_data(
+                self.insert_scraped_data(
                     field_id=0,  # Assuming a default Field ID for now
                     source_id=source_id,
                     title=article_data["title"],
@@ -185,7 +171,6 @@ class ArticleScraper(BaseScraper):
                     scraped_at=datetime.now(),
                     published_date=article_data["date"],
                 )
-                self.insert_keywords(data_id, article_data["keywords"])
 
                 print(f"Successfully processed and inserted article: {article_data['title']}")
         except Exception as e:
