@@ -16,5 +16,5 @@ npm start
 ### BACK END SERVER ###
 cd into /techpulse_server
 npm i
-node server.js
+npm run server
 make a file named .env with OpenAI Key
