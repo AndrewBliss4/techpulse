@@ -6,6 +6,7 @@ First download Firefox for driver
 
 # create venv using
 pip install -r requirements
+\n
 run main.py
 
 ### FRONT END ###
