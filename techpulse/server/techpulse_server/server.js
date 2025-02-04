@@ -89,7 +89,7 @@ fs.readFile('prompt.txt', 'utf8', (err, data) => {
 //Prompt function
 let promptAI = async (prompt) => {
 const response = await openai.chat.completions.create({
-  model: "gpt-4o-mini",
+  model: "gpt-4o",
   messages: [
     {
       "role": "system",
