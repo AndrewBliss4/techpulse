@@ -20,8 +20,8 @@ const Radar = ({ radarSearch }) => {
   const data = [
     {
       name: 'Generative AI',
-      x: 0.64,
-      y: 0.08,
+      x: 0.64, //Interest: 0 to 1
+      y: 0.08, //Innovation: 0 to 1
       z: 36 // Investment in billions
     },
     {
