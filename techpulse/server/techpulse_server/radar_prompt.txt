@@ -1,0 +1,15 @@
+In this format, provide me the same data for subcategories in the field of
+
+applied ai:
+
+data = [
+    {
+      name: '', //Name of the subcategory
+      interest: '', //Interest score    
+      innovation: '', //Innovation score
+      investments: '', //Investments in billions
+      x: 0.64, //Interest: 0 to 1
+      y: 0.08, //Innovation: 0 to 1
+      z: 36 // Investment in billions
+    },
+]

@@ -1,77 +1,53 @@
 import React from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, ResponsiveContainer } from 'recharts';
+import { useEffect, useState } from 'react';
 
-const Radar = ({ radarSearch }) => {
+//Chart data pipeline
+import {
+  homeData, appliedAiData, arVrTechnologyData, renewableEnergyTechData, quantumComputingData, bioengineeringData,
+  cloudComputingData, cybersecurityData
+} from './SampleData';
+
+const Radar = ({ radarSearch, homePage, technology }) => {
+
+  useEffect(() => {
+    if (!homePage && technology !== '') {
+      if (technology === 'Applied AI') {
+        setData(appliedAiData);
+      } else if (technology === 'AR/VR Technology') {
+        setData(arVrTechnologyData);
+      } else if (technology === 'Renewable Energy Tech') {
+        setData(renewableEnergyTechData);
+      } else if (technology === 'Quantum Computing') {
+        setData(quantumComputingData);
+      } else if (technology === 'Bioengineering') {
+        setData(bioengineeringData);
+      } else if (technology === 'Cloud Computing') {
+        setData(cloudComputingData);
+      } else if (technology === 'Cybersecurity') {
+        setData(cybersecurityData);
+      }
+    } else {
+      setData(homeData);
+    }
+  }, [technology, homePage]);
+
+  const [radarData, setData] = useState(homeData);
 
   const queryInsight = (dataPoint, index) => {
-
-    window.open(`/technology?name=${encodeURIComponent(dataPoint.name)}&interest=${dataPoint.interest}&innovation=${dataPoint.innovation}&investments=${dataPoint.investments}`, '_blank');
-
-    // radarSearch(dataPoint.name);
-
-    // setTimeout(() => {
-    //   window.scrollTo({
-    //     top: document.body.scrollHeight,
-    //     behavior: 'smooth'
-    //   });
-    // }, 100);
+    if (homePage) {
+      window.open(`/technology?name=${encodeURIComponent(dataPoint.name)}&interest=${dataPoint.interest}&innovation=${dataPoint.innovation}&investments=${dataPoint.investments}`, '_blank');
+    } else {
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 100);
+    }
+    radarSearch(dataPoint.name);
 
   }
-
-  //Filler data
-  const data = [
-    {
-      name: 'Generative AI',
-      interest: '0.64',
-      innovation: '0.08',
-      investments: '36',
-      x: 0.64, //Interest: 0 to 1
-      y: 0.08, //Innovation: 0 to 1
-      z: 36 // Investment in billions
-    },
-    {
-      name: 'Quantum Technologies',
-      x: 0.02,
-      y: 0.04,
-      z: 1
-    },
-    {
-      name: 'Bioengineering',
-      x: 0.14,
-      y: 0.52,
-      z: 62
-    },
-    {
-      name: 'Cloud Computing',
-      x: 0.05,
-      y: 0.2,
-      z: 54
-    },
-    {
-      name: 'Applied AI',
-      x: 0.5,
-      y: 0.98,
-      z: 86
-    },
-    {
-      name: 'Cybersecurity',
-      x: 0.41,
-      y: 0.18,
-      z: 34
-    },
-    {
-      name: 'AR/VR Technology',
-      x: 0.12,
-      y: 0.24,
-      z: 6
-    },
-    {
-      name: 'Renewable Energy Tech',
-      x: 0.73,
-      y: 0.36,
-      z: 183
-    }
-  ];
 
   return (
     <div style={{ width: '100%', height: '600px' }}>
@@ -115,7 +91,7 @@ const Radar = ({ radarSearch }) => {
           />
           <Scatter
             name="Tech Trends"
-            data={data}
+            data={radarData}
             fill="#2466e0"
             fillOpacity={0.7}
             onClick={queryInsight}

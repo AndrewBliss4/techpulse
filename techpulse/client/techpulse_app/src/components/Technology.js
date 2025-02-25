@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, CircleAlert, RadarIcon } from 'lucide-react'
+import Radar from './Radar.js';
 
 const Technology = () => {
 
     const [searchParams] = useSearchParams();
+
+
+    const radarSearch = (radarTerm) => {
+        console.log(radarTerm);
+      };
 
     // Extract and decode parameters
     const name = decodeURIComponent(searchParams.get('name') || '');
@@ -26,11 +32,11 @@ const Technology = () => {
                 <div className="flex justify-center space-x-8 mt-4">
                     <div className="text-center">
                         <p className="text-sm text-gray-600">Interest Score</p>
-                        <p className="text-xl font-semibold text-blue-600">{interest}%</p>
+                        <p className="text-xl font-semibold text-blue-600">{interest}</p>
                     </div>
                     <div className="text-center">
                         <p className="text-sm text-gray-600">Innovation Score</p>
-                        <p className="text-xl font-semibold text-green-600">{innovation}%</p>
+                        <p className="text-xl font-semibold text-green-600">{innovation}</p>
                     </div>
                     <div className="text-center">
                         <p className="text-sm text-gray-600">Investments</p>
@@ -39,7 +45,20 @@ const Technology = () => {
                 </div>
             </div>
             <div className="bg-white rounded-lg shadow-md p-6">
-                {<p className="text-gray-600">Viewing technology with ID: {}</p>}
+                <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
+                    <div className='flex items-center space-x-2'>
+                        <RadarIcon className="h-5 w-5 text-blue-600" />
+                        <label
+                            htmlFor="search"
+                            className="block text-lg font-medium text-gray-700"
+                        >
+                            Specialized Technology Radar
+                        </label>
+                    </div>
+                    <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
+                        <Radar radarSearch={radarSearch} homePage={false} technology={name}></Radar>
+                    </div>
+                </div>
             </div>
         </div>
     );

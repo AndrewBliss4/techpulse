@@ -305,6 +305,28 @@ const Home = () => {
       {/* Content Section */}
 
       <div className="max-w-7xl mx-auto px-4 py-12">
+
+        {/* Last Updated */}
+        
+        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg inline-block">
+          <div className='flex items-center space-x-2'>
+            <CircleAlert className="h-5 w-5 text-blue-600" />
+            <span className="text-lg font-medium text-gray-700">
+              Last Updated: <span className="text-blue-600">{(() => {
+                const today = new Date();
+                const lastSunday = new Date(today);
+                lastSunday.setDate(today.getDate() - today.getDay());
+                return lastSunday.toLocaleDateString('en-US', {
+                  month: 'long',
+                  day: 'numeric', 
+                  year: 'numeric'
+                });
+              })()}</span>
+            </span>
+          </div>
+        </div>
+
+
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
           <div className='flex items-center space-x-2'>
             <RadarIcon className="h-5 w-5 text-blue-600" />
@@ -316,7 +338,7 @@ const Home = () => {
             </label>
           </div>
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
-            <Radar radarSearch={radarSearch} ></Radar>
+            <Radar radarSearch={radarSearch} homePage={true}></Radar>
           </div>
         </div>
 
