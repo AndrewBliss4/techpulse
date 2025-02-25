@@ -443,13 +443,13 @@ const Home = () => {
           </div>}
         </div>
         <div className='databaseTest'>
-          <h1>Data from PostgreSQL</h1>
+          {/* <h1>Data from PostgreSQL</h1>
           <ul>
               {data.map(item => (
                 <li key={item.id}>{item.field_id} - {item.field_name}</li>
               ))}
           </ul>
-          <button onClick={addData}>Add Data</button>
+          <button onClick={addData}>Add Data</button> */}
         </div>
       </div>
     </div>

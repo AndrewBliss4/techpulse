@@ -5,14 +5,16 @@ const Radar = ({ radarSearch }) => {
 
   const queryInsight = (dataPoint, index) => {
 
-    radarSearch(dataPoint.name);
+    window.open(`/technology?name=${encodeURIComponent(dataPoint.name)}&interest=${dataPoint.interest}&innovation=${dataPoint.innovation}&investments=${dataPoint.investments}`, '_blank');
 
-    setTimeout(() => {
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth'
-      });
-    }, 100);
+    // radarSearch(dataPoint.name);
+
+    // setTimeout(() => {
+    //   window.scrollTo({
+    //     top: document.body.scrollHeight,
+    //     behavior: 'smooth'
+    //   });
+    // }, 100);
 
   }
 
@@ -20,6 +22,9 @@ const Radar = ({ radarSearch }) => {
   const data = [
     {
       name: 'Generative AI',
+      interest: '0.64',
+      innovation: '0.08',
+      investments: '36',
       x: 0.64, //Interest: 0 to 1
       y: 0.08, //Innovation: 0 to 1
       z: 36 // Investment in billions
