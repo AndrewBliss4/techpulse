@@ -75,15 +75,6 @@ export const homeData = [
 
   export const generativeAiData = [
     {
-      name: 'Generative AI',
-      interest: '0.64',
-      innovation: '0.08',
-      investments: '36',
-      x: 0.64,
-      y: 0.08,
-      z: 36
-    },
-    {
       name: 'Large Language Models',
       interest: '0.58',
       innovation: '0.12',
@@ -122,15 +113,6 @@ export const homeData = [
   ];
 
   export const appliedAiData = [
-    {
-      name: 'Applied AI',
-      interest: '0.50',
-      innovation: '0.98',
-      investments: '86',
-      x: 0.50,
-      y: 0.98,
-      z: 86
-    },
     {
       name: 'Computer Vision',
       interest: '0.45',
@@ -171,15 +153,6 @@ export const homeData = [
 
   export const quantumComputingData = [
     {
-      name: 'Quantum Computing',
-      interest: '0.02',
-      innovation: '0.04',
-      investments: '0.3',
-      x: 0.02,
-      y: 0.04,
-      z: 0.3
-    },
-    {
       name: 'Quantum Annealing',
       interest: '0.015',
       innovation: '0.03',
@@ -218,15 +191,6 @@ export const homeData = [
   ];
   
   export const bioengineeringData = [
-    {
-      name: 'Bioengineering',
-      interest: '0.22',
-      innovation: '0.35',
-      investments: '62',
-      x: 0.22,
-      y: 0.35,
-      z: 62
-    },
     {
       name: 'CRISPR Gene Editing',
       interest: '0.20',
@@ -267,15 +231,6 @@ export const homeData = [
   
   export const cloudComputingData = [
     {
-      name: 'Cloud Computing',
-      interest: '0.05',
-      innovation: '0.2',
-      investments: '54',
-      x: 0.05,
-      y: 0.2,
-      z: 54
-    },
-    {
       name: 'Serverless Computing',
       interest: '0.04',
       innovation: '0.18',
@@ -314,15 +269,6 @@ export const homeData = [
   ];
   
   export const cybersecurityData = [
-    {
-      name: 'Cybersecurity',
-      interest: '0.41',
-      innovation: '0.18',
-      investments: '34',
-      x: 0.41,
-      y: 0.18,
-      z: 34
-    },
     {
       name: 'Zero Trust Security',
       interest: '0.38',
@@ -363,15 +309,6 @@ export const homeData = [
 
   export const arVrTechnologyData = [
     {
-      name: 'AR/VR Technology',
-      interest: '0.12',
-      innovation: '0.24',
-      investments: '6',
-      x: 0.12,
-      y: 0.24,
-      z: 6
-    },
-    {
       name: 'Mixed Reality Headsets',
       interest: '0.10',
       innovation: '0.22',
@@ -410,15 +347,6 @@ export const homeData = [
   ];
 
   export const renewableEnergyTechData = [
-    {
-      name: 'Renewable Energy Tech',
-      interest: '0.73',
-      innovation: '0.36',
-      investments: '183',
-      x: 0.73,
-      y: 0.36,
-      z: 183
-    },
     {
       name: 'Solar Technology',
       interest: '0.68',

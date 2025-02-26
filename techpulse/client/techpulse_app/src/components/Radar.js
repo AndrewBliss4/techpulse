@@ -38,16 +38,21 @@ const Radar = ({ radarSearch, homePage, technology }) => {
 
   const queryInsight = (dataPoint, index) => {
     if (homePage) {
+
       window.open(`/technology?name=${encodeURIComponent(dataPoint.name)}&interest=${dataPoint.interest}&innovation=${dataPoint.innovation}&investments=${dataPoint.investments}`, '_blank');
+
     } else {
+
       setTimeout(() => {
         window.scrollTo({
           top: document.body.scrollHeight,
           behavior: 'smooth'
         });
+
       }, 100);
+
+      radarSearch(dataPoint.name);
     }
-    radarSearch(dataPoint.name);
 
   }
 

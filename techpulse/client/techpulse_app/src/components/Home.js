@@ -43,6 +43,8 @@ const Home = () => {
   const [renderTrends, setRenderTrends] = useState(false);
   const [error, setError] = useState(false);
 
+  const [currentLoaderIndex, setCurrentLoaderIndex] = useState(0);
+
   //loader states
 
   const loaders = [
@@ -87,8 +89,6 @@ const Home = () => {
       text: 'Generating Insights...'
     }
   ]
-
-  const [currentLoaderIndex, setCurrentLoaderIndex] = useState(0);
 
   useEffect(() => {
     // Set up interval to rotate loaders every 3 seconds
@@ -383,6 +383,8 @@ const Home = () => {
             </button>
           </div>
         </div>
+
+        {/* Loading */}
 
         {loading && <div className="flex justify-center items-center gap-2 h-[150px]">
           {currentLoader}
