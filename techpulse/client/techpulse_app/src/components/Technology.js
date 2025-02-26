@@ -7,7 +7,6 @@ const Technology = () => {
 
     const [searchParams] = useSearchParams();
 
-
     const radarSearch = (radarTerm) => {
         console.log(radarTerm);
       };

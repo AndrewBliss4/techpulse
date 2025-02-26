@@ -13,3 +13,5 @@ data = [
       z: 36 // Investment in billions
     },
 ]
+
+make sure all these technologies provide the specialized technologies in each field above with no overlaps. the metrics must make sense with modern data sources, and the investment of every specialized technology must add up to the general technology field above.

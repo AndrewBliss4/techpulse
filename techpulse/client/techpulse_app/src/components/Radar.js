@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 //Chart data pipeline
 import {
   homeData, appliedAiData, arVrTechnologyData, renewableEnergyTechData, quantumComputingData, bioengineeringData,
-  cloudComputingData, cybersecurityData
+  cloudComputingData, cybersecurityData, generativeAiData
 } from './SampleData';
 
 const Radar = ({ radarSearch, homePage, technology }) => {
@@ -18,7 +18,7 @@ const Radar = ({ radarSearch, homePage, technology }) => {
         setData(arVrTechnologyData);
       } else if (technology === 'Renewable Energy Tech') {
         setData(renewableEnergyTechData);
-      } else if (technology === 'Quantum Computing') {
+      } else if (technology === 'Quantum Technologies') {
         setData(quantumComputingData);
       } else if (technology === 'Bioengineering') {
         setData(bioengineeringData);
@@ -26,6 +26,8 @@ const Radar = ({ radarSearch, homePage, technology }) => {
         setData(cloudComputingData);
       } else if (technology === 'Cybersecurity') {
         setData(cybersecurityData);
+      } else if (technology === 'Generative AI') {
+        setData(generativeAiData);
       }
     } else {
       setData(homeData);
@@ -52,7 +54,7 @@ const Radar = ({ radarSearch, homePage, technology }) => {
   return (
     <div style={{ width: '100%', height: '600px' }}>
       <ResponsiveContainer width="100%" height="100%">
-        <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+        <ScatterChart margin={{ top: 40, right: 20, bottom: 20, left: 20 }}>
           <CartesianGrid />
 
           <XAxis type="number" dataKey="x" name="Interest"
