@@ -9,6 +9,7 @@ from .scraper import BaseScraper
 from .utils import extract_keywords
 
 
+
 class ArticleScraper(BaseScraper):
     def __init__(self, db_config):
         """Initialize the scraper with database configuration."""
@@ -39,19 +40,6 @@ class ArticleScraper(BaseScraper):
             self.driver.get(base_url)
             time.sleep(5)  # Wait for initial load
 
-            # Handle cookie consent banner if present
-            try:
-                print("Attempting to handle cookie consent banner...")
-                iframe = self.driver.find_element(By.ID, "truste-consent-frame")
-                self.driver.switch_to.frame(iframe)
-                accept_button = self.driver.find_element(By.XPATH, "//button[@id='truste-consent-button']")
-                accept_button.click()
-                self.driver.switch_to.default_content()
-                time.sleep(2)
-            except Exception as e:
-                print(f"No cookie banner found or error handling it: {e}")
-                self.driver.switch_to.default_content()
-
             # Load all articles by clicking "View More"
             attempts, max_attempts, last_article_count = 0, 10, 0
             while attempts < max_attempts:
@@ -62,11 +50,17 @@ class ArticleScraper(BaseScraper):
                     if not view_more_button.is_displayed():
                         print("No more 'View More' button found.")
                         break
-                    self.driver.execute_script("arguments[0].scrollIntoView(true);", view_more_button)
+                    self.driver.execute_script(
+                        "arguments[0].scrollIntoView(true);", view_more_button
+                    )
                     time.sleep(1)
-                    self.driver.execute_script("arguments[0].click();", view_more_button)
+                    self.driver.execute_script(
+                        "arguments[0].click();", view_more_button
+                    )
                     time.sleep(3)  # Wait for new content to load
-                    current_articles = len(self.driver.find_elements(By.TAG_NAME, "article"))
+                    current_articles = len(
+                        self.driver.find_elements(By.TAG_NAME, "article")
+                    )
                     if current_articles == last_article_count:
                         print("No new articles loaded, stopping...")
                         break
@@ -107,7 +101,9 @@ class ArticleScraper(BaseScraper):
             cursor.execute(query, (url, scraped_source_id))
             return cursor.fetchone()[0]
 
-    def insert_scraped_data(self, field_id, source_id, title, content, scraped_at, published_date):
+    def insert_scraped_data(
+        self, field_id, source_id, title, content, scraped_at, published_date
+    ):
         """Insert scraped data into the ScrapedData table."""
         query = """
         INSERT INTO ScrapedData (
@@ -117,7 +113,9 @@ class ArticleScraper(BaseScraper):
         RETURNING data_id;
         """
         with self.connection.cursor() as cursor:
-            cursor.execute(query, (field_id, source_id, title, content, scraped_at, published_date))
+            cursor.execute(
+                query, (field_id, source_id, title, content, scraped_at, published_date)
+            )
             return cursor.fetchone()[0]
 
     def insert_keywords(self, data_id, keywords):
@@ -137,21 +135,29 @@ class ArticleScraper(BaseScraper):
             time.sleep(3)
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
 
-            title = soup.find("h1", class_=["article-header-title", "hero-content-title"])
+            title = soup.find(
+                "h1", class_=["article-header-title", "hero-content-title"]
+            )
             title_text = title.get_text(strip=True) if title else "Title not found"
 
             date = soup.find(["time", "span"], class_="date")
             date_text = date.get_text(strip=True) if date else None
 
             content = soup.find("div", class_=["rtf", "article-body"])
-            content_text = "\n\n".join([p.get_text(strip=True) for p in content.find_all("p")]) if content else ""
+            content_text = (
+                "\n\n".join([p.get_text(strip=True) for p in content.find_all("p")])
+                if content
+                else ""
+            )
 
             if not content_text:
                 return None
 
             return {
                 "title": title_text,
-                "date": datetime.strptime(date_text, "%B %d, %Y") if date_text else None,
+                "date": (
+                    datetime.strptime(date_text, "%B %d, %Y") if date_text else None
+                ),
                 "content": content_text,
                 "keywords": extract_keywords(content_text),
                 "url": url,
@@ -173,9 +179,14 @@ class ArticleScraper(BaseScraper):
                     continue
 
                 # Insert URL and associated data
-                url_id = self.insert_url(url=article_data["url"], scraped_source_id=0)  # Default scraped_source_id for now
+                url_id = self.insert_url(
+                    url=article_data["url"], scraped_source_id=0
+                )  # Default scraped_source_id for now
                 with self.connection.cursor() as cursor:
-                    cursor.execute("INSERT INTO Source (url_id) VALUES (%s) RETURNING source_id;", (url_id,))
+                    cursor.execute(
+                        "INSERT INTO Source (url_id) VALUES (%s) RETURNING source_id;",
+                        (url_id,),
+                    )
                     source_id = cursor.fetchone()[0]
                 data_id = self.insert_scraped_data(
                     field_id=0,  # Assuming a default Field ID for now
@@ -187,7 +198,9 @@ class ArticleScraper(BaseScraper):
                 )
                 self.insert_keywords(data_id, article_data["keywords"])
 
-                print(f"Successfully processed and inserted article: {article_data['title']}")
+                print(
+                    f"Successfully processed and inserted article: {article_data['title']}"
+                )
         except Exception as e:
             print(f"Error in scrape_articles: {e}")
         finally:
