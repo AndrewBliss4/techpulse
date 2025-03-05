@@ -1,5 +1,5 @@
-ARXIV_BASE_URL = "https://arxiv.org/search/?query="
-ARXIV_ABS_URL = "https://arxiv.org/abs/"
+ARXIV_BASE_URL = "http://arxiv.org/search/?query="
+ARXIV_ABS_URL = "http://arxiv.org/abs/"
 
 ARXIV_FIELDS = {
     "quantum+computing",
@@ -19,7 +19,7 @@ def generate_arxiv_pages(fields):
     for field in fields:
         # Generating URLs based on the field name
         category_pages = []
-        page = f"{ARXIV_BASE_URL}{field}&searchtype=title&abstracts=show&order=-submitted_date&size=200"
+        page = f"{ARXIV_BASE_URL}{field}&searchtype=title&abstracts=show&order=-submitted_date&size=50"
         category_pages.append(page)
         pages[field] = category_pages
 
@@ -89,54 +89,62 @@ def get_articles_ids(pages_urls):
 articles_ids = get_articles_ids(arxiv_pages)
 
 
-def extract_summary(html_content):
-    # Parse HTML content with BeautifulSoup
-    soup = BeautifulSoup(html_content, "html.parser")
+# def extract_summary(html_content):
+#     # Parse HTML content with BeautifulSoup
+#     soup = BeautifulSoup(html_content, "html.parser")
 
-    # Find all blockquote tags containing blockquote tags
-    blockquote = soup.find_all("blockquote")
+#     # Find all blockquote tags containing blockquote tags
+#     blockquote = soup.find_all("blockquote")
 
-    content_without_span = "".join(
-        blockquote[0].find_all(string=True, recursive=False)
-    ).strip()
+#     content_without_span = "".join(
+#         blockquote[0].find_all(string=True, recursive=False)
+#     ).strip()
 
-    return content_without_span
+#     return content_without_span
 
 
-def scrape_article(id):
-    article_url = ARXIV_ABS_URL + id
-    try:
-        # Send an HTTP GET request to the URL
-        response = requests.get(article_url)
+# def scrape_article(id):
+#     article_url = ARXIV_ABS_URL + id
+#     try:
+#         # Send an HTTP GET request to the URL
+#         response = requests.get(article_url)
 
-        # Check if the request was successful (status code 200)
-        if response.status_code == 200:
-            # Extract Ids
-            return extract_summary(response.content)
-        else:
-            print(
-                f"Failed to retrieve HTML content. Status code: {response.status_code}"
-            )
-            return None
+#         # Check if the request was successful (status code 200)
+#         if response.status_code == 200:
+#             # Extract Ids
+#             return extract_summary(response.content)
+#         else:
+#             print(
+#                 f"Failed to retrieve HTML content. Status code: {response.status_code}"
+#             )
+#             return None
 
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
+#         return None
 
-def create_dfs(articles_ids):
+# def create_dfs(articles_ids):
 
-    list_dfs = []
-    for category, ids in articles_ids.items():
+#     list_dfs = []
+#     for category, ids in articles_ids.items():
 
-        df_dicts_list = []
-        for id in ids:
+#         df_dicts_list = []
+#         for id in ids:
 
-            content = scrape_article(id)
-            df_dicts_list.append({"id": id, "content": content})
-        category_df = pd.DataFrame(df_dicts_list)
-        list_dfs.append(category_df)
-        print(f"done for {category} category with shape: {category_df.shape}")
+#             content = scrape_article(id)
+#             df_dicts_list.append({"id": id, "content": content})
+#         category_df = pd.DataFrame(df_dicts_list)
+#         list_dfs.append(category_df)
+#         print(f"done for {category} category with shape: {category_df.shape}")
 
-    return list_dfs
+#     return list_dfs
 
-list_articles_dfs = create_dfs(articles_ids)
+# list_articles_dfs = create_dfs(articles_ids)
+
+# for i in range(len(list_articles_dfs)):
+  
+#     field = list(ARXIV_FIELDS.keys())[i]
+#     list_articles_dfs[i]['field'] = field
+
+# final_df = pd.concat(list_articles_dfs, ignore_index=True)
+# final_df.to_csv('final_dataset.csv', index=False)
