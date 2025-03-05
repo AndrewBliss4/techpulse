@@ -37,6 +37,33 @@ app.get('/api/data', async (req, res) => {
   }
 });
 
+app.get('/api/radar', async (req, res) => {
+  try {
+      const query = `
+          SELECT 
+              f.field_id,
+              f.field_name,
+              f.description,
+              m.metric_1,
+              m.metric_2,
+              m.metric_3
+          FROM 
+              public.field f
+          JOIN 
+              public.TIMEDMETRICS m
+          ON 
+              f.field_id = m.field_id
+      `;
+
+      const result = await pool.query(query);
+      console.log('Joined data fetched successfully:', result.rows);
+      res.json(result.rows);
+  } catch (error) {
+      console.error('Error fetching joined data:', error.message);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Example API endpoint to insert data into feeback table
 app.post('/api/data1', async (req, res) => {
     const { feedback_text, rating } = req.body;

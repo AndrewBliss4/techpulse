@@ -232,12 +232,22 @@ const Home = () => {
   // ---------- DataBase get and post methods ---------- //
   axios.defaults.headers.post['Content-Type'] = 'application/json';
   const [data, setData] = useState([]);
+  const [radarData, setRadarData] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:4000/api/data')
         .then(response => {
             console.log('Fetched data:', response.data);
             setData(response.data);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
+  useEffect(() => {
+    axios.get('http://localhost:4000/api/radar')
+        .then(response => {
+            console.log('Fetched data:', response.data);
+            setRadarData(response.data);
         })
         .catch(error => console.error('Error fetching data:', error));
   }, []);
@@ -348,7 +358,7 @@ const Home = () => {
             </label>
           </div>
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
-            <Radar radarSearch={radarSearch} homePage={true}></Radar>
+            <Radar radarData={radarData} radarSearch={radarSearch} homePage={true}></Radar>
           </div>
         </div>
 
