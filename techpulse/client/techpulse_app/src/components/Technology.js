@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, CircleAlert, RadarIcon } from 'lucide-react'
+import { TrendingUp, Zap, Lightbulb, CircleAlert, RadarIcon } from 'lucide-react'
 import Radar from './Radar.js';
 import axios from 'axios';
 import parse from 'html-react-parser';
