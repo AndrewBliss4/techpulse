@@ -1,0 +1,2533 @@
+[
+    {
+        "id": "2503.02883v1",
+        "title": "ARINAR: Bi-Level Autoregressive Feature-by-Feature Generative Models",
+        "authors": [
+            "Qinyu Zhao",
+            "Stephen Gould",
+            "Liang Zheng"
+        ],
+        "published": "2025-03-04T18:59:56+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02882v1",
+        "title": "Bringing Comparative Cognition To Computers",
+        "authors": [
+            "Konstantinos Voudouris",
+            "Lucy G. Cheke",
+            "Eric Schulz"
+        ],
+        "published": "2025-03-04T18:58:42+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02880v1",
+        "title": "A New $\\sim 5σ$ Tension at Characteristic Redshift from DESI DR1 and DES-SN5YR observations",
+        "authors": [
+            "Purba Mukherjee",
+            "Anjan A Sen"
+        ],
+        "published": "2025-03-04T18:58:15+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02879v1",
+        "title": "Wikipedia in the Era of LLMs: Evolution and Risks",
+        "authors": [
+            "Siming Huang",
+            "Yuliang Xu",
+            "Mingmeng Geng",
+            "Yao Wan",
+            "Dongping Chen"
+        ],
+        "published": "2025-03-04T18:58:13+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02878v1",
+        "title": "Language Models can Self-Improve at State-Value Estimation for Better Search",
+        "authors": [
+            "Ethan Mendes",
+            "Alan Ritter"
+        ],
+        "published": "2025-03-04T18:58:11+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02876v1",
+        "title": "SPIDER: A Comprehensive Multi-Organ Supervised Pathology Dataset and Baseline Models",
+        "authors": [
+            "Dmitry Nechaev",
+            "Alexey Pchelnikov",
+            "Ekaterina Ivanova"
+        ],
+        "published": "2025-03-04T18:57:12+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02875v1",
+        "title": "The First Few Tokens Are All You Need: An Efficient and Effective Unsupervised Prefix Fine-Tuning Method for Reasoning Models",
+        "authors": [
+            "Ke Ji",
+            "Jiahao Xu",
+            "Tian Liang",
+            "Qiuzhi Liu",
+            "Zhiwei He",
+            "Xingyu Chen",
+            "Xiaoyuan Liu",
+            "Zhijie Wang",
+            "Junying Chen",
+            "Benyou Wang",
+            "Zhaopeng Tu",
+            "Haitao Mi",
+            "Dong Yu"
+        ],
+        "published": "2025-03-04T18:56:03+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02867v1",
+        "title": "Conservative Dynamics of Relativistic Binaries Beyond Einstein Gravity",
+        "authors": [
+            "Jordan Wilson-Gerow"
+        ],
+        "published": "2025-03-04T18:46:50+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02866v1",
+        "title": "Optimal Power Management for Large-Scale Battery Energy Storage Systems via Bayesian Inference",
+        "authors": [
+            "Amir Farakhor",
+            "Iman Askari",
+            "Di Wu",
+            "Yebin Wang",
+            "Huazhen Fang"
+        ],
+        "published": "2025-03-04T18:45:40+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02865v1",
+        "title": "FairSense-AI: Responsible AI Meets Sustainability",
+        "authors": [
+            "Shaina Raza",
+            "Mukund Sayeeganesh Chettiar",
+            "Matin Yousefabadi",
+            "Tahniat Khan",
+            "Marcelo Lotif"
+        ],
+        "published": "2025-03-04T18:43:57+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02863v1",
+        "title": "Calibrating LLM Confidence with Semantic Steering: A Multi-Prompt Aggregation Framework",
+        "authors": [
+            "Ziang Zhou",
+            "Tianyuan Jin",
+            "Jieming Shi",
+            "Qing Li"
+        ],
+        "published": "2025-03-04T18:40:49+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02857v1",
+        "title": "Deepfake-Eval-2024: A Multi-Modal In-the-Wild Benchmark of Deepfakes Circulated in 2024",
+        "authors": [
+            "Nuria Alina Chandra",
+            "Ryan Murtfeldt",
+            "Lin Qiu",
+            "Arnab Karmakar",
+            "Hannah Lee",
+            "Emmanuel Tanumihardja",
+            "Kevin Farhat",
+            "Ben Caffee",
+            "Sejin Paik",
+            "Changyeon Lee",
+            "Jongwook Choi",
+            "Aerin Kim",
+            "Oren Etzioni"
+        ],
+        "published": "2025-03-04T18:33:22+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02855v1",
+        "title": "Four-point correlators with BPS bound states in AdS$_3$ and AdS$_5$",
+        "authors": [
+            "Francesco Aprile",
+            "Stefano Giusto",
+            "Rodolfo Russo"
+        ],
+        "published": "2025-03-04T18:32:25+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02854v1",
+        "title": "(How) Do Language Models Track State?",
+        "authors": [
+            "Belinda Z. Li",
+            "Zifan Carl Guo",
+            "Jacob Andreas"
+        ],
+        "published": "2025-03-04T18:31:02+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02853v1",
+        "title": "CADDI: An in-Class Activity Detection Dataset using IMU data from low-cost sensors",
+        "authors": [
+            "Luis Marquez-Carpintero",
+            "Sergio Suescun-Ferrandiz",
+            "Monica Pina-Navarro",
+            "Miguel Cazorla",
+            "Francisco Gomez-Donoso"
+        ],
+        "published": "2025-03-04T18:29:57+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02852v1",
+        "title": "Large-Angle Convergent-Beam Electron Diffraction Patterns via Conditional Generative Adversarial Networks",
+        "authors": [
+            "Joseph. J Webb",
+            "Rudolf A. Römer"
+        ],
+        "published": "2025-03-04T18:28:31+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02851v1",
+        "title": "Shakespearean Sparks: The Dance of Hallucination and Creativity in LLMs' Decoding Layers",
+        "authors": [
+            "Zicong He",
+            "Boxuan Zhang",
+            "Lu Cheng"
+        ],
+        "published": "2025-03-04T18:27:00+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02849v1",
+        "title": "Multimodal Deep Learning for Subtype Classification in Breast Cancer Using Histopathological Images and Gene Expression Data",
+        "authors": [
+            "Amin Honarmandi Shandiz"
+        ],
+        "published": "2025-03-04T18:24:33+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02846v1",
+        "title": "Mask-DPO: Generalizable Fine-grained Factuality Alignment of LLMs",
+        "authors": [
+            "Yuzhe Gu",
+            "Wenwei Zhang",
+            "Chengqi Lyu",
+            "Dahua Lin",
+            "Kai Chen"
+        ],
+        "published": "2025-03-04T18:20:24+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02845v1",
+        "title": "A Comprehensive Computational Photovoltaic Study of Lead-free Inorganic NaSnCl$_3$-based Perovskite Solar Cell: Effect of Charge Transport Layers and Material Parameters",
+        "authors": [
+            "Md Tashfiq Bin Kashem",
+            "Sadia Anjum Esha"
+        ],
+        "published": "2025-03-04T18:16:28+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02843v1",
+        "title": "Atomistic tight-binding Hartree-Fock calculations of multielectron configurations in P-doped silicon devices: wavefunction reshaping",
+        "authors": [
+            "Maicol A. Ochoa",
+            "Keyi Liu",
+            "Piotr Różański",
+            "Michał Zieliński",
+            "Garnett W. Bryant"
+        ],
+        "published": "2025-03-04T18:14:36+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02842v1",
+        "title": "Flipping Matchings is Hard",
+        "authors": [
+            "Carla Binucci",
+            "Fabrizio Montecchiani",
+            "Daniel Perz",
+            "Alessandra Tappini"
+        ],
+        "published": "2025-03-04T18:13:39+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02841v1",
+        "title": "Boltzmann Attention Sampling for Image Analysis with Small Objects",
+        "authors": [
+            "Theodore Zhao",
+            "Sid Kiblawi",
+            "Naoto Usuyama",
+            "Ho Hin Lee",
+            "Sam Preston",
+            "Hoifung Poon",
+            "Mu Wei"
+        ],
+        "published": "2025-03-04T18:12:58+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02835v1",
+        "title": "In-Depth Analysis of Automated Acne Disease Recognition and Classification",
+        "authors": [
+            "Afsana Ahsan Jeny",
+            "Masum Shah Junayed",
+            "Md Robel Mia",
+            "Md Baharul Islam"
+        ],
+        "published": "2025-03-04T17:58:44+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02832v1",
+        "title": "AlignDistil: Token-Level Language Model Alignment as Adaptive Policy Distillation",
+        "authors": [
+            "Songming Zhang",
+            "Xue Zhang",
+            "Tong Zhang",
+            "Bojie Hu",
+            "Yufeng Chen",
+            "Jinan Xu"
+        ],
+        "published": "2025-03-04T17:57:09+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02828v1",
+        "title": "Critical Dynamics in Short-Range Quadratic Hamiltonians",
+        "authors": [
+            "Miroslav Hopjan",
+            "Lev Vidmar"
+        ],
+        "published": "2025-03-04T17:51:40+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02827v1",
+        "title": "Precision phenomenology of the PDF-BSM interplay",
+        "authors": [
+            "Manuel Morales Alvarado"
+        ],
+        "published": "2025-03-04T17:50:30+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02825v1",
+        "title": "On Separation Between Best-Iterate, Random-Iterate, and Last-Iterate Convergence of Learning in Games",
+        "authors": [
+            "Yang Cai",
+            "Gabriele Farina",
+            "Julien Grand-Clément",
+            "Christian Kroer",
+            "Chung-Wei Lee",
+            "Haipeng Luo",
+            "Weiqiang Zheng"
+        ],
+        "published": "2025-03-04T17:49:24+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02824v1",
+        "title": "Developing a PET/CT Foundation Model for Cross-Modal Anatomical and Functional Imaging",
+        "authors": [
+            "Yujin Oh",
+            "Robert Seifert",
+            "Yihan Cao",
+            "Christoph Clement",
+            "Justin Ferdinandus",
+            "Constantin Lapa",
+            "Alessandro Liebich",
+            "Michelle Amon",
+            "Johanna Enke",
+            "Sifan Song",
+            "Runqi Meng",
+            "Fang Zeng",
+            "Ning Guo",
+            "Xiang Li",
+            "Pedram Heidari",
+            "Axel Rominger",
+            "Kuangyu Shi",
+            "Quanzheng Li"
+        ],
+        "published": "2025-03-04T17:49:07+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02820v1",
+        "title": "Integral Forms in Matrix Lie Groups",
+        "authors": [
+            "Timothy D Barfoot"
+        ],
+        "published": "2025-03-04T17:47:27+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02818v1",
+        "title": "Random sampling of partitions and contingency tables: Two practical examples of the Burnside process",
+        "authors": [
+            "Persi Diaconis",
+            "Michael Howes"
+        ],
+        "published": "2025-03-04T17:46:07+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02814v1",
+        "title": "Hardness of computation of quantum invariants on 3-manifolds with restricted topology",
+        "authors": [
+            "Henrique Ennes",
+            "Clément Maria"
+        ],
+        "published": "2025-03-04T17:39:26+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02812v1",
+        "title": "Q-Filters: Leveraging QK Geometry for Efficient KV Cache Compression",
+        "authors": [
+            "Nathan Godey",
+            "Alessio Devoto",
+            "Yu Zhao",
+            "Simone Scardapane",
+            "Pasquale Minervini",
+            "Éric de la Clergerie",
+            "Benoît Sagot"
+        ],
+        "published": "2025-03-04T17:37:49+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02811v1",
+        "title": "Microwave Microscope Studies of Trapped Vortex Dynamics in Superconductors",
+        "authors": [
+            "Chung-Yang Wang",
+            "Steven M. Anlage"
+        ],
+        "published": "2025-03-04T17:37:31+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02807v1",
+        "title": "Deterministic Global Optimization over trained Kolmogorov Arnold Networks",
+        "authors": [
+            "Tanuj Karia",
+            "Giacomo Lastrucci",
+            "Artur M. Schweidtmann"
+        ],
+        "published": "2025-03-04T17:33:08+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02806v1",
+        "title": "Viscosity of polymer melts using non-affine theory based on vibrational modes",
+        "authors": [
+            "Ankit Singh",
+            "Vinay Vaibhav",
+            "Timothy W. Sirk",
+            "Alessio Zaccone"
+        ],
+        "published": "2025-03-04T17:31:04+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02805v1",
+        "title": "Ground State of $\\mathrm{SU}\\left(3\\right)$ spin model on the checkerboard lattice",
+        "authors": [
+            "Junhao Zhang",
+            "Jie Hou",
+            "Jie Lou",
+            "Yan Chen"
+        ],
+        "published": "2025-03-04T17:27:43+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02802v1",
+        "title": "Computational Equivalence of Spiked Covariance and Spiked Wigner Models via Gram-Schmidt Perturbation",
+        "authors": [
+            "Guy Bresler",
+            "Alina Harbuzova"
+        ],
+        "published": "2025-03-04T17:25:32+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02800v1",
+        "title": "RAAD-LLM: Adaptive Anomaly Detection Using LLMs and RAG Integration",
+        "authors": [
+            "Alicia Russell-Gilbert",
+            "Sudip Mittal",
+            "Shahram Rahimi",
+            "Maria Seale",
+            "Joseph Jabour",
+            "Thomas Arnold",
+            "Joshua Church"
+        ],
+        "published": "2025-03-04T17:20:43+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02799v1",
+        "title": "MX-Font++: Mixture of Heterogeneous Aggregation Experts for Few-shot Font Generation",
+        "authors": [
+            "Weihang Wang",
+            "Duolin Sun",
+            "Jielei Zhang",
+            "Longwen Gao"
+        ],
+        "published": "2025-03-04T17:18:43+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02797v1",
+        "title": "A Causal Framework for Aligning Image Quality Metrics and Deep Neural Network Robustness",
+        "authors": [
+            "Nathan Drenkow",
+            "Mathias Unberath"
+        ],
+        "published": "2025-03-04T17:15:31+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02791v1",
+        "title": "Meson dynamics from locally exciting a particle-conserving $Z_2$ lattice gauge theory",
+        "authors": [
+            "Vaibhav Sharma",
+            "Kaden R. A. Hazzard"
+        ],
+        "published": "2025-03-04T17:09:44+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02788v1",
+        "title": "Reconstruction of proton relative stopping power with a granular calorimeter detector model",
+        "authors": [
+            "M. Aehle",
+            "J. Alme",
+            "G. G. Barnaföldi",
+            "G. Bíró",
+            "T. Bodova",
+            "V. Borshchov",
+            "A. van den Brink",
+            "M. Chaar",
+            "B. Dudás",
+            "V. Eikeland",
+            "G. Feofilov",
+            "C. Garth",
+            "N. R. Gauger",
+            "O. Grøttvik",
+            "H. Helstrup",
+            "S. Igolkin",
+            "Zs. Jólesz",
+            "R. Keidel",
+            "C. Kobdaj",
+            "T. Kortus",
+            "L. Kusch",
+            "V. Leonhardt",
+            "S. Mehendale",
+            "R. Ningappa",
+            "O. H. Odland",
+            "G. O'Neill",
+            "G. Papp",
+            "T. Peitzmann",
+            "H. E. S. Pettersen",
+            "P. Piersimoni",
+            "M. Protsenko",
+            "M. Rauch",
+            "A. Ur Rehman",
+            "M. Richter",
+            "D. Röhrich",
+            "J. Santana",
+            "A. Schilling",
+            "J. Seco",
+            "A. Songmoolnak",
+            "J. Rambo Sølie",
+            "G. Tambave",
+            "I. Tymchuk",
+            "K. Ullaland",
+            "M. Varga-Kőfaragó",
+            "L. Volz",
+            "B. Wagner",
+            "S. Wendzel",
+            "A. Wiebel",
+            "R. Xiao",
+            "S. Yang",
+            "H. Yokoyama",
+            "S. Zillien"
+        ],
+        "published": "2025-03-04T17:08:16+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02784v1",
+        "title": "Do Not Trust Licenses You See -- Dataset Compliance Requires Massive-Scale AI-Powered Lifecycle Tracing",
+        "authors": [
+            "Jaekyeom Kim",
+            "Sungryull Sohn",
+            "Gerrard Jeongwon Jo",
+            "Jihoon Choi",
+            "Kyunghoon Bae",
+            "Hwayoung Lee",
+            "Yongmin Park",
+            "Honglak Lee"
+        ],
+        "published": "2025-03-04T16:57:53+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02783v1",
+        "title": "IterPref: Focal Preference Learning for Code Generation via Iterative Debugging",
+        "authors": [
+            "Jie Wu",
+            "Haoling Li",
+            "Xin Zhang",
+            "Jianwen Luo",
+            "Yangyu Huang",
+            "Ruihang Chu",
+            "Yujiu Yang",
+            "Scarlett Li"
+        ],
+        "published": "2025-03-04T16:56:34+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02778v1",
+        "title": "Efficient Quantum Chemistry Calculations on Noisy Quantum Hardware",
+        "authors": [
+            "Nora Bauer",
+            "Kübra Yeter-Aydeniz",
+            "George Siopsis"
+        ],
+        "published": "2025-03-04T16:51:54+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02776v1",
+        "title": "Implicit Bias in LLMs: A Survey",
+        "authors": [
+            "Xinru Lin",
+            "Luyang Li"
+        ],
+        "published": "2025-03-04T16:49:37+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02775v1",
+        "title": "Universal analytical modeling of coated plasmonic particles",
+        "authors": [
+            "Nikolai G. Khlebtsov",
+            "Sergey V. Zarkov"
+        ],
+        "published": "2025-03-04T16:45:28+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02772v1",
+        "title": "ESSPI: ECDSA/Schnorr Signed Program Input for BitVMX",
+        "authors": [
+            "Sergio Demian Lerner",
+            "Martin Jonas",
+            "Ariel Futoransky"
+        ],
+        "published": "2025-03-04T16:40:55+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02771v1",
+        "title": "Applying Computational Engineering Modelling to Analyse the Social Impact of Conflict and Violent Events",
+        "authors": [
+            "Felix Schwebel",
+            "Sebastian Meynen",
+            "Manuel García-Herranz"
+        ],
+        "published": "2025-03-04T16:37:30+00:00",
+        "category": "quantum computing"
+    },
+    {
+        "id": "2503.02883v1",
+        "title": "ARINAR: Bi-Level Autoregressive Feature-by-Feature Generative Models",
+        "authors": [
+            "Qinyu Zhao",
+            "Stephen Gould",
+            "Liang Zheng"
+        ],
+        "published": "2025-03-04T18:59:56+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02882v1",
+        "title": "Bringing Comparative Cognition To Computers",
+        "authors": [
+            "Konstantinos Voudouris",
+            "Lucy G. Cheke",
+            "Eric Schulz"
+        ],
+        "published": "2025-03-04T18:58:42+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02881v1",
+        "title": "Reactive Diffusion Policy: Slow-Fast Visual-Tactile Policy Learning for Contact-Rich Manipulation",
+        "authors": [
+            "Han Xue",
+            "Jieji Ren",
+            "Wendi Chen",
+            "Gu Zhang",
+            "Yuan Fang",
+            "Guoying Gu",
+            "Huazhe Xu",
+            "Cewu Lu"
+        ],
+        "published": "2025-03-04T18:58:21+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02880v1",
+        "title": "A New $\\sim 5σ$ Tension at Characteristic Redshift from DESI DR1 and DES-SN5YR observations",
+        "authors": [
+            "Purba Mukherjee",
+            "Anjan A Sen"
+        ],
+        "published": "2025-03-04T18:58:15+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02879v1",
+        "title": "Wikipedia in the Era of LLMs: Evolution and Risks",
+        "authors": [
+            "Siming Huang",
+            "Yuliang Xu",
+            "Mingmeng Geng",
+            "Yao Wan",
+            "Dongping Chen"
+        ],
+        "published": "2025-03-04T18:58:13+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02878v1",
+        "title": "Language Models can Self-Improve at State-Value Estimation for Better Search",
+        "authors": [
+            "Ethan Mendes",
+            "Alan Ritter"
+        ],
+        "published": "2025-03-04T18:58:11+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02877v1",
+        "title": "Weak-to-Strong Generalization Even in Random Feature Networks, Provably",
+        "authors": [
+            "Marko Medvedev",
+            "Kaifeng Lyu",
+            "Dingli Yu",
+            "Sanjeev Arora",
+            "Zhiyuan Li",
+            "Nathan Srebro"
+        ],
+        "published": "2025-03-04T18:58:00+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02874v1",
+        "title": "Prompting Generative AI with Interaction-Augmented Instructions",
+        "authors": [
+            "Leixian Shen",
+            "Haotian Li",
+            "Yifang Wang",
+            "Xing Xie",
+            "Huamin Qu"
+        ],
+        "published": "2025-03-04T18:55:19+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02867v1",
+        "title": "Conservative Dynamics of Relativistic Binaries Beyond Einstein Gravity",
+        "authors": [
+            "Jordan Wilson-Gerow"
+        ],
+        "published": "2025-03-04T18:46:50+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02866v1",
+        "title": "Optimal Power Management for Large-Scale Battery Energy Storage Systems via Bayesian Inference",
+        "authors": [
+            "Amir Farakhor",
+            "Iman Askari",
+            "Di Wu",
+            "Yebin Wang",
+            "Huazhen Fang"
+        ],
+        "published": "2025-03-04T18:45:40+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02864v1",
+        "title": "Finding cycle types in permutation groups with few generators",
+        "authors": [
+            "Markus Lohrey",
+            "Andreas Rosowski"
+        ],
+        "published": "2025-03-04T18:41:26+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02861v1",
+        "title": "Evaluation of Architectural Synthesis Using Generative AI",
+        "authors": [
+            "Jingfei Huang",
+            "Alexandros Haridis"
+        ],
+        "published": "2025-03-04T18:39:28+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02858v1",
+        "title": "Efficient Sampling and Sensitivity Analysis of Rare Transient Instability Events via Subset Simulation",
+        "authors": [
+            "Jingyu Liu",
+            "Xiaoting Wang",
+            "Xiaozhe Wang"
+        ],
+        "published": "2025-03-04T18:33:57+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02857v1",
+        "title": "Deepfake-Eval-2024: A Multi-Modal In-the-Wild Benchmark of Deepfakes Circulated in 2024",
+        "authors": [
+            "Nuria Alina Chandra",
+            "Ryan Murtfeldt",
+            "Lin Qiu",
+            "Arnab Karmakar",
+            "Hannah Lee",
+            "Emmanuel Tanumihardja",
+            "Kevin Farhat",
+            "Ben Caffee",
+            "Sejin Paik",
+            "Changyeon Lee",
+            "Jongwook Choi",
+            "Aerin Kim",
+            "Oren Etzioni"
+        ],
+        "published": "2025-03-04T18:33:22+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02854v1",
+        "title": "(How) Do Language Models Track State?",
+        "authors": [
+            "Belinda Z. Li",
+            "Zifan Carl Guo",
+            "Jacob Andreas"
+        ],
+        "published": "2025-03-04T18:31:02+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02852v1",
+        "title": "Large-Angle Convergent-Beam Electron Diffraction Patterns via Conditional Generative Adversarial Networks",
+        "authors": [
+            "Joseph. J Webb",
+            "Rudolf A. Römer"
+        ],
+        "published": "2025-03-04T18:28:31+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02850v1",
+        "title": "Exact matching as an alternative to propensity score matching",
+        "authors": [
+            "Ekkehard Glimm",
+            "Lillian Yau"
+        ],
+        "published": "2025-03-04T18:25:46+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02849v1",
+        "title": "Multimodal Deep Learning for Subtype Classification in Breast Cancer Using Histopathological Images and Gene Expression Data",
+        "authors": [
+            "Amin Honarmandi Shandiz"
+        ],
+        "published": "2025-03-04T18:24:33+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02846v1",
+        "title": "Mask-DPO: Generalizable Fine-grained Factuality Alignment of LLMs",
+        "authors": [
+            "Yuzhe Gu",
+            "Wenwei Zhang",
+            "Chengqi Lyu",
+            "Dahua Lin",
+            "Kai Chen"
+        ],
+        "published": "2025-03-04T18:20:24+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02844v1",
+        "title": "Beyond Cosine Decay: On the effectiveness of Infinite Learning Rate Schedule for Continual Pre-training",
+        "authors": [
+            "Paul Janson",
+            "Vaibhav Singh",
+            "Paria Mehrbod",
+            "Adam Ibrahim",
+            "Irina Rish",
+            "Eugene Belilovsky",
+            "Benjamin Thérien"
+        ],
+        "published": "2025-03-04T18:15:57+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02836v1",
+        "title": "SeqFusion: Sequential Fusion of Pre-Trained Models for Zero-Shot Time-Series Forecasting",
+        "authors": [
+            "Ting-Ji Huang",
+            "Xu-Yang Chen",
+            "Han-Jia Ye"
+        ],
+        "published": "2025-03-04T17:59:17+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02834v1",
+        "title": "MuBlE: MuJoCo and Blender simulation Environment and Benchmark for Task Planning in Robot Manipulation",
+        "authors": [
+            "Michal Nazarczuk",
+            "Karla Stepanova",
+            "Jan Kristof Behrens",
+            "Matej Hoffmann",
+            "Krystian Mikolajczyk"
+        ],
+        "published": "2025-03-04T17:57:35+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02833v1",
+        "title": "The Shift from Writing to Pruning Software: A Bonsai-Inspired IDE for Reshaping AI Generated Code",
+        "authors": [
+            "Raula Gaikovina Kula",
+            "Christoph Treude"
+        ],
+        "published": "2025-03-04T17:57:26+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02832v1",
+        "title": "AlignDistil: Token-Level Language Model Alignment as Adaptive Policy Distillation",
+        "authors": [
+            "Songming Zhang",
+            "Xue Zhang",
+            "Tong Zhang",
+            "Bojie Hu",
+            "Yufeng Chen",
+            "Jinan Xu"
+        ],
+        "published": "2025-03-04T17:57:09+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02830v1",
+        "title": "Generic Local Duality and Purity Exponents",
+        "authors": [
+            "Melvin Hochster",
+            "Yongwei Yao"
+        ],
+        "published": "2025-03-04T17:55:37+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02827v1",
+        "title": "Precision phenomenology of the PDF-BSM interplay",
+        "authors": [
+            "Manuel Morales Alvarado"
+        ],
+        "published": "2025-03-04T17:50:30+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02824v1",
+        "title": "Developing a PET/CT Foundation Model for Cross-Modal Anatomical and Functional Imaging",
+        "authors": [
+            "Yujin Oh",
+            "Robert Seifert",
+            "Yihan Cao",
+            "Christoph Clement",
+            "Justin Ferdinandus",
+            "Constantin Lapa",
+            "Alessandro Liebich",
+            "Michelle Amon",
+            "Johanna Enke",
+            "Sifan Song",
+            "Runqi Meng",
+            "Fang Zeng",
+            "Ning Guo",
+            "Xiang Li",
+            "Pedram Heidari",
+            "Axel Rominger",
+            "Kuangyu Shi",
+            "Quanzheng Li"
+        ],
+        "published": "2025-03-04T17:49:07+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02823v1",
+        "title": "A Multimodal Symphony: Integrating Taste and Sound through Generative AI",
+        "authors": [
+            "Matteo Spanio",
+            "Massimiliano Zampini",
+            "Antonio Rodà",
+            "Franco Pierucci"
+        ],
+        "published": "2025-03-04T17:48:48+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02822v1",
+        "title": "Statistics for random representations of Lie algebras",
+        "authors": [
+            "Walter Bridges",
+            "Kathrin Bringmann",
+            "Caner Nazaroglu"
+        ],
+        "published": "2025-03-04T17:48:24+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02821v1",
+        "title": "Polycrystalline Morphology and Anomalous Hall Effect in RF-Sputtered Co2MnGa Films",
+        "authors": [
+            "Carter E. Wade",
+            "Sunny Phan",
+            "Katherine Coffin",
+            "Gabe Paynter",
+            "Ty J. Cawein",
+            "Kurt G. Eyink",
+            "Andrei Kogan",
+            "Joseph P. Corbett"
+        ],
+        "published": "2025-03-04T17:47:42+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02819v1",
+        "title": "Feynman-Kac Correctors in Diffusion: Annealing, Guidance, and Product of Experts",
+        "authors": [
+            "Marta Skreta",
+            "Tara Akhound-Sadegh",
+            "Viktor Ohanesian",
+            "Roberto Bondesan",
+            "Alán Aspuru-Guzik",
+            "Arnaud Doucet",
+            "Rob Brekelmans",
+            "Alexander Tong",
+            "Kirill Neklyudov"
+        ],
+        "published": "2025-03-04T17:46:51+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02818v1",
+        "title": "Random sampling of partitions and contingency tables: Two practical examples of the Burnside process",
+        "authors": [
+            "Persi Diaconis",
+            "Michael Howes"
+        ],
+        "published": "2025-03-04T17:46:07+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02817v1",
+        "title": "Open Source at a Crossroads: The Future of Licensing Driven by Monetization",
+        "authors": [
+            "Raula Gaikovina Kula",
+            "Christoph Treude"
+        ],
+        "published": "2025-03-04T17:44:01+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02816v1",
+        "title": "\"What If Smart Homes Could See Our Homes?\": Exploring DIY Smart Home Building Experiences with VLM-Based Camera Sensors",
+        "authors": [
+            "Sojeong Yun",
+            "Youn-kyung Lim"
+        ],
+        "published": "2025-03-04T17:43:36+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02815v1",
+        "title": "Generating Reliable Initial Velocity Models for Full-waveform Inversion with Well and Structural Constraints",
+        "authors": [
+            "Qingchen Zhang",
+            "Shijun Cheng",
+            "Wei Chen",
+            "Weijian Mao"
+        ],
+        "published": "2025-03-04T17:40:45+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02813v1",
+        "title": "An optimal-transport finite-particle method for driven mass diffusion",
+        "authors": [
+            "Anna Pandolfi",
+            "Ignacio Romero",
+            "Michael Ortiz"
+        ],
+        "published": "2025-03-04T17:38:24+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02812v1",
+        "title": "Q-Filters: Leveraging QK Geometry for Efficient KV Cache Compression",
+        "authors": [
+            "Nathan Godey",
+            "Alessio Devoto",
+            "Yu Zhao",
+            "Simone Scardapane",
+            "Pasquale Minervini",
+            "Éric de la Clergerie",
+            "Benoît Sagot"
+        ],
+        "published": "2025-03-04T17:37:49+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02801v1",
+        "title": "Bosonizations and dualities in 2+1 dimensions",
+        "authors": [
+            "Andrea Cappelli",
+            "Riccardo Villa"
+        ],
+        "published": "2025-03-04T17:24:18+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02800v1",
+        "title": "RAAD-LLM: Adaptive Anomaly Detection Using LLMs and RAG Integration",
+        "authors": [
+            "Alicia Russell-Gilbert",
+            "Sudip Mittal",
+            "Shahram Rahimi",
+            "Maria Seale",
+            "Joseph Jabour",
+            "Thomas Arnold",
+            "Joshua Church"
+        ],
+        "published": "2025-03-04T17:20:43+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02799v1",
+        "title": "MX-Font++: Mixture of Heterogeneous Aggregation Experts for Few-shot Font Generation",
+        "authors": [
+            "Weihang Wang",
+            "Duolin Sun",
+            "Jielei Zhang",
+            "Longwen Gao"
+        ],
+        "published": "2025-03-04T17:18:43+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02797v1",
+        "title": "A Causal Framework for Aligning Image Quality Metrics and Deep Neural Network Robustness",
+        "authors": [
+            "Nathan Drenkow",
+            "Mathias Unberath"
+        ],
+        "published": "2025-03-04T17:15:31+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02792v1",
+        "title": "Les Houches lectures on Theoretical Ecology: High-dimensional models and extreme events",
+        "authors": [
+            "Ada Altieri"
+        ],
+        "published": "2025-03-04T17:10:02+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02790v1",
+        "title": "Closed-loop model-predictive wind farm flow control under time-varying inflow using FLORIDyn",
+        "authors": [
+            "Marcus Becker",
+            "Maarten J. van den Broek",
+            "Dries Allaerts",
+            "Jan-Willem van Wingerden"
+        ],
+        "published": "2025-03-04T17:09:40+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02784v1",
+        "title": "Do Not Trust Licenses You See -- Dataset Compliance Requires Massive-Scale AI-Powered Lifecycle Tracing",
+        "authors": [
+            "Jaekyeom Kim",
+            "Sungryull Sohn",
+            "Gerrard Jeongwon Jo",
+            "Jihoon Choi",
+            "Kyunghoon Bae",
+            "Hwayoung Lee",
+            "Yongmin Park",
+            "Honglak Lee"
+        ],
+        "published": "2025-03-04T16:57:53+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02783v1",
+        "title": "IterPref: Focal Preference Learning for Code Generation via Iterative Debugging",
+        "authors": [
+            "Jie Wu",
+            "Haoling Li",
+            "Xin Zhang",
+            "Jianwen Luo",
+            "Yangyu Huang",
+            "Ruihang Chu",
+            "Yujiu Yang",
+            "Scarlett Li"
+        ],
+        "published": "2025-03-04T16:56:34+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02782v1",
+        "title": "Undetected Error Probability in the Short Blocklength Regime: Approaching Finite-Blocklength Bounds with Polar Codes",
+        "authors": [
+            "Alexander Sauter",
+            "A. Oguz Kislal",
+            "Giuseppe Durisi",
+            "Gianluigi Liva",
+            "Balazs Matuz",
+            "Erik G. Ström"
+        ],
+        "published": "2025-03-04T16:56:16+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02776v1",
+        "title": "Implicit Bias in LLMs: A Survey",
+        "authors": [
+            "Xinru Lin",
+            "Luyang Li"
+        ],
+        "published": "2025-03-04T16:49:37+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02773v1",
+        "title": "Prime Convolutional Model: Breaking the Ground for Theoretical Explainability",
+        "authors": [
+            "Francesco Panelli",
+            "Doaa Almhaithawi",
+            "Tania Cerquitelli",
+            "Alessandro Bellini"
+        ],
+        "published": "2025-03-04T16:42:46+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02769v1",
+        "title": "InSerter: Speech Instruction Following with Unsupervised Interleaved Pre-training",
+        "authors": [
+            "Dingdong Wang",
+            "Jin Xu",
+            "Ruihang Chu",
+            "Zhifang Guo",
+            "Xiong Wang",
+            "Jincenzi Wu",
+            "Dongchao Yang",
+            "Shengpeng Ji",
+            "Junyang Lin"
+        ],
+        "published": "2025-03-04T16:34:14+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02768v1",
+        "title": "Denotational Semantics for Probabilistic and Concurrent Programs",
+        "authors": [
+            "Noam Zilberstein",
+            "Daniele Gorla",
+            "Alexandra Silva"
+        ],
+        "published": "2025-03-04T16:33:59+00:00",
+        "category": "generative artificial intelligence"
+    },
+    {
+        "id": "2503.02882v1",
+        "title": "Bringing Comparative Cognition To Computers",
+        "authors": [
+            "Konstantinos Voudouris",
+            "Lucy G. Cheke",
+            "Eric Schulz"
+        ],
+        "published": "2025-03-04T18:58:42+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02881v1",
+        "title": "Reactive Diffusion Policy: Slow-Fast Visual-Tactile Policy Learning for Contact-Rich Manipulation",
+        "authors": [
+            "Han Xue",
+            "Jieji Ren",
+            "Wendi Chen",
+            "Gu Zhang",
+            "Yuan Fang",
+            "Guoying Gu",
+            "Huazhe Xu",
+            "Cewu Lu"
+        ],
+        "published": "2025-03-04T18:58:21+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02879v1",
+        "title": "Wikipedia in the Era of LLMs: Evolution and Risks",
+        "authors": [
+            "Siming Huang",
+            "Yuliang Xu",
+            "Mingmeng Geng",
+            "Yao Wan",
+            "Dongping Chen"
+        ],
+        "published": "2025-03-04T18:58:13+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02878v1",
+        "title": "Language Models can Self-Improve at State-Value Estimation for Better Search",
+        "authors": [
+            "Ethan Mendes",
+            "Alan Ritter"
+        ],
+        "published": "2025-03-04T18:58:11+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02874v1",
+        "title": "Prompting Generative AI with Interaction-Augmented Instructions",
+        "authors": [
+            "Leixian Shen",
+            "Haotian Li",
+            "Yifang Wang",
+            "Xing Xie",
+            "Huamin Qu"
+        ],
+        "published": "2025-03-04T18:55:19+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02869v1",
+        "title": "Frequency domain identification for multivariable motion control systems: Applied to a prototype wafer stage",
+        "authors": [
+            "M. van der Hulst",
+            "R. A. González",
+            "K. Classens",
+            "P. Tacx",
+            "N. Dirkx",
+            "J. van de Wijdeven",
+            "T. Oomen"
+        ],
+        "published": "2025-03-04T18:47:41+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02862v1",
+        "title": "Privacy and Accuracy-Aware AI/ML Model Deduplication",
+        "authors": [
+            "Hong Guan",
+            "Lei Yu",
+            "Lixi Zhou",
+            "Li Xiong",
+            "Kanchan Chowdhury",
+            "Lulu Xie",
+            "Xusheng Xiao",
+            "Jia Zou"
+        ],
+        "published": "2025-03-04T18:40:38+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02861v1",
+        "title": "Evaluation of Architectural Synthesis Using Generative AI",
+        "authors": [
+            "Jingfei Huang",
+            "Alexandros Haridis"
+        ],
+        "published": "2025-03-04T18:39:28+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02857v1",
+        "title": "Deepfake-Eval-2024: A Multi-Modal In-the-Wild Benchmark of Deepfakes Circulated in 2024",
+        "authors": [
+            "Nuria Alina Chandra",
+            "Ryan Murtfeldt",
+            "Lin Qiu",
+            "Arnab Karmakar",
+            "Hannah Lee",
+            "Emmanuel Tanumihardja",
+            "Kevin Farhat",
+            "Ben Caffee",
+            "Sejin Paik",
+            "Changyeon Lee",
+            "Jongwook Choi",
+            "Aerin Kim",
+            "Oren Etzioni"
+        ],
+        "published": "2025-03-04T18:33:22+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02856v1",
+        "title": "An Extended Picard Method to solve non-linear systems of ODE with applications",
+        "authors": [
+            "Manuel Gadella",
+            "Luis P. Lara"
+        ],
+        "published": "2025-03-04T18:32:58+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02854v1",
+        "title": "(How) Do Language Models Track State?",
+        "authors": [
+            "Belinda Z. Li",
+            "Zifan Carl Guo",
+            "Jacob Andreas"
+        ],
+        "published": "2025-03-04T18:31:02+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02850v1",
+        "title": "Exact matching as an alternative to propensity score matching",
+        "authors": [
+            "Ekkehard Glimm",
+            "Lillian Yau"
+        ],
+        "published": "2025-03-04T18:25:46+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02849v1",
+        "title": "Multimodal Deep Learning for Subtype Classification in Breast Cancer Using Histopathological Images and Gene Expression Data",
+        "authors": [
+            "Amin Honarmandi Shandiz"
+        ],
+        "published": "2025-03-04T18:24:33+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02844v1",
+        "title": "Beyond Cosine Decay: On the effectiveness of Infinite Learning Rate Schedule for Continual Pre-training",
+        "authors": [
+            "Paul Janson",
+            "Vaibhav Singh",
+            "Paria Mehrbod",
+            "Adam Ibrahim",
+            "Irina Rish",
+            "Eugene Belilovsky",
+            "Benjamin Thérien"
+        ],
+        "published": "2025-03-04T18:15:57+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02836v1",
+        "title": "SeqFusion: Sequential Fusion of Pre-Trained Models for Zero-Shot Time-Series Forecasting",
+        "authors": [
+            "Ting-Ji Huang",
+            "Xu-Yang Chen",
+            "Han-Jia Ye"
+        ],
+        "published": "2025-03-04T17:59:17+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02835v1",
+        "title": "In-Depth Analysis of Automated Acne Disease Recognition and Classification",
+        "authors": [
+            "Afsana Ahsan Jeny",
+            "Masum Shah Junayed",
+            "Md Robel Mia",
+            "Md Baharul Islam"
+        ],
+        "published": "2025-03-04T17:58:44+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02832v1",
+        "title": "AlignDistil: Token-Level Language Model Alignment as Adaptive Policy Distillation",
+        "authors": [
+            "Songming Zhang",
+            "Xue Zhang",
+            "Tong Zhang",
+            "Bojie Hu",
+            "Yufeng Chen",
+            "Jinan Xu"
+        ],
+        "published": "2025-03-04T17:57:09+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02829v1",
+        "title": "The NIRWALS instrument detrending software pipeline",
+        "authors": [
+            "Ralf Kotulla",
+            "Marsha Wolf",
+            "Matt Bershady"
+        ],
+        "published": "2025-03-04T17:54:50+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02824v1",
+        "title": "Developing a PET/CT Foundation Model for Cross-Modal Anatomical and Functional Imaging",
+        "authors": [
+            "Yujin Oh",
+            "Robert Seifert",
+            "Yihan Cao",
+            "Christoph Clement",
+            "Justin Ferdinandus",
+            "Constantin Lapa",
+            "Alessandro Liebich",
+            "Michelle Amon",
+            "Johanna Enke",
+            "Sifan Song",
+            "Runqi Meng",
+            "Fang Zeng",
+            "Ning Guo",
+            "Xiang Li",
+            "Pedram Heidari",
+            "Axel Rominger",
+            "Kuangyu Shi",
+            "Quanzheng Li"
+        ],
+        "published": "2025-03-04T17:49:07+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02823v1",
+        "title": "A Multimodal Symphony: Integrating Taste and Sound through Generative AI",
+        "authors": [
+            "Matteo Spanio",
+            "Massimiliano Zampini",
+            "Antonio Rodà",
+            "Franco Pierucci"
+        ],
+        "published": "2025-03-04T17:48:48+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02820v1",
+        "title": "Integral Forms in Matrix Lie Groups",
+        "authors": [
+            "Timothy D Barfoot"
+        ],
+        "published": "2025-03-04T17:47:27+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02817v1",
+        "title": "Open Source at a Crossroads: The Future of Licensing Driven by Monetization",
+        "authors": [
+            "Raula Gaikovina Kula",
+            "Christoph Treude"
+        ],
+        "published": "2025-03-04T17:44:01+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02816v1",
+        "title": "\"What If Smart Homes Could See Our Homes?\": Exploring DIY Smart Home Building Experiences with VLM-Based Camera Sensors",
+        "authors": [
+            "Sojeong Yun",
+            "Youn-kyung Lim"
+        ],
+        "published": "2025-03-04T17:43:36+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02812v1",
+        "title": "Q-Filters: Leveraging QK Geometry for Efficient KV Cache Compression",
+        "authors": [
+            "Nathan Godey",
+            "Alessio Devoto",
+            "Yu Zhao",
+            "Simone Scardapane",
+            "Pasquale Minervini",
+            "Éric de la Clergerie",
+            "Benoît Sagot"
+        ],
+        "published": "2025-03-04T17:37:49+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02806v1",
+        "title": "Viscosity of polymer melts using non-affine theory based on vibrational modes",
+        "authors": [
+            "Ankit Singh",
+            "Vinay Vaibhav",
+            "Timothy W. Sirk",
+            "Alessio Zaccone"
+        ],
+        "published": "2025-03-04T17:31:04+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02801v1",
+        "title": "Bosonizations and dualities in 2+1 dimensions",
+        "authors": [
+            "Andrea Cappelli",
+            "Riccardo Villa"
+        ],
+        "published": "2025-03-04T17:24:18+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02799v1",
+        "title": "MX-Font++: Mixture of Heterogeneous Aggregation Experts for Few-shot Font Generation",
+        "authors": [
+            "Weihang Wang",
+            "Duolin Sun",
+            "Jielei Zhang",
+            "Longwen Gao"
+        ],
+        "published": "2025-03-04T17:18:43+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02798v1",
+        "title": "Spike-and-Slab Posterior Sampling in High Dimensions",
+        "authors": [
+            "Syamantak Kumar",
+            "Purnamrita Sarkar",
+            "Kevin Tian",
+            "Yusong Zhu"
+        ],
+        "published": "2025-03-04T17:16:07+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02797v1",
+        "title": "A Causal Framework for Aligning Image Quality Metrics and Deep Neural Network Robustness",
+        "authors": [
+            "Nathan Drenkow",
+            "Mathias Unberath"
+        ],
+        "published": "2025-03-04T17:15:31+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02790v1",
+        "title": "Closed-loop model-predictive wind farm flow control under time-varying inflow using FLORIDyn",
+        "authors": [
+            "Marcus Becker",
+            "Maarten J. van den Broek",
+            "Dries Allaerts",
+            "Jan-Willem van Wingerden"
+        ],
+        "published": "2025-03-04T17:09:40+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02786v1",
+        "title": "A Statistical Interpretation of Multi-Item Rating and Recommendation Problems",
+        "authors": [
+            "Sjoerd Hermes"
+        ],
+        "published": "2025-03-04T17:03:55+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02784v1",
+        "title": "Do Not Trust Licenses You See -- Dataset Compliance Requires Massive-Scale AI-Powered Lifecycle Tracing",
+        "authors": [
+            "Jaekyeom Kim",
+            "Sungryull Sohn",
+            "Gerrard Jeongwon Jo",
+            "Jihoon Choi",
+            "Kyunghoon Bae",
+            "Hwayoung Lee",
+            "Yongmin Park",
+            "Honglak Lee"
+        ],
+        "published": "2025-03-04T16:57:53+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02783v1",
+        "title": "IterPref: Focal Preference Learning for Code Generation via Iterative Debugging",
+        "authors": [
+            "Jie Wu",
+            "Haoling Li",
+            "Xin Zhang",
+            "Jianwen Luo",
+            "Yangyu Huang",
+            "Ruihang Chu",
+            "Yujiu Yang",
+            "Scarlett Li"
+        ],
+        "published": "2025-03-04T16:56:34+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02782v1",
+        "title": "Undetected Error Probability in the Short Blocklength Regime: Approaching Finite-Blocklength Bounds with Polar Codes",
+        "authors": [
+            "Alexander Sauter",
+            "A. Oguz Kislal",
+            "Giuseppe Durisi",
+            "Gianluigi Liva",
+            "Balazs Matuz",
+            "Erik G. Ström"
+        ],
+        "published": "2025-03-04T16:56:16+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02776v1",
+        "title": "Implicit Bias in LLMs: A Survey",
+        "authors": [
+            "Xinru Lin",
+            "Luyang Li"
+        ],
+        "published": "2025-03-04T16:49:37+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02775v1",
+        "title": "Universal analytical modeling of coated plasmonic particles",
+        "authors": [
+            "Nikolai G. Khlebtsov",
+            "Sergey V. Zarkov"
+        ],
+        "published": "2025-03-04T16:45:28+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02773v1",
+        "title": "Prime Convolutional Model: Breaking the Ground for Theoretical Explainability",
+        "authors": [
+            "Francesco Panelli",
+            "Doaa Almhaithawi",
+            "Tania Cerquitelli",
+            "Alessandro Bellini"
+        ],
+        "published": "2025-03-04T16:42:46+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02771v1",
+        "title": "Applying Computational Engineering Modelling to Analyse the Social Impact of Conflict and Violent Events",
+        "authors": [
+            "Felix Schwebel",
+            "Sebastian Meynen",
+            "Manuel García-Herranz"
+        ],
+        "published": "2025-03-04T16:37:30+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02769v1",
+        "title": "InSerter: Speech Instruction Following with Unsupervised Interleaved Pre-training",
+        "authors": [
+            "Dingdong Wang",
+            "Jin Xu",
+            "Ruihang Chu",
+            "Zhifang Guo",
+            "Xiong Wang",
+            "Jincenzi Wu",
+            "Dongchao Yang",
+            "Shengpeng Ji",
+            "Junyang Lin"
+        ],
+        "published": "2025-03-04T16:34:14+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02763v1",
+        "title": "Consistent Segregation Metrics: Addressing Structural Variations in Global Labor Markets",
+        "authors": [
+            "Ana Kujundzic",
+            "Janneke Pieters"
+        ],
+        "published": "2025-03-04T16:24:19+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02761v1",
+        "title": "Heating of Cs2Te Photocathode via Field Emission and RF Pulsed Heating: Implication Toward Breakdown",
+        "authors": [
+            "Ryo Shinohara",
+            "Soumendu Bagchi",
+            "Evgenya Simakov",
+            "Danny Perez",
+            "Sergey V. Baryshev"
+        ],
+        "published": "2025-03-04T16:22:51+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02756v1",
+        "title": "BatchGEMBA: Token-Efficient Machine Translation Evaluation with Batched Prompting and Prompt Compression",
+        "authors": [
+            "Daniil Larionov",
+            "Steffen Eger"
+        ],
+        "published": "2025-03-04T16:20:52+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02750v1",
+        "title": "Quantitative exploration of the similarity of gamma-ray pulsar light curves",
+        "authors": [
+            "C. R. García",
+            "Diego F. Torres"
+        ],
+        "published": "2025-03-04T16:15:28+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02749v1",
+        "title": "Improving Oil Slick Trajectory Simulations with Bayesian Optimization",
+        "authors": [
+            "Gabriele Accarino",
+            "Marco M. De Carlo",
+            "Igor Atake",
+            "Donatello Elia",
+            "Anusha L. Dissanayake",
+            "Antonio Augusto Sepp Neves",
+            "Juan Peña Ibañez",
+            "Italo Epicoco",
+            "Paola Nassisi",
+            "Sandro Fiore",
+            "Giovanni Coppini"
+        ],
+        "published": "2025-03-04T16:14:16+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02744v1",
+        "title": "Vacua, Symmetries, and Higgsing of Chern-Simons Matter Theories",
+        "authors": [
+            "Fabio Marino",
+            "Marcus Sperling"
+        ],
+        "published": "2025-03-04T16:08:15+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02741v1",
+        "title": "Seeded Poisson Factorization: Leveraging domain knowledge to fit topic models",
+        "authors": [
+            "Bernd Prostmaier",
+            "Jan Vávra",
+            "Bettina Grün",
+            "Paul Hofmarcher"
+        ],
+        "published": "2025-03-04T16:05:13+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02734v1",
+        "title": "Melting of devil's staircases in the long-range Dicke-Ising model",
+        "authors": [
+            "Jan Alexander Koziol",
+            "Anja Langheld",
+            "Kai Phillip Schmidt"
+        ],
+        "published": "2025-03-04T15:55:12+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02733v1",
+        "title": "UAR-NVC: A Unified AutoRegressive Framework for Memory-Efficient Neural Video Compression",
+        "authors": [
+            "Jia Wang",
+            "Xinfeng Zhang",
+            "Gai Zhang",
+            "Jun Zhu",
+            "Lv Tang",
+            "Li Zhang"
+        ],
+        "published": "2025-03-04T15:54:57+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02725v1",
+        "title": "A Joint Visual Compression and Perception Framework for Neuralmorphic Spiking Camera",
+        "authors": [
+            "Kexiang Feng",
+            "Chuanmin Jia",
+            "Siwei Ma",
+            "Wen Gao"
+        ],
+        "published": "2025-03-04T15:44:33+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02724v1",
+        "title": "Trust, but verify: Reducing artificial light emissions and monitoring compliance",
+        "authors": [
+            "Salvador Bará"
+        ],
+        "published": "2025-03-04T15:41:51+00:00",
+        "category": "applied artificial intelligence"
+    },
+    {
+        "id": "2503.02884v1",
+        "title": "The SRG/eROSITA all-sky survey: View of the Fornax galaxy cluster",
+        "authors": [
+            "T. H. Reiprich",
+            "A. Veronica",
+            "F. Pacaud",
+            "P. Stöcker",
+            "V. Nazaretyan",
+            "A. Srivastava",
+            "A. Pandya",
+            "J. Dietl",
+            "J. S. Sanders",
+            "M. C. H. Yeung",
+            "A. Chaturvedi",
+            "M. Hilker",
+            "B. Seidel",
+            "K. Dolag",
+            "J. Comparat",
+            "V. Ghirardini",
+            "M. Kluge",
+            "A. Liu",
+            "N. Malavasi",
+            "X. Zhang",
+            "E. Hernández-Martínez"
+        ],
+        "published": "2025-03-04T18:59:58+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02883v1",
+        "title": "ARINAR: Bi-Level Autoregressive Feature-by-Feature Generative Models",
+        "authors": [
+            "Qinyu Zhao",
+            "Stephen Gould",
+            "Liang Zheng"
+        ],
+        "published": "2025-03-04T18:59:56+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02882v1",
+        "title": "Bringing Comparative Cognition To Computers",
+        "authors": [
+            "Konstantinos Voudouris",
+            "Lucy G. Cheke",
+            "Eric Schulz"
+        ],
+        "published": "2025-03-04T18:58:42+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02881v1",
+        "title": "Reactive Diffusion Policy: Slow-Fast Visual-Tactile Policy Learning for Contact-Rich Manipulation",
+        "authors": [
+            "Han Xue",
+            "Jieji Ren",
+            "Wendi Chen",
+            "Gu Zhang",
+            "Yuan Fang",
+            "Guoying Gu",
+            "Huazhe Xu",
+            "Cewu Lu"
+        ],
+        "published": "2025-03-04T18:58:21+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02880v1",
+        "title": "A New $\\sim 5σ$ Tension at Characteristic Redshift from DESI DR1 and DES-SN5YR observations",
+        "authors": [
+            "Purba Mukherjee",
+            "Anjan A Sen"
+        ],
+        "published": "2025-03-04T18:58:15+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02879v1",
+        "title": "Wikipedia in the Era of LLMs: Evolution and Risks",
+        "authors": [
+            "Siming Huang",
+            "Yuliang Xu",
+            "Mingmeng Geng",
+            "Yao Wan",
+            "Dongping Chen"
+        ],
+        "published": "2025-03-04T18:58:13+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02878v1",
+        "title": "Language Models can Self-Improve at State-Value Estimation for Better Search",
+        "authors": [
+            "Ethan Mendes",
+            "Alan Ritter"
+        ],
+        "published": "2025-03-04T18:58:11+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02877v1",
+        "title": "Weak-to-Strong Generalization Even in Random Feature Networks, Provably",
+        "authors": [
+            "Marko Medvedev",
+            "Kaifeng Lyu",
+            "Dingli Yu",
+            "Sanjeev Arora",
+            "Zhiyuan Li",
+            "Nathan Srebro"
+        ],
+        "published": "2025-03-04T18:58:00+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02876v1",
+        "title": "SPIDER: A Comprehensive Multi-Organ Supervised Pathology Dataset and Baseline Models",
+        "authors": [
+            "Dmitry Nechaev",
+            "Alexey Pchelnikov",
+            "Ekaterina Ivanova"
+        ],
+        "published": "2025-03-04T18:57:12+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02875v1",
+        "title": "The First Few Tokens Are All You Need: An Efficient and Effective Unsupervised Prefix Fine-Tuning Method for Reasoning Models",
+        "authors": [
+            "Ke Ji",
+            "Jiahao Xu",
+            "Tian Liang",
+            "Qiuzhi Liu",
+            "Zhiwei He",
+            "Xingyu Chen",
+            "Xiaoyuan Liu",
+            "Zhijie Wang",
+            "Junying Chen",
+            "Benyou Wang",
+            "Zhaopeng Tu",
+            "Haitao Mi",
+            "Dong Yu"
+        ],
+        "published": "2025-03-04T18:56:03+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02874v1",
+        "title": "Prompting Generative AI with Interaction-Augmented Instructions",
+        "authors": [
+            "Leixian Shen",
+            "Haotian Li",
+            "Yifang Wang",
+            "Xing Xie",
+            "Huamin Qu"
+        ],
+        "published": "2025-03-04T18:55:19+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02873v1",
+        "title": "Pseudo-Anosov surfaces and Dynamics in 3-manifolds",
+        "authors": [
+            "Jason F. Manning",
+            "Christoforos Neofytidis"
+        ],
+        "published": "2025-03-04T18:55:04+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02872v1",
+        "title": "Riemannian flow techniques on totally geodesic null hypersurfaces",
+        "authors": [
+            "Manuel Gutiérrez",
+            "Raymond A. Hounnonkpe"
+        ],
+        "published": "2025-03-04T18:51:07+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02871v1",
+        "title": "High Speed Imagery Analysis of Droplet Impact on Soft Oil Infused Surface",
+        "authors": [
+            "Shubham S. Ganar",
+            "Deepak J.",
+            "Arindam Das"
+        ],
+        "published": "2025-03-04T18:48:57+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02870v1",
+        "title": "Multiaccuracy and Multicalibration via Proxy Groups",
+        "authors": [
+            "Beepul Bharti",
+            "Mary Versa Clemens-Sewall",
+            "Paul H. Yi",
+            "Jeremias Sulam"
+        ],
+        "published": "2025-03-04T18:47:54+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02869v1",
+        "title": "Frequency domain identification for multivariable motion control systems: Applied to a prototype wafer stage",
+        "authors": [
+            "M. van der Hulst",
+            "R. A. González",
+            "K. Classens",
+            "P. Tacx",
+            "N. Dirkx",
+            "J. van de Wijdeven",
+            "T. Oomen"
+        ],
+        "published": "2025-03-04T18:47:41+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02867v1",
+        "title": "Conservative Dynamics of Relativistic Binaries Beyond Einstein Gravity",
+        "authors": [
+            "Jordan Wilson-Gerow"
+        ],
+        "published": "2025-03-04T18:46:50+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02866v1",
+        "title": "Optimal Power Management for Large-Scale Battery Energy Storage Systems via Bayesian Inference",
+        "authors": [
+            "Amir Farakhor",
+            "Iman Askari",
+            "Di Wu",
+            "Yebin Wang",
+            "Huazhen Fang"
+        ],
+        "published": "2025-03-04T18:45:40+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02865v1",
+        "title": "FairSense-AI: Responsible AI Meets Sustainability",
+        "authors": [
+            "Shaina Raza",
+            "Mukund Sayeeganesh Chettiar",
+            "Matin Yousefabadi",
+            "Tahniat Khan",
+            "Marcelo Lotif"
+        ],
+        "published": "2025-03-04T18:43:57+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02864v1",
+        "title": "Finding cycle types in permutation groups with few generators",
+        "authors": [
+            "Markus Lohrey",
+            "Andreas Rosowski"
+        ],
+        "published": "2025-03-04T18:41:26+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02863v1",
+        "title": "Calibrating LLM Confidence with Semantic Steering: A Multi-Prompt Aggregation Framework",
+        "authors": [
+            "Ziang Zhou",
+            "Tianyuan Jin",
+            "Jieming Shi",
+            "Qing Li"
+        ],
+        "published": "2025-03-04T18:40:49+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02862v1",
+        "title": "Privacy and Accuracy-Aware AI/ML Model Deduplication",
+        "authors": [
+            "Hong Guan",
+            "Lei Yu",
+            "Lixi Zhou",
+            "Li Xiong",
+            "Kanchan Chowdhury",
+            "Lulu Xie",
+            "Xusheng Xiao",
+            "Jia Zou"
+        ],
+        "published": "2025-03-04T18:40:38+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02861v1",
+        "title": "Evaluation of Architectural Synthesis Using Generative AI",
+        "authors": [
+            "Jingfei Huang",
+            "Alexandros Haridis"
+        ],
+        "published": "2025-03-04T18:39:28+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02860v1",
+        "title": "PileUp Mitigation at the HL-LHC Using Attention for Event-Wide Context",
+        "authors": [
+            "Luke Vaughan",
+            "Mohammed Rakib",
+            "Shivang Patel",
+            "Flera Rizatdinova",
+            "Alexander Khanov",
+            "Arunkumar Bagavathi"
+        ],
+        "published": "2025-03-04T18:38:21+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02859v1",
+        "title": "Unsupervised Attributed Dynamic Network Embedding with Stability Guarantees",
+        "authors": [
+            "Emma Ceccherini",
+            "Ian Gallagher",
+            "Andrew Jones",
+            "Daniel Lawson"
+        ],
+        "published": "2025-03-04T18:34:55+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02858v1",
+        "title": "Efficient Sampling and Sensitivity Analysis of Rare Transient Instability Events via Subset Simulation",
+        "authors": [
+            "Jingyu Liu",
+            "Xiaoting Wang",
+            "Xiaozhe Wang"
+        ],
+        "published": "2025-03-04T18:33:57+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02857v1",
+        "title": "Deepfake-Eval-2024: A Multi-Modal In-the-Wild Benchmark of Deepfakes Circulated in 2024",
+        "authors": [
+            "Nuria Alina Chandra",
+            "Ryan Murtfeldt",
+            "Lin Qiu",
+            "Arnab Karmakar",
+            "Hannah Lee",
+            "Emmanuel Tanumihardja",
+            "Kevin Farhat",
+            "Ben Caffee",
+            "Sejin Paik",
+            "Changyeon Lee",
+            "Jongwook Choi",
+            "Aerin Kim",
+            "Oren Etzioni"
+        ],
+        "published": "2025-03-04T18:33:22+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02856v1",
+        "title": "An Extended Picard Method to solve non-linear systems of ODE with applications",
+        "authors": [
+            "Manuel Gadella",
+            "Luis P. Lara"
+        ],
+        "published": "2025-03-04T18:32:58+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02855v1",
+        "title": "Four-point correlators with BPS bound states in AdS$_3$ and AdS$_5$",
+        "authors": [
+            "Francesco Aprile",
+            "Stefano Giusto",
+            "Rodolfo Russo"
+        ],
+        "published": "2025-03-04T18:32:25+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02854v1",
+        "title": "(How) Do Language Models Track State?",
+        "authors": [
+            "Belinda Z. Li",
+            "Zifan Carl Guo",
+            "Jacob Andreas"
+        ],
+        "published": "2025-03-04T18:31:02+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02853v1",
+        "title": "CADDI: An in-Class Activity Detection Dataset using IMU data from low-cost sensors",
+        "authors": [
+            "Luis Marquez-Carpintero",
+            "Sergio Suescun-Ferrandiz",
+            "Monica Pina-Navarro",
+            "Miguel Cazorla",
+            "Francisco Gomez-Donoso"
+        ],
+        "published": "2025-03-04T18:29:57+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02852v1",
+        "title": "Large-Angle Convergent-Beam Electron Diffraction Patterns via Conditional Generative Adversarial Networks",
+        "authors": [
+            "Joseph. J Webb",
+            "Rudolf A. Römer"
+        ],
+        "published": "2025-03-04T18:28:31+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02851v1",
+        "title": "Shakespearean Sparks: The Dance of Hallucination and Creativity in LLMs' Decoding Layers",
+        "authors": [
+            "Zicong He",
+            "Boxuan Zhang",
+            "Lu Cheng"
+        ],
+        "published": "2025-03-04T18:27:00+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02850v1",
+        "title": "Exact matching as an alternative to propensity score matching",
+        "authors": [
+            "Ekkehard Glimm",
+            "Lillian Yau"
+        ],
+        "published": "2025-03-04T18:25:46+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02849v1",
+        "title": "Multimodal Deep Learning for Subtype Classification in Breast Cancer Using Histopathological Images and Gene Expression Data",
+        "authors": [
+            "Amin Honarmandi Shandiz"
+        ],
+        "published": "2025-03-04T18:24:33+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02848v1",
+        "title": "Steady-state dynamical mean field theory based on influence functional matrix product states",
+        "authors": [
+            "Mithilesh Nayak",
+            "Julian Thoenniss",
+            "Michael Sonner",
+            "Dmitry A. Abanin",
+            "Philipp Werner"
+        ],
+        "published": "2025-03-04T18:24:23+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02847v1",
+        "title": "Comprehensive Analysis of Relative Pressure Estimation Methods Utilizing 4D Flow MRI",
+        "authors": [
+            "Brandon Hardy",
+            "Judith Zimmermann",
+            "Vincent Lechner",
+            "Mia Bonini",
+            "Julio A. Sotelo",
+            "Nicholas S. Burris",
+            "Daniel B. Ennis",
+            "David Marlevi",
+            "David A. Nordsletten"
+        ],
+        "published": "2025-03-04T18:21:27+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02846v1",
+        "title": "Mask-DPO: Generalizable Fine-grained Factuality Alignment of LLMs",
+        "authors": [
+            "Yuzhe Gu",
+            "Wenwei Zhang",
+            "Chengqi Lyu",
+            "Dahua Lin",
+            "Kai Chen"
+        ],
+        "published": "2025-03-04T18:20:24+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02845v1",
+        "title": "A Comprehensive Computational Photovoltaic Study of Lead-free Inorganic NaSnCl$_3$-based Perovskite Solar Cell: Effect of Charge Transport Layers and Material Parameters",
+        "authors": [
+            "Md Tashfiq Bin Kashem",
+            "Sadia Anjum Esha"
+        ],
+        "published": "2025-03-04T18:16:28+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02844v1",
+        "title": "Beyond Cosine Decay: On the effectiveness of Infinite Learning Rate Schedule for Continual Pre-training",
+        "authors": [
+            "Paul Janson",
+            "Vaibhav Singh",
+            "Paria Mehrbod",
+            "Adam Ibrahim",
+            "Irina Rish",
+            "Eugene Belilovsky",
+            "Benjamin Thérien"
+        ],
+        "published": "2025-03-04T18:15:57+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02843v1",
+        "title": "Atomistic tight-binding Hartree-Fock calculations of multielectron configurations in P-doped silicon devices: wavefunction reshaping",
+        "authors": [
+            "Maicol A. Ochoa",
+            "Keyi Liu",
+            "Piotr Różański",
+            "Michał Zieliński",
+            "Garnett W. Bryant"
+        ],
+        "published": "2025-03-04T18:14:36+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02842v1",
+        "title": "Flipping Matchings is Hard",
+        "authors": [
+            "Carla Binucci",
+            "Fabrizio Montecchiani",
+            "Daniel Perz",
+            "Alessandra Tappini"
+        ],
+        "published": "2025-03-04T18:13:39+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02841v1",
+        "title": "Boltzmann Attention Sampling for Image Analysis with Small Objects",
+        "authors": [
+            "Theodore Zhao",
+            "Sid Kiblawi",
+            "Naoto Usuyama",
+            "Ho Hin Lee",
+            "Sam Preston",
+            "Hoifung Poon",
+            "Mu Wei"
+        ],
+        "published": "2025-03-04T18:12:58+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02840v1",
+        "title": "Electric field dependent g factors of ThF$^+$",
+        "authors": [
+            "Alexander Petrov",
+            "Leonid Skripnikov"
+        ],
+        "published": "2025-03-04T18:09:51+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02839v1",
+        "title": "Norms in equivariant homotopy theory",
+        "authors": [
+            "Tobias Lenz",
+            "Sil Linskens",
+            "Phil Pützstück"
+        ],
+        "published": "2025-03-04T18:04:52+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02838v1",
+        "title": "Kähler-Einstein metrics of negative curvature",
+        "authors": [
+            "Henri Guenancia",
+            "Ursula Hamenstädt"
+        ],
+        "published": "2025-03-04T18:03:50+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02837v1",
+        "title": "On Terwilliger $\\mathbb{F}$-algebras of direct products of group divisible association schemes",
+        "authors": [
+            "Yu Jiang"
+        ],
+        "published": "2025-03-04T18:01:07+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02836v1",
+        "title": "SeqFusion: Sequential Fusion of Pre-Trained Models for Zero-Shot Time-Series Forecasting",
+        "authors": [
+            "Ting-Ji Huang",
+            "Xu-Yang Chen",
+            "Han-Jia Ye"
+        ],
+        "published": "2025-03-04T17:59:17+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02835v1",
+        "title": "In-Depth Analysis of Automated Acne Disease Recognition and Classification",
+        "authors": [
+            "Afsana Ahsan Jeny",
+            "Masum Shah Junayed",
+            "Md Robel Mia",
+            "Md Baharul Islam"
+        ],
+        "published": "2025-03-04T17:58:44+00:00",
+        "category": "cloud and edge computing"
+    },
+    {
+        "id": "2503.02834v1",
+        "title": "MuBlE: MuJoCo and Blender simulation Environment and Benchmark for Task Planning in Robot Manipulation",
+        "authors": [
+            "Michal Nazarczuk",
+            "Karla Stepanova",
+            "Jan Kristof Behrens",
+            "Matej Hoffmann",
+            "Krystian Mikolajczyk"
+        ],
+        "published": "2025-03-04T17:57:35+00:00",
+        "category": "cloud and edge computing"
+    }
+]

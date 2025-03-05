@@ -52,6 +52,7 @@ def extract_ids(html_content):
 
     return extracted_ids
 
+
 def scrape_articles_ids(page_url):
     try:
         # Send an HTTP GET request to the URL
@@ -123,6 +124,7 @@ def scrape_article(id):
         print(f"An error occurred: {e}")
         return None
 
+
 def create_dfs(articles_ids):
 
     list_dfs = []
@@ -139,12 +141,13 @@ def create_dfs(articles_ids):
 
     return list_dfs
 
+
 list_articles_dfs = create_dfs(articles_ids)
 
 for i in range(len(list_articles_dfs)):
-  
+
     field = list(ARXIV_FIELDS)[i]
-    list_articles_dfs[i]['field'] = field
+    list_articles_dfs[i]["field"] = field
 
 final_df = pd.concat(list_articles_dfs, ignore_index=True)
-final_df.to_csv('final_dataset.csv', index=False)
+final_df.to_csv("final_dataset.csv", index=False)
