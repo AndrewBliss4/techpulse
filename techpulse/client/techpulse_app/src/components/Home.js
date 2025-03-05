@@ -252,12 +252,30 @@ const Home = () => {
         .catch(error => console.error('Error fetching data:', error));
   }, []);
 
-  //Inserts feedback_text: 'Value1', rating: '5' into feedbacktable
-  const addData = () => {
-      axios.post('http://localhost:4000/api/data1', { feedback_text: `${feedBackText}`, rating: finalRating })
-          .then(() => alert('Data added successfully'))
-          .catch(error => console.error('Error adding data:', error));
-  };
+  async function addData() {
+    try {
+      // First, wait for the GET request to finish
+      const response = await axios.get('http://localhost:4000/api/latest-id');
+      console.log("Latest ID:", response.data.latestId);
+  
+      const latestId = response.data.latestId; // Get the latestId directly
+      
+      if (latestId !== undefined && latestId !== null) {
+        // Now, wait for the POST request to finish
+        await axios.post('http://localhost:4000/api/data1', {
+          insight_id: latestId,
+          feedback_text: `${feedBackText}`,
+          rating: finalRating
+        });
+        
+        alert('Data added successfully');
+      } else {
+        console.error("Invalid ID fetched");
+      }
+    } catch (error) {
+      console.error("Error in addData:", error);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
