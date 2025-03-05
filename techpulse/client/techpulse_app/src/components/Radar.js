@@ -76,7 +76,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
             <Label value="Innovation, score (0 = lower; 1 = higher)" position="insideLeft" angle={-90} style={{ textAnchor: 'middle', fontWeight: 'bold' }} />
           </YAxis>
 
-          <ZAxis type="number" dataKey="metric_3" range={[0, 500]} name="Investment" />
+          <ZAxis type="number" dataKey="metric_3" range={[100, 5000]} name="Investment" />
           <Tooltip
             cursor={{ strokeDasharray: '3 3' }}
             content={({ active, payload }) => {
