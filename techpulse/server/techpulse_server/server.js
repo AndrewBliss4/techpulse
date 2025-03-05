@@ -37,11 +37,22 @@ app.get('/api/data', async (req, res) => {
   }
 });
 
+app.get('/api/latest-id', async (req, res) => {
+  try {
+      const result = await pool.query('SELECT insight_id FROM public.insight ORDER BY insight_id DESC LIMIT 1');
+      console.log('Data fetched successfully:', result.rows[0]);
+      res.json({ latestId: result.rows[0]?.insight_id });
+  } catch (error) {
+      console.error('Error fetching data:', error.message);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Example API endpoint to insert data into feeback table
 app.post('/api/data1', async (req, res) => {
-    const { feedback_text, rating } = req.body;
+    const { insight_id, feedback_text, rating } = req.body;
     try {
-        await pool.query('INSERT INTO public.feedback (feedback_text, rating) VALUES ($1, $2)', [feedback_text, rating]);
+        await pool.query('INSERT INTO public.feedback (insight_id ,feedback_text, rating) VALUES ($1, $2, $3)', [insight_id, feedback_text, rating]);
         res.status(201).send('Data inserted');
     } catch (err) {
         console.error(err);
