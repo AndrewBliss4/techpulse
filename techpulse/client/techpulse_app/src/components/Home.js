@@ -6,7 +6,7 @@ import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, CircleAlert,
 import parse from 'html-react-parser';
 import Radar from './Radar.js';
 import Rating from './Rating.js';
-
+import AIPromptFieldButton from './AIPromptButton.js';
 //Loaders
 import { tailChase } from 'ldrs';
 import { quantum } from 'ldrs'
@@ -513,8 +513,10 @@ const Home = () => {
               ))}
           </ul>
           <button onClick={addData}>Add Data</button>
+          
         </div>
         */}
+        <AIPromptFieldButton />
         {/*FeedBack Section*/}
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
@@ -527,6 +529,7 @@ const Home = () => {
                 >
                   Provide FeedBack
                 </label>
+                
                 <Rating onRatingSelect={handleRatingSelect} />
               </div>
               <div className="relative">
