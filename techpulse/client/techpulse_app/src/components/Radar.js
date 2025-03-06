@@ -8,7 +8,9 @@ import {
   cloudComputingData, cybersecurityData, generativeAiData
 } from './SampleData';
 
-const Radar = ({ radarSearch, homePage, technology }) => {
+const Radar = ({ radarData, radarSearch, homePage, technology }) => {
+
+  const [data, setData] = useState(radarData);
 
   useEffect(() => {
     if (!homePage && technology !== '') {
@@ -30,16 +32,17 @@ const Radar = ({ radarSearch, homePage, technology }) => {
         setData(generativeAiData);
       }
     } else {
-      setData(homeData);
+      setData(radarData);
+      console.log(data)
     }
-  }, [technology, homePage]);
-
-  const [radarData, setData] = useState(homeData);
+  }, [technology, homePage, radarData]);
 
   const queryInsight = (dataPoint, index) => {
     if (homePage) {
 
-      window.open(`/technology?name=${encodeURIComponent(dataPoint.name)}&interest=${dataPoint.interest}&innovation=${dataPoint.innovation}&investments=${dataPoint.investments}`, '_blank');
+      window.open(`/technology?name=${encodeURIComponent(dataPoint.description)}
+      &interest=${(dataPoint.metric_1 / 100).toFixed(2)}&innovation=${(dataPoint.metric_2 / 100).toFixed(2)}
+      &investments=${dataPoint.metric_3}`, '_blank');
 
     } else {
 
@@ -62,18 +65,18 @@ const Radar = ({ radarSearch, homePage, technology }) => {
         <ScatterChart margin={{ top: 40, right: 20, bottom: 20, left: 20 }}>
           <CartesianGrid />
 
-          <XAxis type="number" dataKey="x" name="Interest"
-            domain={[0, 1]} label={{
+          <XAxis type="number" dataKey="metric_1" name="Interest"
+            domain={[0, 100]} label={{
               value: 'Interest, score (0 = lower; 1 = higher)',
               position: 'bottom', offset: 0, fontWeight: 'bold'
             }} />
 
-          <YAxis type="number" dataKey="y" name="Innovation"
-            domain={[0, 1]}>
+          <YAxis type="number" dataKey="metric_2" name="Innovation"
+            domain={[0, 100]}>
             <Label value="Innovation, score (0 = lower; 1 = higher)" position="insideLeft" angle={-90} style={{ textAnchor: 'middle', fontWeight: 'bold' }} />
           </YAxis>
 
-          <ZAxis type="number" dataKey="z" range={[100, 5000]} name="Investment" />
+          <ZAxis type="number" dataKey="metric_3" range={[100, 5000]} name="Investment" />
           <Tooltip
             cursor={{ strokeDasharray: '3 3' }}
             content={({ active, payload }) => {
@@ -86,10 +89,10 @@ const Radar = ({ radarSearch, homePage, technology }) => {
                     border: '1px solid #ccc',
                     borderRadius: '5px'
                   }}>
-                    <p><strong>{data.name}</strong></p>
-                    <p>Interest: {data.x.toFixed(2)}</p>
-                    <p>Innovation: {data.y.toFixed(2)}</p>
-                    <p>Investment: ${data.z} Billion</p>
+                    <p><strong>{data.description}</strong></p>
+                    <p>Interest: {(data.metric_1 / 10).toFixed(2)}</p>
+                    <p>Innovation: {(data.metric_2 / 10).toFixed(2)}</p>
+                    <p>Investment: ${data.metric_3} Billion</p>
                   </div>
                 );
               }
@@ -98,7 +101,7 @@ const Radar = ({ radarSearch, homePage, technology }) => {
           />
           <Scatter
             name="Tech Trends"
-            data={radarData}
+            data={data}
             fill="#2466e0"
             fillOpacity={0.7}
             onClick={queryInsight}

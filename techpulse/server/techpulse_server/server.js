@@ -37,6 +37,7 @@ app.get('/api/data', async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 app.post('/api/data1', async (req, res) => {
   const { feedback_text, rating } = req.body;
   try {
@@ -46,6 +47,56 @@ app.post('/api/data1', async (req, res) => {
     console.error(err);
     res.status(500).send('Error inserting data');
   }
+=======
+app.get('/api/radar', async (req, res) => {
+  try {
+      const query = `
+          SELECT 
+              f.field_id,
+              f.field_name,
+              f.description,
+              m.metric_1,
+              m.metric_2,
+              m.metric_3
+          FROM 
+              public.field f
+          JOIN 
+              public.TIMEDMETRICS m
+          ON 
+              f.field_id = m.field_id
+      `;
+
+      const result = await pool.query(query);
+      console.log('Joined data fetched successfully:', result.rows);
+      res.json(result.rows);
+  } catch (error) {
+      console.error('Error fetching joined data:', error.message);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.get('/api/latest-id', async (req, res) => {
+  try {
+      const result = await pool.query('SELECT insight_id FROM public.insight ORDER BY insight_id DESC LIMIT 1');
+      console.log('Data fetched successfully:', result.rows[0]);
+      res.json({ latestId: result.rows[0]?.insight_id });
+  } catch (error) {
+      console.error('Error fetching data:', error.message);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Example API endpoint to insert data into feeback table
+app.post('/api/data1', async (req, res) => {
+    const { insight_id, feedback_text, rating } = req.body;
+    try {
+        await pool.query('INSERT INTO public.feedback (insight_id ,feedback_text, rating) VALUES ($1, $2, $3)', [insight_id, feedback_text, rating]);
+        res.status(201).send('Data inserted');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error inserting data');
+    }
+>>>>>>> main
 });
 
 // ----------- AI BACKEND ----------- //

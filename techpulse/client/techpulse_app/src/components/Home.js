@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import '../styles/globals.css';
 import rbcLogo from '../assets/Royal-Bank-of-Canada-Logo.png';
-import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, CircleAlert, RadarIcon } from 'lucide-react'
+import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, CircleAlert, RadarIcon, MessageSquareReplyIcon, ArrowRight} from 'lucide-react'
 import parse from 'html-react-parser';
 import Radar from './Radar.js';
+import Rating from './Rating.js';
 
 //Loaders
 import { tailChase } from 'ldrs';
@@ -219,9 +220,19 @@ const Home = () => {
 
   };
 
+  const [feedBackText, setFeedBackText] = useState("");
+  const [finalRating, setFinalRating] = useState(0);
+
+  //Get rating method
+  const handleRatingSelect = (rating) => {
+    setFinalRating(Number(rating));
+    console.log("Selected Rating:", rating);
+  };
+
   // ---------- DataBase get and post methods ---------- //
   axios.defaults.headers.post['Content-Type'] = 'application/json';
   const [data, setData] = useState([]);
+  const [radarData, setRadarData] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:4000/api/data')
@@ -232,12 +243,39 @@ const Home = () => {
         .catch(error => console.error('Error fetching data:', error));
   }, []);
 
-  //Inserts feedback_text: 'Value1', rating: '5' into feedbacktable
-  const addData = () => {
-      axios.post('http://localhost:4000/api/data1', { feedback_text: 'Value1', rating: '5' })
-          .then(() => alert('Data added successfully'))
-          .catch(error => console.error('Error adding data:', error));
-  };
+  useEffect(() => {
+    axios.get('http://localhost:4000/api/radar')
+        .then(response => {
+            console.log('Fetched data:', response.data);
+            setRadarData(response.data);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
+  async function addData() {
+    try {
+      // First, wait for the GET request to finish
+      const response = await axios.get('http://localhost:4000/api/latest-id');
+      console.log("Latest ID:", response.data.latestId);
+  
+      const latestId = response.data.latestId; // Get the latestId directly
+      
+      if (latestId !== undefined && latestId !== null) {
+        // Now, wait for the POST request to finish
+        await axios.post('http://localhost:4000/api/data1', {
+          insight_id: latestId,
+          feedback_text: `${feedBackText}`,
+          rating: finalRating
+        });
+        
+        alert('Data added successfully');
+      } else {
+        console.error("Invalid ID fetched");
+      }
+    } catch (error) {
+      console.error("Error in addData:", error);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -338,7 +376,7 @@ const Home = () => {
             </label>
           </div>
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
-            <Radar radarSearch={radarSearch} homePage={true}></Radar>
+            <Radar radarData={radarData} radarSearch={radarSearch} homePage={true}></Radar>
           </div>
         </div>
 
@@ -466,15 +504,58 @@ const Home = () => {
             </div>
           </div>}
         </div>
+        {/*
         <div className='databaseTest'>
-          {/* <h1>Data from PostgreSQL</h1>
+          <h1>Data from PostgreSQL</h1>
           <ul>
               {data.map(item => (
                 <li key={item.id}>{item.field_id} - {item.field_name}</li>
               ))}
           </ul>
-          <button onClick={addData}>Add Data</button> */}
+          <button onClick={addData}>Add Data</button>
         </div>
+        */}
+        {/*FeedBack Section*/}
+        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
+          <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
+            <div className="flex-grow space-y-2">
+              <div className='flex items-center space-x-2'>
+                <MessageSquareReplyIcon className="h-5 w-5 text-blue-600" />
+                <label
+                  htmlFor="search"
+                  className="block text-lg font-medium text-gray-700"
+                >
+                  Provide FeedBack
+                </label>
+                <Rating onRatingSelect={handleRatingSelect} />
+              </div>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <ArrowRight className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="search"
+                  type="text"
+                  placeholder="Enter FeedBack..."
+                  onChange={(e) => setFeedBackText(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg 
+                          shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                          text-sm placeholder:text-gray-400"
+                />
+              </div>
+            </div>
+            <button
+              className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-medium 
+                     rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 
+                     focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200
+                     disabled:bg-blue-400 disabled:text-gray-200 disabled:cursor-not-allowed"
+              onClick={addData}
+            >
+              Submit Feedback
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   );
