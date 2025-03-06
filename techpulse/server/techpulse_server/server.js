@@ -96,67 +96,74 @@ let promptAIField = async () => {
 
 // New endpoint for prompt_field.txt execution
 app.post("/gpt-field", async (req, res) => {
-  let prompt = req.body.prompt;
-  let aiResponse = await promptAIField(prompt);
+  let aiResponse = await promptAIField();
+  console.log("Raw AI Response:\n", aiResponse);
 
-  // Check if there are no new fields
-  if (aiResponse === "NONEWFIELDS") {
-    res.send("No new fields to add.");
-    return;
-  }
+  // Split AI response into separate field entries
+  const fieldEntries = aiResponse.split(/\n\s*\n/).filter(entry => entry.trim().startsWith("field_name:"));
 
-  // Extract values from AI response
-  const fieldNameMatch = aiResponse.match(/field_name:\s*(.+)/);
-  const maturityMatch = aiResponse.match(/field_1:\s*([\d.]+)/);
-  const innovationMatch = aiResponse.match(/field_2:\s*([\d.]+)/);
-  const relevanceMatch = aiResponse.match(/field_3:\s*([\d.]+)/);
-  const rationaleMatch = aiResponse.match(/rationale:\s*(.+?)(?=\n|$)/); // non-greedy match until newline
-  const sourcesMatch = aiResponse.match(/source:\s*"([^"]+)"/); // match source inside quotes
-
-  // Check if any match failed
-  if (!fieldNameMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourcesMatch) {
+  if (fieldEntries.length === 0) {
+    console.error("Error: AI response contains no valid fields.");
     res.status(400).send("Invalid AI response format.");
     return;
   }
 
-  const fieldName = fieldNameMatch[1].trim();
-  const maturity = parseFloat(maturityMatch[1]);
-  const innovation = parseFloat(innovationMatch[1]);
-  const relevance = parseFloat(relevanceMatch[1]);
-  const rationale = rationaleMatch[1].trim();
-  const source = sourcesMatch[1].trim();
-
-  // Check if field exists, if not, insert it
-  const existingField = await pool.query(
-    'SELECT * FROM Field WHERE field_name = $1',
-    [fieldName]
-  );
-
-  let fieldId;
-  if (existingField.rowCount === 0) {
-    // Insert new field
-    const result = await pool.query(
-      `INSERT INTO Field (field_name, description, funding) 
-       VALUES ($1, $2, $3) RETURNING field_id`,
-      [fieldName, 'Description from AI response', 0]
-    );
-    fieldId = result.rows[0].field_id;
-    console.log(`New field '${fieldName}' added.`);
-  } else {
-    fieldId = existingField.rows[0].field_id;
-  }
-
-  // Insert metrics into TIMEDMETRICS
   try {
-    await pool.query(
-      `INSERT INTO TIMEDMETRICS (metric_1, metric_2, metric_3, metric_date, field_id, rationale, source)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-      [maturity, innovation, relevance, new Date(), fieldId, rationale, source]
-    );
-    console.log('Metrics inserted successfully.');
-    res.send(aiResponse); // Send the AI response back to the frontend
+    for (const entry of fieldEntries) {
+      // Extract values using regex
+      const fieldNameMatch = entry.match(/field_name:\s*(.+)/);
+      const descriptionMatch = entry.match(/description:\s*([\s\S]+?)\nmetric_1:/);
+      const maturityMatch = entry.match(/metric_1:\s*([\d.]+)/);
+      const innovationMatch = entry.match(/metric_2:\s*([\d.]+)/);
+      const relevanceMatch = entry.match(/metric_3:\s*([\d.]+)/);
+      const rationaleMatch = entry.match(/rationale:\s*([\s\S]+?)\nsource:/);
+      const sourcesMatch = entry.match(/source:\s*(https?:\/\/[^\s]+)/);
+
+      if (!fieldNameMatch || !descriptionMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourcesMatch) {
+        console.error("Error: AI response is in an invalid format.");
+        res.status(400).send("Invalid AI response format.");
+        return;
+      }
+
+      const fieldName = fieldNameMatch[1].trim();
+      const description = descriptionMatch[1].trim();
+      const maturity = parseFloat(maturityMatch[1]);
+      const innovation = parseFloat(innovationMatch[1]);
+      const relevance = parseFloat(relevanceMatch[1]);
+      const rationale = rationaleMatch[1].trim();
+      const source = sourcesMatch[1].trim();
+
+      console.log(`Processing field: ${fieldName}`);
+
+      // Check if the field exists
+      let fieldId;
+      const existingField = await pool.query('SELECT field_id FROM Field WHERE field_name = $1', [fieldName]);
+
+      if (existingField.rowCount === 0) {
+        // Insert new field
+        const result = await pool.query(
+          `INSERT INTO Field (field_name, description, funding) VALUES ($1, $2, $3) RETURNING field_id`,
+          [fieldName, description, 0]
+        );
+        fieldId = result.rows[0].field_id;
+        console.log(`New field '${fieldName}' added.`);
+      } else {
+        fieldId = existingField.rows[0].field_id;
+      }
+
+      // Insert metrics into TIMEDMETRICS
+      await pool.query(
+        `INSERT INTO TIMEDMETRICS (metric_1, metric_2, metric_3, metric_date, field_id, rationale, source)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [maturity, innovation, relevance, new Date(), fieldId, rationale, source]
+      );
+
+      console.log(`Metrics for '${fieldName}' inserted successfully.`);
+    }
+
+    res.send("Fields processed successfully.");
   } catch (err) {
-    console.error('Error inserting metrics:', err);
-    res.status(500).send('Error inserting metrics into the database.');
+    console.error("Database error:", err);
+    res.status(500).send("Error processing fields.");
   }
 });
