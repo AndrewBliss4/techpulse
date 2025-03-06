@@ -37,17 +37,6 @@ app.get('/api/data', async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-app.post('/api/data1', async (req, res) => {
-  const { feedback_text, rating } = req.body;
-  try {
-    await pool.query('INSERT INTO public.feedback (feedback_text, rating) VALUES ($1, $2)', [feedback_text, rating]);
-    res.status(201).send('Data inserted');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error inserting data');
-  }
-=======
 app.get('/api/radar', async (req, res) => {
   try {
       const query = `
@@ -96,7 +85,6 @@ app.post('/api/data1', async (req, res) => {
         console.error(err);
         res.status(500).send('Error inserting data');
     }
->>>>>>> main
 });
 
 // ----------- AI BACKEND ----------- //
