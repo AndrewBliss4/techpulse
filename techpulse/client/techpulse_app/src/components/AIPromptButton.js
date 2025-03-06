@@ -6,18 +6,40 @@ const AIPromptFieldButton = () => {
 
   const handleButtonClick = async () => {
     setIsLoading(true);
+    setGeneratedText(""); // Clear old responses before a new request
+
     try {
+      console.log("Triggering metric reevaluation...");
+
+      // Step 1: Trigger metric reevaluation
+      const reevaluateResponse = await fetch('http://localhost:4000/gpt-update-metrics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!reevaluateResponse.ok) {
+        throw new Error(`Reevaluation failed: ${reevaluateResponse.statusText}`);
+      }
+
+      console.log("Metrics reevaluated successfully. Proceeding to new field generation...");
+
+      // Step 2: Proceed with generating new fields
       const response = await fetch('http://localhost:4000/gpt-field', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt: '' }), // You can pass additional user input here if needed
+        headers: { 'Content-Type': 'application/json' },
       });
+
+      if (!response.ok) {
+        throw new Error(`Field generation failed: ${response.statusText}`);
+      }
+
       const data = await response.text();
+      console.log("AI Response:", data);
       setGeneratedText(data);
+
     } catch (error) {
-      console.error('Error fetching AI response:', error);
+      console.error('Error:', error);
+      setGeneratedText(`Error: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -26,7 +48,7 @@ const AIPromptFieldButton = () => {
   return (
     <div>
       <button onClick={handleButtonClick} disabled={isLoading}>
-        {isLoading ? 'Generating...' : 'Generate Text with Field Prompt'}
+        {isLoading ? 'Processing...' : 'Generate Text with Field Prompt'}
       </button>
       {generatedText && (
         <div>
