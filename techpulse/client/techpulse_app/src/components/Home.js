@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import '../styles/globals.css';
 import rbcLogo from '../assets/Royal-Bank-of-Canada-Logo.png';
-import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, CircleAlert, RadarIcon, MessageSquareReplyIcon, ArrowRight} from 'lucide-react'
+import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, CircleAlert, RadarIcon, MessageSquareReplyIcon, ChevronDown, ArrowRight} from 'lucide-react'
 import parse from 'html-react-parser';
 import Radar from './Radar.js';
 import Rating from './Rating.js';
@@ -45,6 +45,7 @@ const Home = () => {
   const [error, setError] = useState(false);
 
   const [currentLoaderIndex, setCurrentLoaderIndex] = useState(0);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   //loader states
 
@@ -364,6 +365,7 @@ const Home = () => {
           </div>
         </div>
 
+        {/* Industry Radar */}
 
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
           <div className='flex items-center space-x-2'>
@@ -378,6 +380,34 @@ const Home = () => {
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
             <Radar radarData={radarData} radarSearch={radarSearch} homePage={true}></Radar>
           </div>
+        </div>
+
+        {/* Understanding the Radar */}
+
+        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
+          <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+            <div className="flex items-center space-x-2">
+              <Lightbulb className="h-5 w-5 text-blue-600" />
+              <span className="text-lg font-medium text-gray-700">Understanding the Radar</span>
+            </div>
+            <ChevronDown className={`h-5 w-5 text-blue-600 transform transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+          </div>
+          
+          {isExpanded && (
+            <div className="mt-4 text-gray-600 space-y-3 animate-fadeIn">
+              <p>
+                The Industry Radar visualization plots emerging technologies across three key dimensions:
+              </p>
+              <ul className="list-disc pl-5 space-y-2">
+                <li><span className="font-medium">Maturity (X-axis):</span> Measures from 0-5 how developed and ready for implementation the technology is in banking.</li>
+                <li><span className="font-medium">Innovation Rate (Y-axis):</span> Indicates from 0-5 the pace of breakthrough developments in the last 6 months.</li>
+                <li><span className="font-medium">Industry Relevance (Bubble Size):</span> Represents from 0-5 how critical the technology is expected to be for banking operations.</li>
+              </ul>
+              <p>
+                Larger bubbles positioned in the upper-right quadrant represent technologies that are both mature and rapidly innovating, suggesting high strategic importance.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
@@ -517,7 +547,9 @@ const Home = () => {
         </div>
         */}
         <AIPromptFieldButton />
+
         {/*FeedBack Section*/}
+
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
             <div className="flex-grow space-y-2">
