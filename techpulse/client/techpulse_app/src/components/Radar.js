@@ -2,7 +2,7 @@ import React from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, ResponsiveContainer } from 'recharts';
 import { useEffect, useState } from 'react';
 
-//Chart data pipeline
+// Chart data pipeline
 import {
   homeData, appliedAiData, arVrTechnologyData, renewableEnergyTechData, quantumComputingData, bioengineeringData,
   cloudComputingData, cybersecurityData, generativeAiData
@@ -39,24 +39,18 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
 
   const queryInsight = (dataPoint, index) => {
     if (homePage) {
-
       window.open(`/technology?name=${encodeURIComponent(dataPoint.field_name)}
       &interest=${(dataPoint.metric_1 / 100).toFixed(2)}&innovation=${(dataPoint.metric_2 / 100).toFixed(2)}
       &investments=${dataPoint.metric_3}`, '_blank');
-
     } else {
-
       setTimeout(() => {
         window.scrollTo({
           top: document.body.scrollHeight,
           behavior: 'smooth'
         });
-
       }, 100);
-
       radarSearch(dataPoint.name);
     }
-
   }
 
   return (
@@ -90,11 +84,10 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                     borderRadius: '5px'
                   }}>
                     <p><strong>{data.field_name}</strong></p>
-
                     <p>Interest: {(data.metric_1).toFixed(2)}</p>
                     <p>Innovation: {(data.metric_2).toFixed(2)}</p>
                     <p>Relevance: {(data.metric_3).toFixed(2)} </p>
-                    <p>Rationale:{(data.rationale)}</p>
+                    <p>Rationale: {(data.rationale)}</p>
                   </div>
                 );
               }
@@ -107,7 +100,9 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
             fill="#2466e0"
             fillOpacity={0.7}
             onClick={queryInsight}
-            cursor='pointer'
+            cursor="pointer"
+            shape="circle"
+            size={data.map(d => d.metric_3 * 100)} // Scaling by metric_3, adjust the factor as needed
           />
         </ScatterChart>
       </ResponsiveContainer>
