@@ -9,33 +9,61 @@ import {
 } from './SampleData';
 
 const Radar = ({ radarData, radarSearch, homePage, technology }) => {
-
-  const [data, setData] = useState(radarData);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
+    let rawData = radarData;
+
     if (!homePage && technology !== '') {
-      if (technology === 'Applied AI') {
-        setData(appliedAiData);
-      } else if (technology === 'AR/VR Technology') {
-        setData(arVrTechnologyData);
-      } else if (technology === 'Renewable Energy Tech') {
-        setData(renewableEnergyTechData);
-      } else if (technology === 'Quantum Technologies') {
-        setData(quantumComputingData);
-      } else if (technology === 'Bioengineering') {
-        setData(bioengineeringData);
-      } else if (technology === 'Cloud Computing') {
-        setData(cloudComputingData);
-      } else if (technology === 'Cybersecurity') {
-        setData(cybersecurityData);
-      } else if (technology === 'Generative AI') {
-        setData(generativeAiData);
+      switch (technology) {
+        case 'Applied AI':
+          rawData = appliedAiData;
+          break;
+        case 'AR/VR Technology':
+          rawData = arVrTechnologyData;
+          break;
+        case 'Renewable Energy Tech':
+          rawData = renewableEnergyTechData;
+          break;
+        case 'Quantum Technologies':
+          rawData = quantumComputingData;
+          break;
+        case 'Bioengineering':
+          rawData = bioengineeringData;
+          break;
+        case 'Cloud Computing':
+          rawData = cloudComputingData;
+          break;
+        case 'Cybersecurity':
+          rawData = cybersecurityData;
+          break;
+        case 'Generative AI':
+          rawData = generativeAiData;
+          break;
+        default:
+          rawData = radarData;
       }
-    } else {
-      setData(radarData);
-      console.log(data)
     }
+
+    // Filter data to include only the most recent entries for each field
+    const filteredData = filterMostRecentData(rawData);
+    setData(filteredData);
   }, [technology, homePage, radarData]);
+
+  const filterMostRecentData = (data) => {
+    const mostRecentData = {};
+
+    data.forEach(item => {
+      const fieldId = item.field_id;
+      const currentDate = new Date(item.metric_date);
+
+      if (!mostRecentData[fieldId] || new Date(mostRecentData[fieldId].metric_date) < currentDate) {
+        mostRecentData[fieldId] = item;
+      }
+    });
+
+    return Object.values(mostRecentData);
+  };
 
   const queryInsight = (dataPoint, index) => {
     if (homePage) {
@@ -51,7 +79,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
       }, 100);
       radarSearch(dataPoint.name);
     }
-  }
+  };
 
   return (
     <div style={{ width: '100%', height: '600px' }}>
