@@ -40,7 +40,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const queryInsight = (dataPoint, index) => {
     if (homePage) {
 
-      window.open(`/technology?name=${encodeURIComponent(dataPoint.description)}
+      window.open(`/technology?name=${encodeURIComponent(dataPoint.field_name)}
       &interest=${(dataPoint.metric_1 / 100).toFixed(2)}&innovation=${(dataPoint.metric_2 / 100).toFixed(2)}
       &investments=${dataPoint.metric_3}`, '_blank');
 
@@ -66,13 +66,13 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
           <CartesianGrid />
 
           <XAxis type="number" dataKey="metric_1" name="Interest"
-            domain={[0, 100]} label={{
+            domain={[0, 5]} label={{
               value: 'Interest, score (0 = lower; 1 = higher)',
               position: 'bottom', offset: 0, fontWeight: 'bold'
             }} />
 
           <YAxis type="number" dataKey="metric_2" name="Innovation"
-            domain={[0, 100]}>
+            domain={[0, 5]}>
             <Label value="Innovation, score (0 = lower; 1 = higher)" position="insideLeft" angle={-90} style={{ textAnchor: 'middle', fontWeight: 'bold' }} />
           </YAxis>
 
@@ -89,10 +89,12 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                     border: '1px solid #ccc',
                     borderRadius: '5px'
                   }}>
-                    <p><strong>{data.description}</strong></p>
-                    <p>Interest: {(data.metric_1 / 10).toFixed(2)}</p>
-                    <p>Innovation: {(data.metric_2 / 10).toFixed(2)}</p>
-                    <p>Investment: ${data.metric_3} Billion</p>
+                    <p><strong>{data.field_name}</strong></p>
+
+                    <p>Interest: {(data.metric_1).toFixed(2)}</p>
+                    <p>Innovation: {(data.metric_2).toFixed(2)}</p>
+                    <p>Relevance: {(data.metric_3).toFixed(2)} </p>
+                    <p>Rationale:{(data.rationale)}</p>
                   </div>
                 );
               }
