@@ -103,28 +103,20 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Load prompt_field.txt synchronously
-const promptFieldPath = path.join(__dirname, 'prompt_field.txt');
-let promptFieldText;
-try {
-  promptFieldText = fs.readFileSync(promptFieldPath, 'utf8');
-  console.log("Loaded prompt_field.txt successfully.");
-} catch (err) {
-  console.error("Error reading prompt_field.txt:", err);
-  process.exit(1); // Exit if the file can't be read
-}
+const fsPromises = require("fs").promises;
+
 let updateExistingFieldMetrics = async () => {
   try {
-    // Fetch current field names and most recent scores from the database
-    const fieldQuery = await pool.query(
-      `SELECT f.field_id, f.field_name, t.metric_1, t.metric_2, t.metric_3, t.rationale 
-       FROM Field f 
-       JOIN TIMEDMETRICS t ON f.field_id = t.field_id 
-       WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id)`
-    );
+    // Fetch field data
+    const fieldQuery = await pool.query(`
+      SELECT f.field_id, f.field_name, t.metric_1, t.metric_2, t.metric_3, t.rationale 
+      FROM Field f 
+      JOIN TIMEDMETRICS t ON f.field_id = t.field_id 
+      WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id)
+    `);
 
     if (fieldQuery.rowCount === 0) {
-      console.log("No fields found in the database.");
+      console.log("No fields found.");
       return "NO_FIELDS";
     }
 
@@ -135,66 +127,25 @@ let updateExistingFieldMetrics = async () => {
       metric_3: ${row.metric_3}
       rationale: ${row.rationale}`).join('\n\n');
 
-      const dynamicPrompt = `
-      You are an RBC analyst responsible for tracking the latest technological advancements relevant to the banking industry. 
-      Below are the existing fields, their current metric scores, and rationales:
-      ${fieldData}
-      
-      Please update their metric scores based on their latest developments, maintaining the following format strictly:
-      field_name:(insert field name here)
-      metric_1: provide your answer on a scale of 0 to 5 (0: No meaningful developments that could impact banking in the foreseeable future.
-      1: Early-stage developments with some research or niche use cases, but no mass adoption.
-      2: Limited, incremental progress with some prototypes or use cases showing potential, but not yet widely applicable.
-      3: Moderate progress; some tangible developments, with a few major players in the industry adopting or testing it.
-      4: Near full maturity; there are multiple mainstream implementations, and it is becoming an integral part of banking operations.
-      5: Fully mature, mainstream technology with widespread adoption across the banking industry and proven impact on operations.) YOUR RESPONSE MUST ONLY BE A FLOAT
+    // Read the prompt template from file
+    let promptTemplate = await fsPromises.readFile("prompt_update_metrics.txt", "utf8");
+    let dynamicPrompt = promptTemplate.replace("{FIELD_DATA}", fieldData);
 
-      metric_2: provide your answer on a scale of 0 to 5 (0: No significant innovation in the field within the last 6 months.
-      1: Minor innovations or improvements, but not impactful or groundbreaking.
-      2: Some notable changes or advancements in the field, but not transformative.
-      3: Significant changes or improvements that could potentially change the way banking works, but still evolving.
-      4: Major shifts in the field, with some breakthrough technologies emerging that could significantly affect banking operations.
-      5: Revolutionary innovation that could radically alter the industry.) YOUR RESPONSE MUST ONLY BE A FLOAT
+    console.log("Generated Prompt:\n", dynamicPrompt);
 
-      metric_3: provide your answer on a scale between 0 to 5 (0: Not at all relevant to the banking industry.
-      1: Low relevance; could be tangentially useful in niche cases but not a priority.
-      2: Some relevance to banking, but not a key focus or priority for the industry.
-      3: Moderate relevance; important for certain banking functions or market segments but not a universal need.
-      4: High relevance; expected to impact several areas of banking, with the potential for significant changes.
-      5: Critical relevance; projected to revolutionize the banking industry and become essential in the near future.) YOUR RESPONSE MUST ONLY BE A FLOAT
-      rationale: Provide a brief explanation of why you are grading these new fields this way FOR EACH OF THE PREVIOUS FLOATS and any potential applications RBC could use to either match or be ahead of its competitors for, YOUR ANSWER MUST BE A STRING
-
-      source: provide where you got this information from YOUR ANSWER MUST BE A STRING AND IDEALLY IS A PLAIN URL and NOT in brackets or quotes.
-      ---
-      (Repeat the above format for each field)
-      **DO NOT** include any extra commentary. **DO NOT** modify the format.
-    `;
-
-    console.log("Generated Dynamic Prompt for Updating Metrics:\n", dynamicPrompt);
-
-    // Call OpenAI with the dynamically generated prompt
+    // Call OpenAI
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
-      messages: [{ "role": "system", "content": dynamicPrompt }],
+      messages: [{ role: "system", content: dynamicPrompt }],
       temperature: 0,
       max_tokens: 2048,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0
+      top_p: 1
     });
 
-    const aiResponse = response.choices[0]?.message?.content?.trim() || "";
+    return response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
 
-    if (!aiResponse) {
-      console.error("AI response is empty or invalid.");
-      return "NO_VALID_AI_RESPONSE";
-    }
-
-    console.log("Raw AI Response:\n", aiResponse);
-
-    return aiResponse;
   } catch (error) {
-    console.error("Error fetching fields or calling OpenAI:", error);
+    console.error("Error:", error);
     return "ERROR: Unable to process request.";
   }
 };
@@ -270,71 +221,35 @@ app.post("/gpt-update-metrics", async (req, res) => {
 // Used for new fields generation
 let promptAIField = async () => {
   try {
-    // Fetch current field names from the database
+    // Fetch current field names
     const fieldQuery = await pool.query("SELECT field_name FROM Field");
     const fieldNames = fieldQuery.rows.map(row => row.field_name).join(", ");
 
-    // Inject the field names into the prompt
-    const dynamicPrompt = `
-      You are one of RBC's most critical and harsh analysts in charge of both keeping track of the current developments in the technology industry that are relevant to RBC and its competitors.
-      A current list of fields of technology that are relevant to the banking industry are: ${fieldNames}. 
-      Please add any new fields to this list as needed but you must ensure that it is relevant to banking.
-      
-      Provide the output of the new relevant field IF THERE ARE ANY in the following **STRICT FORMAT**:
-        
-      field_name: provide the field of technology (MUST BE A STRING).
-      description: a brief description of the field of technology on the whole (MUST BE A STRING)
-      metric_1: provide your answer on a scale of 0 to +5 (0: No meaningful developments that could impact banking in the foreseeable future.
-      1: Early-stage developments with some research or niche use cases, but no mass adoption.
-      2: Limited, incremental progress with some prototypes or use cases showing potential, but not yet widely applicable.
-      3: Moderate progress; some tangible developments, with a few major players in the industry adopting or testing it.
-      4: Near full maturity; there are multiple mainstream implementations, and it is becoming an integral part of banking operations.
-      5: Fully mature, mainstream technology with widespread adoption across the banking industry and proven impact on operations.) YOUR RESPONSE MUST ONLY BE A FLOAT
+    // Read and inject into prompt
+    let promptTemplate = await fsPromises.readFile("prompt_new_fields.txt", "utf8");
+    let dynamicPrompt = promptTemplate.replace("{CURRENT_FIELDS}", fieldNames);
 
-      metric_2: provide your answer on a scale of 0 to +5 (0: No significant innovation in the field within the last 6 months.
-      1: Minor innovations or improvements, but not impactful or groundbreaking.
-      2: Some notable changes or advancements in the field, but not transformative.
-      3: Significant changes or improvements that could potentially change the way banking works, but still evolving.
-      4: Major shifts in the field, with some breakthrough technologies emerging that could significantly affect banking operations.
-      5: Revolutionary innovation that could radically alter the industry.) YOUR RESPONSE MUST ONLY BE A FLOAT
+    console.log("Generated Prompt:\n", dynamicPrompt);
 
-      metric_3: provide your answer on a scale between 0-5 (0: Not at all relevant to the banking industry.
-      1: Low relevance; could be tangentially useful in niche cases but not a priority.
-      2: Some relevance to banking, but not a key focus or priority for the industry.
-      3: Moderate relevance; important for certain banking functions or market segments but not a universal need.
-      4: High relevance; expected to impact several areas of banking, with the potential for significant changes.
-      5: Critical relevance; projected to revolutionize the banking industry and become essential in the near future.) YOUR RESPONSE MUST ONLY BE A FLOAT
-      rationale: Provide a brief explanation of why you are grading these new fields this way FOR EACH OF THE PREVIOUS FLOATS and any potential applications RBC could use to either match or be ahead of its competitors for, YOUR ANSWER MUST BE A STRING
-
-      source: provide where you got this information from YOUR ANSWER MUST BE A STRING AND IDEALLY IS A PLAIN URL and NOT in brackets or quotes.
-      
-      (Repeat the above format for each new relevant field)
-      **DO NOT** include any extra commentary. **DO NOT** modify the format.
-          `;
-
-          console.log("Generated Dynamic Prompt:\n", dynamicPrompt); // Debugging: Check the final prompt
-
-    // Call OpenAI with the dynamically generated prompt
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
-      messages: [{ "role": "system", "content": dynamicPrompt }],
+      messages: [{ role: "system", content: dynamicPrompt }],
       temperature: 0,
       max_tokens: 2048,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0
+      top_p: 1
     });
 
-    return response.choices[0].message.content;
+    return response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
 
   } catch (error) {
-    console.error("Error fetching fields from database or calling OpenAI:", error);
+    console.error("Error:", error);
     return "ERROR: Unable to process request.";
   }
 };
 
 
-// New endpoint for prompt_field.txt execution
+
+// New endpoint
 app.post("/gpt-field", async (req, res) => {
   let aiResponse = await promptAIField();
   console.log("Raw AI Response:\n", aiResponse);
