@@ -48,6 +48,16 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     // Filter data to include only the most recent entries for each field
     const filteredData = filterMostRecentData(rawData);
     setData(filteredData);
+
+    // Log the filtered points' names and metrics
+    filteredData.forEach(point => {
+      console.log(
+        `Field Name: ${point.field_name}, ` +
+        `Metric 1 (Interest): ${point.metric_1}, ` +
+        `Metric 2 (Innovation): ${point.metric_2}, ` +
+        `Metric 3 (Investment): ${point.metric_3}`
+      );
+    });
   }, [technology, homePage, radarData]);
 
   const filterMostRecentData = (data) => {
