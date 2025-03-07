@@ -24,18 +24,30 @@ const AIPromptFieldButton = () => {
       console.log("Metrics reevaluated successfully. Proceeding to new field generation...");
 
       // Step 2: Proceed with generating new fields
-      const response = await fetch('http://localhost:4000/gpt-field', {
+      const fieldResponse = await fetch('http://localhost:4000/gpt-field', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
 
-      if (!response.ok) {
-        throw new Error(`Field generation failed: ${response.statusText}`);
+      if (!fieldResponse.ok) {
+        throw new Error(`Field generation failed: ${fieldResponse.statusText}`);
       }
 
-      const data = await response.text();
-      console.log("AI Response:", data);
-      setGeneratedText(data);
+      console.log("Fields generated successfully. Proceeding to insight generation...");
+
+      // Step 3: Trigger insight generation
+      const insightResponse = await fetch('http://localhost:4000/generate-insight', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!insightResponse.ok) {
+        throw new Error(`Insight generation failed: ${insightResponse.statusText}`);
+      }
+
+      const insightData = await insightResponse.json();
+      console.log("Insight generated successfully:", insightData.insight);
+      setGeneratedText(insightData.insight);
 
     } catch (error) {
       console.error('Error:', error);
@@ -52,7 +64,7 @@ const AIPromptFieldButton = () => {
       </button>
       {generatedText && (
         <div>
-          <h3>Generated Text:</h3>
+          <h3>Generated Insight:</h3>
           <p>{generatedText}</p>
         </div>
       )}
