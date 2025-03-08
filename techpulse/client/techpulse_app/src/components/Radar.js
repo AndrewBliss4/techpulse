@@ -197,13 +197,13 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
 
                       <XAxis type="number" dataKey="metric_1" name="Interest"
                         domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} label={{
-                          value: 'Interest, score (0 = lower; 1 = higher)',
+                          value: 'Interest, score (0 = lower; 5 = higher)',
                           position: 'bottom', offset: 0, fontWeight: 'bold'
                         }} />
 
                       <YAxis type="number" dataKey="metric_2" name="Innovation"
                         domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]}>
-                        <Label value="Innovation, score (0 = lower; 1 = higher)" position="insideLeft" angle={-90} style={{ textAnchor: 'middle', fontWeight: 'bold' }} />
+                        <Label value="Innovation, score (0 = lower; 5 = higher)" position="insideLeft" angle={-90} style={{ textAnchor: 'middle', fontWeight: 'bold' }} />
                       </YAxis>
 
                       <ZAxis type="number" dataKey="metric_3" range={[100, 5000]} name="Investment" />
