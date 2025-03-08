@@ -88,43 +88,36 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
 
   const handleFilterClick = (point) => {
     // Check if this point is currently selected
-    const isSelected = data.find(d => d.field_id === point.field_id && d.fillOpacity === 0.7);
+    const isCurrentlySelected = selectedTechnology === point.field_name;
 
-    setSelectedTechnology(point.field_name);
-
-    if (selectedField === 'timeline') {
-      if (isSelected) {
-        // If unselecting in timeline view, show all technologies again
-        const allHistoricalData = radarData.map(d => ({
-          ...d,
-          metric_date: Date.parse(d.metric_date),
-        }));
-        setHistoricalData(allHistoricalData);
-      } else {
-        // If selecting new technology in timeline view
-        const fieldHistoricalData = radarData
-          .filter(d => d.field_id === point.field_id)
-          .map(d => ({
-            ...d,
-            metric_date: Date.parse(d.metric_date),
-          }));
-        setHistoricalData(fieldHistoricalData);
-      }
-    }
-    
-    // Update the data opacity regardless of view
-    if (isSelected) {
-      // Reset all points to unselected state (dim all)
+    if (isCurrentlySelected) {
+      // If clicking the already selected technology, deselect it
+      setSelectedTechnology(null);
+      // Show all technologies again
+      const allHistoricalData = radarData.map(d => ({
+        ...d,
+        metric_date: Date.parse(d.metric_date),
+      }));
       setData(data.map(d => ({
         ...d,
-        fillOpacity: 0.1, // Set all to dim opacity when deselecting
+        fillOpacity: 0.7, // Set all to normal opacity when deselecting
       })));
+      setHistoricalData(allHistoricalData);
     } else {
-      // When selecting a new point, dim all others
+      // If selecting a different technology (or first selection)
+      setSelectedTechnology(point.field_name);
       setData(data.map(d => ({
         ...d,
         fillOpacity: d.field_id === point.field_id ? 0.7 : 0.1,
       })));
+      // Filter historical data for the selected technology
+      const fieldHistoricalData = radarData
+        .filter(d => d.field_id === point.field_id)
+        .map(d => ({
+          ...d,
+          metric_date: Date.parse(d.metric_date),
+        }));
+      setHistoricalData(fieldHistoricalData);
     }
     setClickedDataPoint(null);
   };
@@ -404,8 +397,8 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
             onClick={() => handleFilterClick(point)}
             style={{
               padding: '8px 16px',
-              backgroundColor: data.find(d => d.field_id === point.field_id && d.fillOpacity === 0.7) ? '#2466e0' : 'white',
-              color: data.find(d => d.field_id === point.field_id && d.fillOpacity === 0.7) ? 'white' : '#333',
+              backgroundColor: selectedTechnology === point.field_name ? '#2466e0' : 'white',
+              color: selectedTechnology === point.field_name ? 'white' : '#333',
               border: '1px solid #ccc',
               borderRadius: '5px',
               cursor: 'pointer',
