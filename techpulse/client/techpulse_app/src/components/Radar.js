@@ -125,13 +125,13 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
             <CartesianGrid />
 
             <XAxis type="number" dataKey="metric_1" name="Interest"
-              domain={[0, 5]} label={{
+              domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} label={{
                 value: 'Interest, score (0 = lower; 1 = higher)',
                 position: 'bottom', offset: 0, fontWeight: 'bold'
               }} />
 
             <YAxis type="number" dataKey="metric_2" name="Innovation"
-              domain={[0, 5]}>
+              domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]}>
               <Label value="Innovation, score (0 = lower; 1 = higher)" position="insideLeft" angle={-90} style={{ textAnchor: 'middle', fontWeight: 'bold' }} />
             </YAxis>
 
@@ -261,15 +261,15 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               <XAxis
                 dataKey="metric_date"
                 type="number"
-                domain={['auto', 'auto']} // Autoscale the X-axis
+                domain={[dataMin => dataMin, 'auto']} // Start at the earliest timestamp, auto-scale upper bound
                 tickFormatter={formatDate} // Format timestamps to readable dates
               />
-              <YAxis />
+              <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} />
               <Tooltip labelFormatter={formatDate} />
               <Legend />
-              <Line type="monotone" dataKey="metric_1" name="Interest" stroke="#8884d8" />
-              <Line type="monotone" dataKey="metric_2" name="Innovation" stroke="#82ca9d" />
-              <Line type="monotone" dataKey="metric_3" name="Investment" stroke="#ffc658" />
+              <Line type="monotone" dataKey="metric_1" name="Interest" stroke="#005daa" />
+              <Line type="monotone" dataKey="metric_2" name="Innovation" stroke="#000000" />
+              <Line type="monotone" dataKey="metric_3" name="Investment" stroke="#ffd200" />
             </LineChart>
           </ResponsiveContainer>
         </div>
