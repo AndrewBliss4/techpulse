@@ -298,9 +298,9 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                         borderRadius: '5px'
                       }}>
                         <p><strong>{formatDate(point.metric_date)}</strong></p>
-                        <p>Interest: {(point.metric_1).toFixed(2)}</p>
-                        <p>Innovation: {(point.metric_2).toFixed(2)}</p>
-                        <p>Investment: {(point.metric_3).toFixed(2)}</p>
+                        <p>Interest: {(point.metric_1).toFixed(2)+"/5.00"}</p>
+                        <p>Innovation: {(point.metric_2).toFixed(2)+"/5.00"}</p>
+                        <p>Relevance: {(point.metric_3).toFixed(2)+"/5.00"}</p>
                       </div>
                     );
                   }
@@ -310,7 +310,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               <Legend />
               <Line type="monotone" dataKey="metric_1" name="Interest" stroke="#005daa" />
               <Line type="monotone" dataKey="metric_2" name="Innovation" stroke="#000000" />
-              <Line type="monotone" dataKey="metric_3" name="Investment" stroke="#ffd200" />
+              <Line type="monotone" dataKey="metric_3" name="Relevance" stroke="#ffd200" />
             </LineChart>
           </ResponsiveContainer>
         </div>
