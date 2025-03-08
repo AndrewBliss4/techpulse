@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, ResponsiveContainer } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, ResponsiveContainer, LineChart, Line, Legend } from 'recharts';
 import { useEffect, useState } from 'react';
 
 // Chart data pipeline
@@ -10,6 +10,8 @@ import {
 
 const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [data, setData] = useState([]);
+  const [historicalData, setHistoricalData] = useState([]); // State for historical data
+  const [selectedField, setSelectedField] = useState(null); // Track the selected field
 
   useEffect(() => {
     let rawData = radarData;
@@ -48,16 +50,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     // Filter data to include only the most recent entries for each field
     const filteredData = filterMostRecentData(rawData);
     setData(filteredData);
-
-    // Log the filtered points' names and metrics
-    filteredData.forEach(point => {
-      console.log(
-        `Field Name: ${point.field_name}, ` +
-        `Metric 1 (Interest): ${point.metric_1}, ` +
-        `Metric 2 (Innovation): ${point.metric_2}, ` +
-        `Metric 3 (Investment): ${point.metric_3}`
-      );
-    });
   }, [technology, homePage, radarData]);
 
   const filterMostRecentData = (data) => {
@@ -89,6 +81,40 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
       }, 100);
       radarSearch(dataPoint.name);
     }
+  };
+
+  const handleFilterClick = (point) => {
+    // Check if this point is currently selected
+    const isSelected = data.find(d => d.field_id === point.field_id && d.fillOpacity === 0.7);
+
+    if (isSelected) {
+      // If clicking selected point, reset all points
+      setData(filterMostRecentData(radarData));
+      setHistoricalData([]); // Clear historical data
+      setSelectedField(null); // Clear selected field
+    } else {
+      // Show only the clicked point
+      setData(data.map(d => ({
+        ...d,
+        fillOpacity: d.field_id === point.field_id ? 0.7 : 0.1,
+      })));
+
+      // Fetch historical data for the selected field
+      const fieldHistoricalData = radarData
+        .filter(d => d.field_id === point.field_id)
+        .map(d => ({
+          ...d,
+          metric_date: Date.parse(d.metric_date), // Convert date to timestamp
+        }));
+      setHistoricalData(fieldHistoricalData);
+      setSelectedField(point.field_name); // Set the selected field name
+    }
+  };
+
+  // Format timestamp to readable date (YYYY-MM-DD)
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   };
 
   return (
@@ -189,21 +215,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         {data.map((point) => (
           <button
             key={point.field_id}
-            onClick={() => {
-              // Check if this point is currently selected
-              const isSelected = data.find(d => d.field_id === point.field_id && d.fillOpacity === 0.7);
-              
-              if (isSelected) {
-                // If clicking selected point, reset all points
-                setData(filterMostRecentData(radarData));
-              } else {
-                // Show only the clicked point
-                setData(data.map(d => ({
-                  ...d,
-                  fillOpacity: d.field_id === point.field_id ? 0.7 : 0.1,
-                })));
-              }
-            }}
+            onClick={() => handleFilterClick(point)}
             style={{
               padding: '8px 16px',
               backgroundColor: data.find(d => d.field_id === point.field_id && d.fillOpacity === 0.7) ? '#2466e0' : 'white',
@@ -238,6 +250,30 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
             : "Click a technology to show its rationale"}
         </p>
       </div>
+
+      {/* Timeline Graph */}
+      {selectedField && (
+        <div style={{ marginTop: '20px', width: '100%', height: '300px' }}>
+          <h4 style={{ textAlign: 'center' }}>Historical Metrics for {selectedField}</h4>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={historicalData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="metric_date"
+                type="number"
+                domain={['auto', 'auto']} // Autoscale the X-axis
+                tickFormatter={formatDate} // Format timestamps to readable dates
+              />
+              <YAxis />
+              <Tooltip labelFormatter={formatDate} />
+              <Legend />
+              <Line type="monotone" dataKey="metric_1" name="Interest" stroke="#8884d8" />
+              <Line type="monotone" dataKey="metric_2" name="Innovation" stroke="#82ca9d" />
+              <Line type="monotone" dataKey="metric_3" name="Investment" stroke="#ffc658" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </div>
   );
 };
