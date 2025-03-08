@@ -128,7 +128,9 @@ let updateExistingFieldMetrics = async () => {
       metric_1: ${row.metric_1}
       metric_2: ${row.metric_2}
       metric_3: ${row.metric_3}
-      rationale: ${row.rationale}`).join('\n\n');
+      rationale: ${row.rationale},
+      metric_date: ${row.metric_date}`).join('\n\n');
+      
 
     // Read the prompt template from file
     let promptTemplate = await fsPromises.readFile("prompt_update_metrics.txt", "utf8");
