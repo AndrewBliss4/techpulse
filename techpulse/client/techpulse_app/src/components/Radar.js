@@ -13,9 +13,9 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   // Function to generate distinct colors using HSL
   const generateDistinctColors = (numColors) => {
     const colors = [];
-    const hueStep = 360 / numColors; // Divide the hue spectrum into equal parts
-    const saturation = 70; // 70% saturation
-    const lightness = 50; // 50% lightness
+    const hueStep = 720 / numColors; // Divide the hue spectrum into equal parts
+    const saturation = 90; // 70% saturation
+    const lightness = 45; // 50% lightness
 
     for (let i = 0; i < numColors; i++) {
       const hue = i * hueStep;
