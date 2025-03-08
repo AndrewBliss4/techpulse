@@ -3,12 +3,6 @@ import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Lab
 import { useEffect, useState } from 'react';
 import { RadarIcon, TrendingUp } from 'lucide-react';
 
-// Chart data pipeline
-import {
-  homeData, appliedAiData, arVrTechnologyData, renewableEnergyTechData, quantumComputingData, bioengineeringData,
-  cloudComputingData, cybersecurityData, generativeAiData
-} from './SampleData';
-
 const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [data, setData] = useState([]);
   const [historicalData, setHistoricalData] = useState([]); // State for historical data
@@ -36,38 +30,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
 
   useEffect(() => {
     let rawData = radarData;
-
-    if (!homePage && technology !== '') {
-      switch (technology) {
-        case 'Applied AI':
-          rawData = appliedAiData;
-          break;
-        case 'AR/VR Technology':
-          rawData = arVrTechnologyData;
-          break;
-        case 'Renewable Energy Tech':
-          rawData = renewableEnergyTechData;
-          break;
-        case 'Quantum Technologies':
-          rawData = quantumComputingData;
-          break;
-        case 'Bioengineering':
-          rawData = bioengineeringData;
-          break;
-        case 'Cloud Computing':
-          rawData = cloudComputingData;
-          break;
-        case 'Cybersecurity':
-          rawData = cybersecurityData;
-          break;
-        case 'Generative AI':
-          rawData = generativeAiData;
-          break;
-        default:
-          rawData = radarData;
-      }
-    }
-
     // Filter data to include only the most recent entries for each field
     const filteredData = filterMostRecentData(rawData);
     setData(filteredData);
@@ -107,7 +69,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const handleFilterClick = (point) => {
     // Check if this point is currently selected
     const isCurrentlySelected = selectedTechnology === point.field_name;
-
     if (isCurrentlySelected) {
       // If clicking the already selected technology, deselect it
       setSelectedTechnology(null);
