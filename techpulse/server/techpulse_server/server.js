@@ -300,8 +300,8 @@ app.post("/gpt-field", async (req, res) => {
       if (existingField.rowCount === 0) {
         // Insert new field
         const result = await pool.query(
-          `INSERT INTO Field (field_name, description, funding) VALUES ($1, $2, $3) RETURNING field_id`,
-          [fieldName, description, 0]
+          `INSERT INTO Field (field_name, description) VALUES ($1, $2) RETURNING field_id`,
+          [fieldName, description]
         );
         fieldId = result.rows[0].field_id;
         console.log(`New field '${fieldName}' added.`);
@@ -402,12 +402,26 @@ const generateInsight = async () => {
 
     const generatedInsight = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
 
+    // Log the raw AI response for debugging
+    console.log("Raw AI Response:\n", generatedInsight);
+
+    // Extract the confidence score from the generated insight
+    let confidenceScore = 0.9; // Default value if extraction fails
+    const confidenceScoreMatch = generatedInsight.match(/Confidence Score:(\s*[\d.]+)/);
+
+    if (confidenceScoreMatch && confidenceScoreMatch[1]) {
+      confidenceScore = parseFloat(confidenceScoreMatch[1]);
+      console.log("Extracted Confidence Score:", confidenceScore);
+    } else {
+      console.warn("Confidence score not found in AI response. Using default value:", confidenceScore);
+    }
+
     // Insert the generated insight into the Insight table
     if (generatedInsight !== "NO_VALID_AI_RESPONSE") {
       await pool.query(
         `INSERT INTO Insight (field_id, insight_text, confidence_score)
          VALUES ($1, $2, $3)`,
-        [metricsQuery.rows[0].field_id, generatedInsight, 0.9] // Assuming a confidence score of 0.9
+        [null, generatedInsight, confidenceScore]
       );
     }
 

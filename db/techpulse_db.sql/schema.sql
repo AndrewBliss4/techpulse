@@ -1,16 +1,36 @@
--- Create Field table
+-- Create Field Table
 CREATE TABLE Field (
     field_id SERIAL PRIMARY KEY,
     field_name VARCHAR(255) NOT NULL,
-    description TEXT,
-    funding BIGINT
+    description TEXT
 );
 
--- Insert default entry into Field table
---INSERT INTO Field (field_id, field_name, description, funding)
---VALUES (0, 'TEST', 'TEST', 0);
+-- Create Subfield Table
+CREATE TABLE Subfield (
+    subfield_id SERIAL PRIMARY KEY,
+    field_id INT NOT NULL REFERENCES Field(field_id) ON DELETE CASCADE, -- Field reference, NOT NULL
+    subfield_name VARCHAR(255) NOT NULL,
+    description TEXT
+);
 
--- Create Insight table
+-- Create TimedMetrics Table
+CREATE TABLE TimedMetrics (
+    timed_metric_id SERIAL PRIMARY KEY,
+    metric_1 FLOAT NOT NULL,
+    metric_2 FLOAT NOT NULL,
+    metric_3 FLOAT,
+    metric_date TIMESTAMP NOT NULL,
+    field_id INT REFERENCES Field(field_id) ON DELETE CASCADE, -- Field reference
+    subfield_id INT REFERENCES Subfield(subfield_id) ON DELETE CASCADE, -- Subfield reference
+    rationale TEXT,
+    source TEXT,
+    CHECK (
+        (field_id IS NOT NULL AND subfield_id IS NULL) OR 
+        (subfield_id IS NOT NULL AND field_id IS NULL)
+    ) -- Ensures a TimedMetric entry belongs to either a Field or Subfield, not both
+);
+
+-- Create Insight Table
 CREATE TABLE Insight (
     insight_id SERIAL PRIMARY KEY,
     field_id INT REFERENCES Field(field_id) ON DELETE CASCADE,
@@ -19,25 +39,13 @@ CREATE TABLE Insight (
     generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create Feedback table
+-- Create Feedback Table
 CREATE TABLE Feedback (
     feedback_id SERIAL PRIMARY KEY,
     insight_id INT REFERENCES Insight(insight_id) ON DELETE CASCADE,
     feedback_text TEXT,
-    rating INT CHECK (rating BETWEEN 1 AND 5),
+    rating FLOAT CHECK (rating BETWEEN -1 AND +1), -- Rating now between -1 and +1
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Create TIMEDMETRICS table with FLOAT metrics
-CREATE TABLE TIMEDMETRICS (
-    timed_metric_id SERIAL PRIMARY KEY,
-    metric_1 FLOAT NOT NULL,
-    metric_2 FLOAT NOT NULL,
-    metric_3 FLOAT,
-    metric_date TIMESTAMP NOT NULL, -- Changed from DATE to TIMESTAMP
-    field_id INT REFERENCES Field(field_id) ON DELETE CASCADE,
-    rationale TEXT,
-    source TEXT
 );
 
 -- Create admin role with all privileges
