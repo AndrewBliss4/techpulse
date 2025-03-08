@@ -325,3 +325,111 @@ app.post("/gpt-field", async (req, res) => {
     res.status(500).send("Error processing fields.");
   }
 });
+
+
+//insight generation
+const generateInsight = async () => {
+  try {
+    // Fetch the most recent timed metrics and rationales for each field
+    const metricsQuery = await pool.query(`
+      SELECT 
+        f.field_id,
+        f.field_name,
+        t.metric_1,
+        t.metric_2,
+        t.metric_3,
+        t.rationale,
+        t.metric_date
+      FROM 
+        Field f
+      JOIN 
+        TIMEDMETRICS t 
+      ON 
+        f.field_id = t.field_id
+      WHERE 
+        t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id)
+    `);
+
+    if (metricsQuery.rowCount === 0) {
+      console.log("No metrics found.");
+      return "NO_METRICS";
+    }
+
+    // Fetch the previous insight, if it exists
+    const previousInsightQuery = await pool.query(`
+      SELECT 
+        i.insight_text,
+        i.generated_at
+      FROM 
+        Insight i
+      ORDER BY 
+        i.generated_at DESC
+      LIMIT 1
+    `);
+
+    const previousInsight = previousInsightQuery.rowCount > 0 ? previousInsightQuery.rows[0] : null;
+
+    // Construct the dynamic prompt
+    let promptTemplate = await fsPromises.readFile("insight_prompt.txt", "utf8");
+
+    const metricsData = metricsQuery.rows.map(row => `
+      field_name: ${row.field_name}
+      metric_1: ${row.metric_1}
+      metric_2: ${row.metric_2}
+      metric_3: ${row.metric_3}
+      rationale: ${row.rationale}
+      metric_date: ${row.metric_date}`).join('\n\n');
+
+    const previousInsightText = previousInsight ? `
+      Previous Insight:
+      ${previousInsight.insight_text}
+      Generated At: ${previousInsight.generated_at}` : "No previous insight available.";
+
+    const dynamicPrompt = promptTemplate
+      .replace("{METRICS_DATA}", metricsData)
+      .replace("{PREVIOUS_INSIGHT}", previousInsightText);
+
+    console.log("Generated Prompt:\n", dynamicPrompt);
+
+    // Call OpenAI to generate the insight
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [{ role: "system", content: dynamicPrompt }],
+      temperature: 0,
+      max_tokens: 2048,
+      top_p: 1
+    });
+
+    const generatedInsight = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
+
+    // Insert the generated insight into the Insight table
+    if (generatedInsight !== "NO_VALID_AI_RESPONSE") {
+      await pool.query(
+        `INSERT INTO Insight (field_id, insight_text, confidence_score)
+         VALUES ($1, $2, $3)`,
+        [metricsQuery.rows[0].field_id, generatedInsight, 0.9] // Assuming a confidence score of 0.9
+      );
+    }
+
+    return generatedInsight;
+
+  } catch (error) {
+    console.error("Error:", error);
+    return "ERROR: Unable to process request.";
+  }
+};
+app.post("/generate-insight", async (req, res) => {
+  let aiResponse = await generateInsight();
+  console.log("Raw AI Response:\n", aiResponse);
+
+  if (aiResponse === "NO_METRICS") {
+    return res.status(200).send("No metrics available for insight generation.");
+  }
+
+  if (aiResponse === "NO_VALID_AI_RESPONSE") {
+    console.warn("AI response was invalid, but proceeding with request completion.");
+    return res.status(200).send("AI response was empty or invalid, but request completed.");
+  }
+
+  res.status(200).json({ insight: aiResponse });
+});
