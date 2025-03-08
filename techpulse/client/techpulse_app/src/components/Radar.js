@@ -12,6 +12,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [data, setData] = useState([]);
   const [historicalData, setHistoricalData] = useState([]); // State for historical data
   const [selectedField, setSelectedField] = useState(null); // Track the selected field
+  const [hoveredDataPoint, setHoveredDataPoint] = useState(null); // State for hovered data point
 
   useEffect(() => {
     let rawData = radarData;
@@ -256,7 +257,15 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         <div style={{ marginTop: '20px', width: '100%', height: '300px' }}>
           <h4 style={{ textAlign: 'center' }}>Historical Metrics for {selectedField}</h4>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={historicalData}>
+            <LineChart
+              data={historicalData}
+              onMouseMove={(e) => {
+                if (e.activePayload) {
+                  setHoveredDataPoint(e.activePayload[0].payload);
+                }
+              }}
+              onMouseLeave={() => setHoveredDataPoint(null)}
+            >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="metric_date"
@@ -265,13 +274,52 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                 tickFormatter={formatDate} // Format timestamps to readable dates
               />
               <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} />
-              <Tooltip labelFormatter={formatDate} />
+              <Tooltip
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const point = payload[0].payload;
+                    return (
+                      <div style={{
+                        backgroundColor: 'white',
+                        padding: '10px',
+                        border: '1px solid #ccc',
+                        borderRadius: '5px'
+                      }}>
+                        <p><strong>{formatDate(point.metric_date)}</strong></p>
+                        <p>Interest: {(point.metric_1).toFixed(2)}</p>
+                        <p>Innovation: {(point.metric_2).toFixed(2)}</p>
+                        <p>Investment: {(point.metric_3).toFixed(2)}</p>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
               <Legend />
               <Line type="monotone" dataKey="metric_1" name="Interest" stroke="#005daa" />
               <Line type="monotone" dataKey="metric_2" name="Innovation" stroke="#000000" />
               <Line type="monotone" dataKey="metric_3" name="Investment" stroke="#ffd200" />
             </LineChart>
           </ResponsiveContainer>
+          {/* Display rationale and sources for hovered data point */}
+          {hoveredDataPoint && (
+            <div style={{
+              padding: '15px',
+              backgroundColor: '#f8f9fa',
+              border: '1px solid #e1e4e8',
+              borderRadius: '6px',
+              marginTop: '20px',
+              width: '100%',
+              overflowY: 'auto'
+            }}>
+              <p style={{ margin: 0, color: '#666' }}>
+                <strong>Rationale:</strong> {hoveredDataPoint.rationale || "No rationale available."}
+              </p>
+              <p style={{ margin: 0, color: '#666' }}>
+                <strong>Sources:</strong> {hoveredDataPoint.sources || "No sources available."}
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>
