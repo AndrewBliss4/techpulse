@@ -254,7 +254,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               </div>
             )}
 
-            {/* Right Container - Timeline Tab */}
+            {/*Timeline Tab*/}
             {selectedField === 'timeline' && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
                 {/* Timeline Graph */}
@@ -362,7 +362,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         overflowY: 'auto',
         borderTop: '1px solid #e1e4e8',
         width: '100%',
-        marginBottom: '15px'
+        marginBottom: '15px',
       }}>
         {data.map((point, index) => {
           const backgroundColor = colors[index % colors.length];
@@ -389,7 +389,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         })}
       </div>
 
-      {/* Rationale section - moved outside of tabs */}
+      {/*Rationale section*/}
       <div style={{
         padding: '15px',
         backgroundColor: '#f8f9fa',
@@ -405,13 +405,20 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         }}>
           {clickedDataPoint
             ? <>
+
               <strong>Date of Scoring:</strong> {formatDate(clickedDataPoint.metric_date)}<br />
               <strong>Rationale:</strong> {clickedDataPoint.rationale || "No rationale available."}<br />
+              <strong>Field Description: </strong>{clickedDataPoint.description || "No description available"}<br />
               <strong>Sources:</strong> {clickedDataPoint.source || "No sources available."}
             </>
-            : (data.find(d => d.fillOpacity === 0.7)
-              ? data.find(d => d.fillOpacity === 0.7).rationale
-              : "Click a technology to show its rationale")
+            : (selectedTechnology
+              ? <>
+                <strong>Rationale:</strong> {data.find(d => d.field_name === selectedTechnology)?.rationale || "No rationale available."}<br />
+                <strong>Field Description:</strong> {data.find(d => d.field_name === selectedTechnology)?.description || "No description available."}<br />
+                <strong>Sources:</strong> {data.find(d => d.field_name === selectedTechnology)?.source || "No sources available."}
+              </>
+              : "Click a technology to show its description and rationale."
+            )
           }
         </p>
       </div>
