@@ -195,10 +195,10 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               
               if (isSelected) {
                 // If clicking selected point, reset all points
-                setData(radarData);
+                setData(filterMostRecentData(radarData));
               } else {
                 // Show only the clicked point
-                setData(radarData.map(d => ({
+                setData(data.map(d => ({
                   ...d,
                   fillOpacity: d.field_id === point.field_id ? 0.7 : 0.1,
                 })));
