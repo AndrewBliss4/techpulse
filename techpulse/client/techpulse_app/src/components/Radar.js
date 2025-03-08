@@ -135,7 +135,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                 onClick={() => {
                   // Get currently selected technology
                   const selectedPoint = data.find(d => d.fillOpacity === 0.7);
-                  
+
                   if (selectedPoint) {
                     // If a technology is selected, show its timeline
                     const fieldHistoricalData = radarData
@@ -291,9 +291,15 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                                 borderRadius: '5px'
                               }}>
                                 <p><strong>{point.field_name} - {formatDate(point.metric_date)}</strong></p>
-                                <p>Interest: {(point.metric_1).toFixed(2) + "/5.00"}</p>
-                                <p>Innovation: {(point.metric_2).toFixed(2) + "/5.00"}</p>
-                                <p>Relevance: {(point.metric_3).toFixed(2) + "/5.00"}</p>
+                                <p>
+                                  <strong style={{ color: '#005daa' }}>Interest:</strong> <span style={{ color: 'black' }}>{(point.metric_1).toFixed(2) + "/5.00"}</span>
+                                </p>
+                                <p>
+                                  <strong style={{ color: '#000000' }}>Innovation:</strong> <span style={{ color: 'black' }}>{(point.metric_2).toFixed(2) + "/5.00"}</span>
+                                </p>
+                                <p>
+                                  <strong style={{ color: '#ffd200' }}>Relevance:</strong> <span style={{ color: 'black' }}>{(point.metric_3).toFixed(2) + "/5.00"}</span>
+                                </p>
                               </div>
                             );
                           }
