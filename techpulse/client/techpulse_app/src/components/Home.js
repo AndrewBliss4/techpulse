@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import '../styles/globals.css';
 import rbcLogo from '../assets/Royal-Bank-of-Canada-Logo.png';
-import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, CircleAlert, RadarIcon, MessageSquareReplyIcon, ChevronDown, ArrowRight} from 'lucide-react'
+import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, CircleAlert, MessageSquareReplyIcon, ChevronDown, ArrowRight} from 'lucide-react'
 import parse from 'html-react-parser';
 import Radar from './Radar.js';
 import Rating from './Rating.js';
@@ -367,20 +367,9 @@ const Home = () => {
 
         {/* Industry Radar */}
 
-        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
-          <div className='flex items-center space-x-2'>
-            <RadarIcon className="h-5 w-5 text-blue-600" />
-            <label
-              htmlFor="search"
-              className="block text-lg font-medium text-gray-700"
-            >
-              Industry Radar
-            </label>
-          </div>
-          <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
+
             <Radar radarData={radarData} radarSearch={radarSearch} homePage={true}></Radar>
-          </div>
-        </div>
+
 
         {/* Understanding the Radar */}
 
