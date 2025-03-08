@@ -48,7 +48,8 @@ app.get('/api/radar', async (req, res) => {
               m.metric_2,
               m.metric_3,
               m.rationale,
-              m.metric_date
+              m.metric_date,
+              m.source
           FROM 
               public.field f
           JOIN 

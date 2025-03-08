@@ -12,7 +12,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [data, setData] = useState([]);
   const [historicalData, setHistoricalData] = useState([]); // State for historical data
   const [selectedField, setSelectedField] = useState(null); // Track the selected field
-  const [hoveredDataPoint, setHoveredDataPoint] = useState(null); // State for hovered data point
+  const [clickedDataPoint, setClickedDataPoint] = useState(null); // State for clicked data point
 
   useEffect(() => {
     let rawData = radarData;
@@ -93,6 +93,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
       setData(filterMostRecentData(radarData));
       setHistoricalData([]); // Clear historical data
       setSelectedField(null); // Clear selected field
+      setClickedDataPoint(null); // Clear clicked data point
     } else {
       // Show only the clicked point
       setData(data.map(d => ({
@@ -109,6 +110,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         }));
       setHistoricalData(fieldHistoricalData);
       setSelectedField(point.field_name); // Set the selected field name
+      setClickedDataPoint(null); // Clear clicked data point
     }
   };
 
@@ -116,6 +118,10 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  };
+
+  const handleHistoricalDataPointClick = (point) => {
+    setClickedDataPoint(point);
   };
 
   return (
@@ -259,12 +265,11 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={historicalData}
-              onMouseMove={(e) => {
+              onClick={(e) => {
                 if (e.activePayload) {
-                  setHoveredDataPoint(e.activePayload[0].payload);
+                  handleHistoricalDataPointClick(e.activePayload[0].payload);
                 }
               }}
-              onMouseLeave={() => setHoveredDataPoint(null)}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
@@ -301,8 +306,8 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               <Line type="monotone" dataKey="metric_3" name="Investment" stroke="#ffd200" />
             </LineChart>
           </ResponsiveContainer>
-          {/* Display rationale and sources for hovered data point */}
-          {hoveredDataPoint && (
+          {/* Display rationale and sources for clicked data point */}
+          {clickedDataPoint && (
             <div style={{
               padding: '15px',
               backgroundColor: '#f8f9fa',
@@ -313,10 +318,10 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               overflowY: 'auto'
             }}>
               <p style={{ margin: 0, color: '#666' }}>
-                <strong>Rationale:</strong> {hoveredDataPoint.rationale || "No rationale available."}
+                <strong>Rationale:</strong> {clickedDataPoint.rationale || "No rationale available."}
               </p>
               <p style={{ margin: 0, color: '#666' }}>
-                <strong>Sources:</strong> {hoveredDataPoint.sources || "No sources available."}
+                <strong>Sources:</strong> {clickedDataPoint.source || "No sources available."}
               </p>
             </div>
           )}
