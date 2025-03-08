@@ -252,9 +252,16 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
           margin: 0,
           color: '#666',
         }}>
-          {data.find(d => d.fillOpacity === 0.7) 
-            ? data.find(d => d.fillOpacity === 0.7).rationale
-            : "Click a technology to show its rationale"}
+          {clickedDataPoint
+            ? <>
+                <strong>Date of Scoring:</strong> {formatDate(clickedDataPoint.metric_date)}<br />
+                <strong>Rationale:</strong> {clickedDataPoint.rationale || "No rationale available."}<br />
+                <strong>Sources:</strong> {clickedDataPoint.source || "No sources available."}
+              </>
+            : (data.find(d => d.fillOpacity === 0.7) 
+                ? data.find(d => d.fillOpacity === 0.7).rationale
+                : "Click a technology to show its rationale")
+          }
         </p>
       </div>
 
@@ -306,25 +313,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               <Line type="monotone" dataKey="metric_3" name="Investment" stroke="#ffd200" />
             </LineChart>
           </ResponsiveContainer>
-          {/* Display rationale and sources for clicked data point */}
-          {clickedDataPoint && (
-            <div style={{
-              padding: '15px',
-              backgroundColor: '#f8f9fa',
-              border: '1px solid #e1e4e8',
-              borderRadius: '6px',
-              marginTop: '20px',
-              width: '100%',
-              overflowY: 'auto'
-            }}>
-              <p style={{ margin: 0, color: '#666' }}>
-                <strong>Rationale:</strong> {clickedDataPoint.rationale || "No rationale available."}
-              </p>
-              <p style={{ margin: 0, color: '#666' }}>
-                <strong>Sources:</strong> {clickedDataPoint.source || "No sources available."}
-              </p>
-            </div>
-          )}
         </div>
       )}
     </div>
@@ -332,3 +320,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
 };
 
 export default Radar;
+
+
+
