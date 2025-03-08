@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, ResponsiveContainer, LineChart, Line, Legend } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { useEffect, useState } from 'react';
 import { RadarIcon, TrendingUp } from 'lucide-react';
 
@@ -15,6 +15,24 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [selectedField, setSelectedField] = useState('radar'); // Track the selected field
   const [clickedDataPoint, setClickedDataPoint] = useState(null); // State for clicked data point
   const [selectedTechnology, setSelectedTechnology] = useState(null); // State for selected technology
+
+  // Function to generate distinct colors using HSL
+  const generateDistinctColors = (numColors) => {
+    const colors = [];
+    const hueStep = 360 / numColors; // Divide the hue spectrum into equal parts
+    const saturation = 70; // 70% saturation
+    const lightness = 50; // 50% lightness
+
+    for (let i = 0; i < numColors; i++) {
+      const hue = i * hueStep;
+      colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+    }
+
+    return colors;
+  };
+
+  // Generate colors for the data points
+  const colors = generateDistinctColors(radarData.length);
 
   useEffect(() => {
     let rawData = radarData;
@@ -134,7 +152,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
 
   return (
     <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
-
       <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
         <div style={{ width: '100%', height: '800px', display: 'flex', flexDirection: 'column' }}>
           <div style={{ height: '40px' }}>
@@ -190,22 +207,20 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
             {/* Left Container - Radar Tab */}
             {(selectedField === 'radar' || !selectedField) && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                {/* Radar Chart */}
                 <div style={{ flex: 1 }}>
                   <ResponsiveContainer width="100%" height="95%">
-                    <ScatterChart margin={{ top: 40, right: 20, bottom: 40, left: 20 }}>
+                    <ScatterChart margin={{ top: 20, right: 20, bottom: 40, left: 20 }}>
                       <CartesianGrid />
-
                       <XAxis type="number" dataKey="metric_1" name="Interest"
                         domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} label={{
                           value: 'Interest, score (0 = lower; 1 = higher)',
                           position: 'bottom', offset: 0, fontWeight: 'bold'
                         }} />
-
                       <YAxis type="number" dataKey="metric_2" name="Innovation"
                         domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]}>
                         <Label value="Innovation, score (0 = lower; 1 = higher)" position="insideLeft" angle={-90} style={{ textAnchor: 'middle', fontWeight: 'bold' }} />
                       </YAxis>
-
                       <ZAxis type="number" dataKey="metric_3" range={[100, 5000]} name="Investment" />
                       <Tooltip
                         cursor={{ strokeDasharray: '3 3' }}
@@ -258,16 +273,20 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                           return null;
                         }}
                       />
-                      <Scatter
-                        name="Tech Trends"
-                        data={data}
-                        fill="#2466e0"
-                        fillOpacity={0.7}
-                        onClick={queryInsight}
-                        cursor="pointer"
-                        shape="circle"
-                        size={data.map(d => d.metric_3 * 100)} // Scaling by metric_3, adjust the factor as needed
-                      />
+                      {/* Map each data point to a Scatter component with a distinct color */}
+                      {data.map((point, index) => (
+                        <Scatter
+                          key={point.field_id}
+                          name={point.field_name}
+                          data={[point]}
+                          fill={colors[index % colors.length]} // Assign distinct color
+                          fillOpacity={0.7}
+                          onClick={() => queryInsight(point, index)}
+                          cursor="pointer"
+                          shape="circle"
+                          size={point.metric_3 * 100} // Scaling by metric_3, adjust the factor as needed
+                        />
+                      ))}
                     </ScatterChart>
                   </ResponsiveContainer>
                 </div>
@@ -320,7 +339,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                           return null;
                         }}
                       />
-                      <Legend />
                       {/* Group data by field_id and create separate lines for each technology */}
                       {Object.entries(
                         historicalData.reduce((acc, item) => {
@@ -339,10 +357,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                             name="Interest"
                             stroke="#005daa"
                             connectNulls
-                            legendType={fieldId === Object.keys(historicalData.reduce((acc, item) => {
-                              acc[item.field_id] = true;
-                              return acc;
-                            }, {}))[0] ? 'line' : 'none'}
                           />
                           <Line
                             data={points}
@@ -351,10 +365,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                             name="Innovation"
                             stroke="#000000"
                             connectNulls
-                            legendType={fieldId === Object.keys(historicalData.reduce((acc, item) => {
-                              acc[item.field_id] = true;
-                              return acc;
-                            }, {}))[0] ? 'line' : 'none'}
                           />
                           <Line
                             data={points}
@@ -363,10 +373,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                             name="Relevance"
                             stroke="#ffd200"
                             connectNulls
-                            legendType={fieldId === Object.keys(historicalData.reduce((acc, item) => {
-                              acc[item.field_id] = true;
-                              return acc;
-                            }, {}))[0] ? 'line' : 'none'}
                           />
                         </React.Fragment>
                       ))}
@@ -391,24 +397,29 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         width: '100%',
         marginBottom: '15px'
       }}>
-        {data.map((point) => (
-          <button
-            key={point.field_id}
-            onClick={() => handleFilterClick(point)}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: selectedTechnology === point.field_name ? '#2466e0' : 'white',
-              color: selectedTechnology === point.field_name ? 'white' : '#333',
-              border: '1px solid #ccc',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-            }}
-          >
-            {point.field_name}
-          </button>
-        ))}
+        {data.map((point, index) => {
+          const backgroundColor = colors[index % colors.length];
+          const isSelected = selectedTechnology === point.field_name;
+
+          return (
+            <button
+              key={point.field_id}
+              onClick={() => handleFilterClick(point)}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: isSelected ? 'white' : backgroundColor,
+                color: isSelected ? 'black' : 'white',
+                border: `1px solid ${isSelected ? '#ccc' : backgroundColor}`,
+                borderRadius: '5px',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+              }}
+            >
+              {point.field_name}
+            </button>
+          );
+        })}
       </div>
 
       {/* Rationale section - moved outside of tabs */}
