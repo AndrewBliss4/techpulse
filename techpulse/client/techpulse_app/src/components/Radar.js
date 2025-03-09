@@ -9,16 +9,29 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [selectedField, setSelectedField] = useState('radar'); // Track the selected field
   const [clickedDataPoint, setClickedDataPoint] = useState(null); // State for clicked data point
   const [selectedTechnology, setSelectedTechnology] = useState(null); // State for selected technology
+  
+  // State to toggle between colorful and blue-only mode
+  const [useColorMode, setUseColorMode] = useState(false);
 
   // Function to generate distinct colors using HSL
   const generateDistinctColors = (numColors) => {
     const colors = [];
-    const hueStep = 720 / numColors; // Divide the hue spectrum into equal parts
-    const saturation = 90; // 70% saturation
-    const lightness = 45; // 50% lightness
+    const hueStep = 360 / numColors; // Use 360 degrees for full hue spectrum
+    const saturation = 70; // 90% saturation
+    const lightness = 50; // 45% lightness
 
+    // If color mode is off, return array of blue colors
+    if (!useColorMode) {
+      for (let i = 0; i < numColors; i++) {
+        colors.push('#2466e0'); // Use the same blue color for all points
+      }
+      return colors;
+    }
+
+    // Generate distinct colors when color mode is on
     for (let i = 0; i < numColors; i++) {
-      const hue = i * hueStep;
+      // Multiply by a larger step to spread colors more evenly around the color wheel
+      const hue = (i * hueStep * 5) % 360; // Use modulo 360 to keep within valid hue range
       colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
     }
 
@@ -114,7 +127,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   return (
     <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
       <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
-        <div style={{ width: '100%', height: '800px', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ width: '100%', height: '700px', display: 'flex', flexDirection: 'column' }}>
           <div style={{ height: '40px' }}>
             <div className="flex border-b">
               <button
@@ -170,7 +183,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                 {/* Radar Chart */}
                 <div style={{ flex: 1 }}>
-                  <ResponsiveContainer width="100%" height="95%">
+                  <ResponsiveContainer width="100%" height="100%">
                     <ScatterChart margin={{ top: 20, right: 20, bottom: 40, left: 20 }}>
                       <CartesianGrid />
                       <XAxis type="number" dataKey="metric_1" name="Interest"
@@ -356,37 +369,81 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
       <div style={{
         padding: '10px',
         display: 'flex',
-        flexWrap: 'wrap',
-        gap: '8px',
-        alignContent: 'flex-start',
-        overflowY: 'auto',
-        borderTop: '1px solid #e1e4e8',
+        flexDirection: 'column',
         width: '100%',
         marginBottom: '15px',
       }}>
-        {data.map((point, index) => {
-          const backgroundColor = colors[index % colors.length];
-          const isSelected = selectedTechnology === point.field_name;
+        {/* Color mode toggle */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginBottom: '10px',
+          alignItems: 'center',
+        }}>
+          <span style={{ marginRight: '10px', fontSize: '14px' }}>
+            {useColorMode ? 'Color Legend' : 'Color Legend'}
+          </span>
+          <div 
+            onClick={() => setUseColorMode(!useColorMode)}
+            style={{
+              position: 'relative',
+              width: '50px',
+              height: '24px',
+              backgroundColor: useColorMode ? '#2466e0' : '#ccc',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              transition: 'background-color 0.3s',
+            }}
+          >
+            <div style={{
+              position: 'absolute',
+              left: useColorMode ? '26px' : '2px',
+              top: '2px',
+              width: '20px',
+              height: '20px',
+              backgroundColor: 'white',
+              borderRadius: '50%',
+              transition: 'left 0.3s',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.3)'
+            }} />
+          </div>
+        </div>
+        
+        {/* Technology buttons */}
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '8px',
+          alignContent: 'flex-start',
+          overflowY: 'auto',
+          borderTop: '1px solid #e1e4e8',
+          width: '100%',
+          padding: '10px 0',
+        }}>
+          {data.map((point, index) => {
+            const backgroundColor = colors[index % colors.length];
+            const isSelected = selectedTechnology === point.field_name;
 
-          return (
-            <button
-              key={point.field_id}
-              onClick={() => handleFilterClick(point)}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: isSelected ? 'white' : backgroundColor,
-                color: isSelected ? 'black' : 'white',
-                border: `1px solid ${isSelected ? '#ccc' : backgroundColor}`,
-                borderRadius: '5px',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-              }}
-            >
-              {point.field_name}
-            </button>
-          );
-        })}
+            return (
+              <button
+                key={point.field_id}
+                onClick={() => handleFilterClick(point)}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: isSelected ? 'white' : backgroundColor,
+                  color: isSelected ? 'black' : 'white',
+                  border: `1px solid ${isSelected ? '#ccc' : backgroundColor}`,
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                }}
+              >
+                {point.field_name}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/*Rationale section*/}
