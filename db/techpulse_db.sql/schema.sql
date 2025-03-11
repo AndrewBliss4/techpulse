@@ -43,6 +43,24 @@ CREATE TABLE Feedback (
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE ModelParameters (
+    parameter_id SERIAL PRIMARY KEY,
+    modelUse VARCHAR,
+    top_p FLOAT NOT NULL CHECK (top_p BETWEEN 0 AND 1),
+    temperature FLOAT NOT NULL CHECK (temperature BETWEEN 0 AND 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM ModelParameters WHERE modelUse = 'NewFields'
+    ) THEN
+        INSERT INTO ModelParameters (modelUse, top_p, temperature)
+        VALUES ('NewFields', 1, 0);
+    END IF;
+END $$;
+
 DO $$
 BEGIN
     IF NOT EXISTS (

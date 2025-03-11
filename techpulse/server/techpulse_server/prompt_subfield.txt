@@ -2,8 +2,8 @@ Generate subfields for the field: {FIELD_NAME}. Note that the current list of su
 
 - subfield_name: [Name of the subfield]
 - description: [Description of the subfield]
-- metric_1: [Maturity score between 0 and 1]
-- metric_2: [Innovation score between 0 and 1]
+- metric_1: [Maturity score between 0 and 5]
+- metric_2: [Innovation score between 0 and 5]
 - metric_3: [Relevance score between 0 and 1]
 - rationale: [Rationale for the metrics]
 - source: [URL source for the metrics]
