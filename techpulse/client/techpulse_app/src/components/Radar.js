@@ -466,13 +466,21 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               <strong>Date of Scoring:</strong> {formatDate(clickedDataPoint.metric_date)}<br />
               <strong>Rationale:</strong> {clickedDataPoint.rationale || "No rationale available."}<br />
               <strong>Field Description: </strong>{clickedDataPoint.description || "No description available"}<br />
-              <strong>Sources:</strong> {clickedDataPoint.source || "No sources available."}
+              <strong>Sources:</strong> {clickedDataPoint.source ? 
+                <a href={clickedDataPoint.source} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  {clickedDataPoint.source}
+                </a> : 
+                "No sources available."}
             </>
             : (selectedTechnology
               ? <>
                 <strong>Rationale:</strong> {data.find(d => d.field_name === selectedTechnology)?.rationale || "No rationale available."}<br />
                 <strong>Field Description:</strong> {data.find(d => d.field_name === selectedTechnology)?.description || "No description available."}<br />
-                <strong>Sources:</strong> {data.find(d => d.field_name === selectedTechnology)?.source || "No sources available."}
+                <strong>Sources:</strong> {data.find(d => d.field_name === selectedTechnology)?.source ? 
+                  <a href={data.find(d => d.field_name === selectedTechnology)?.source} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    {data.find(d => d.field_name === selectedTechnology)?.source}
+                  </a> : 
+                  "No sources available."}
               </>
               : "Click a technology to show its description and rationale."
             )
