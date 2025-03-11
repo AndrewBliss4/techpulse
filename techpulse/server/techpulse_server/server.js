@@ -458,24 +458,9 @@ const generateInsight = async (type) => {
     console.error("Error:", error);
     return "ERROR: Unable to process request.";
   }
-};
+}
 
-app.post("/generate-insight", async (req, res) => {
-  let aiResponse = await generateInsight("insight");
-  console.log("Raw AI Response:\n", aiResponse);
-
-  if (aiResponse === "NO_METRICS") {
-    return res.status(200).send("No metrics available for insight generation.");
-  }
-
-  if (aiResponse === "NO_VALID_AI_RESPONSE") {
-    console.warn("AI response was invalid, but proceeding with request completion.");
-    return res.status(200).send("AI response was empty or invalid, but request completed.");
-  }
-
-  res.status(200).json({ insight: aiResponse });
-});
-
+let promptAISubfield = async (fieldName) => {
   try {
     // Fetch current subfields for the given field
     const subfieldQuery = await pool.query(
@@ -483,8 +468,36 @@ app.post("/generate-insight", async (req, res) => {
       [fieldName]
     );
     const subfieldNames = subfieldQuery.rows.map(row => row.subfield_name).join(", ");
-app.post("/generate-insight-trends", async (req, res) => {
-  let aiResponse = await generateInsight("trends");
+
+    // Read and inject into prompt
+    let promptTemplate = await fsPromises.readFile("prompt_subfield.txt", "utf8");
+    let dynamicPrompt = promptTemplate
+      .replace("{FIELD_NAME}", fieldName)
+      .replace("{SUBFIELDS}", subfieldNames);
+
+    console.log("Generated Prompt:\n", dynamicPrompt);
+
+    // Call OpenAI API
+    const response = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [{ role: "system", content: dynamicPrompt }],
+      temperature: 0,
+      max_tokens: 2048,
+      top_p: 1,
+    });
+
+    return response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
+
+  } catch (error) {
+    console.error("Error:", error);
+    return "ERROR: Unable to process request.";
+  }
+};
+
+// New endpoint to handle subfield generation
+app.post("/gpt-subfield", async (req, res) => {
+  const fieldName = "Quantum Computing"; // Hardcoded for now
+  let aiResponse = await promptAISubfield(fieldName);
   console.log("Raw AI Response:\n", aiResponse);
 
   // Split AI response into separate subfield entries
@@ -583,4 +596,109 @@ app.post("/generate-insight-trends", async (req, res) => {
     console.error("Database error:", err);
     res.status(500).send("Error processing subfields.");
   }
+});
+
+let updateExistingTimedMetrics = async () => {
+  try {
+    // Fetch subfield data
+    const subfieldQuery = await pool.query(`
+      SELECT s.subfield_id, s.subfield_name, t.metric_1, t.metric_2, t.metric_3, t.rationale 
+      FROM Subfield s 
+      JOIN TIMEDMETRICS t ON s.subfield_id = t.subfield_id 
+      WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE subfield_id = s.subfield_id)
+    `);
+
+    if (subfieldQuery.rowCount === 0) {
+      console.log("No subfields found.");
+      return "NO_SUBFIELDS";
+    }
+
+    const subfieldData = subfieldQuery.rows.map(row => `
+      subfield_name: ${row.subfield_name}
+      metric_1: ${row.metric_1}
+      metric_2: ${row.metric_2}
+      metric_3: ${row.metric_3}
+      rationale: ${row.rationale},
+      metric_date: ${row.metric_date}`).join('\n\n');
+
+    // Read the prompt template from file
+    let promptTemplate = await fsPromises.readFile("prompt_update_metrics.txt", "utf8");
+    let dynamicPrompt = promptTemplate.replace("{FIELD_DATA}", subfieldData);
+
+    console.log("Generated Prompt:\n", dynamicPrompt);
+
+    // Call OpenAI
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [{ role: "system", content: dynamicPrompt }],
+      temperature: 0,
+      max_tokens: 2048,
+      top_p: 1
+    });
+
+    return response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
+
+  } catch (error) {
+    console.error("Error:", error);
+    return "ERROR: Unable to process request.";
+  }
+};
+app.post("/gpt-update-timed-metrics", async (req, res) => {
+  const { field_name } = req.body;
+
+  // Fetch subfields for the given field name
+  const subfieldQuery = await pool.query(
+    `SELECT subfield_id FROM Subfield WHERE field_id = (SELECT field_id FROM Field WHERE field_name = $1)`,
+    [field_name]
+  );
+
+  if (subfieldQuery.rowCount === 0) {
+    return res.status(404).send("No subfields found for the given field.");
+  }
+
+  // Call the update function for each subfield
+  for (const row of subfieldQuery.rows) {
+    await updateExistingTimedMetrics(row.subfield_id);
+  }
+
+  res.status(200).send("Timed metrics updated successfully.");
+});
+  
+
+app.post("/generate-insight", async (req, res) => {
+  let aiResponse = await generateInsight("insight");
+  console.log("Raw AI Response:\n", aiResponse);
+
+  if (aiResponse === "NO_METRICS") {
+    return res.status(200).send("No metrics available for insight generation.");
+  }
+
+  if (aiResponse === "NO_VALID_AI_RESPONSE") {
+    console.warn("AI response was invalid, but proceeding with request completion.");
+    return res.status(200).send("AI response was empty or invalid, but request completed.");
+  }
+
+  res.status(200).json({ insight: aiResponse });
+});
+
+app.post("/generate-insight-trends", async (req, res) => {
+  let aiResponse = await generateInsight("trends");
+  console.log("Raw AI Response:\n", aiResponse);
+
+  if (aiResponse === "NO_METRICS") {
+    return res.status(200).send("No metrics available for insight generation.");
+  }
+
+  res.status(200).json({ trends: aiResponse });
+});
+
+app.post("/generate-insight-top", async (req, res) => {
+  let aiResponse = await generateInsight("top");
+  console.log("Raw AI Response:\n", aiResponse);
+
+  if (aiResponse === "NO_METRICS") {
+    return res.status(200).send("No metrics available for insight generation.");
+  }
+
+  res.status(200).json({ top: aiResponse });
 });
