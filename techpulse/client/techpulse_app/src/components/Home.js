@@ -268,12 +268,25 @@ const handleFeedbackSelect = (option) => {
   setFeedbackText(option.text); // Set the selected feedback text
   
   // Directly assign the adjusted temperature and top-p values
-  const adjustedTemp = option.tempRange;
-  const adjustedTopP = option.topPRange;
+  const adjustedTemp = ((temperature + option.tempRange) + temperature) / 2;
+  const adjustedTopP = ((topP + option.topPRange) + topP) / 2;
   
   // Set the adjusted temperature and top-p values
-  setTemperature(((temperature + adjustedTemp) + temperature) / 2);
-  setTopP(((topP + adjustedTopP) + topP) / 2);
+  if(adjustedTemp < 0){
+    setTemperature(0);
+  }
+  else if (adjustedTemp > 2.0){
+    setTemperature(2.0)
+  }
+  else setTemperature(adjustedTemp);
+
+  if(adjustedTopP < 0){
+    setTopP(0);
+  }
+  else if (adjustedTopP > 1.0){
+    setTopP(1.0)
+  }
+  else setTopP(adjustedTopP);
 };
 
   // ---------- DataBase get and post methods ---------- //
