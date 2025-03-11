@@ -28,7 +28,7 @@ app.use(express.json());
 
 app.get('/api/data', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM public.field');
+    const result = await pool.query('SELECT top_p,temperature FROM public.modelparameters ORDER BY parameter_id DESC LIMIT 1');
     console.log('Data fetched successfully:', result.rows);
     res.json(result.rows);
   } catch (error) {
@@ -89,6 +89,19 @@ app.post('/api/data1', async (req, res) => {
         res.status(500).send('Error inserting data');
     }
 });
+
+app.post('/api/data2', async (req, res) => {
+  const { temperature, top_p, parameter_id } = req.body;
+  try {
+      // Correct the SQL query syntax with `SET` and add a condition for which row to update
+      await pool.query('UPDATE public.modelparameters SET temperature = $1, top_p = $2 WHERE parameter_id = $3', [temperature, top_p, parameter_id]);
+      res.status(200).send('Data updated successfully');
+  } catch (err) {
+      console.error(err);
+      res.status(500).send('Error updating data');
+  }
+});
+
 
 // ----------- AI BACKEND ----------- //
 

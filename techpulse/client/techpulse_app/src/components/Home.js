@@ -221,25 +221,84 @@ const Home = () => {
 
   };
 
-  const [feedBackText, setFeedBackText] = useState("");
-  const [finalRating, setFinalRating] = useState(0);
+  // const [feedBackText, setFeedBackText] = useState("");
+  // const [finalRating, setFinalRating] = useState(0);
 
-  //Get rating method
+  // //Get rating method
+  // const handleRatingSelect = (rating) => {
+  //   setFinalRating(Number(rating));
+  //   console.log("Selected Rating:", rating);
+  // };
+
+  const [finalRating, setFinalRating] = useState(0);
+  const [feedbackText, setFeedbackText] = useState(""); // State to hold feedback text
+  const [temperature, setTemperature] = useState(0.7); // Default temperature
+  const [topP, setTopP] = useState(0.9); // Default top-p
+
+  // Predefined feedback options with their corresponding temperature and top-p adjustments
+  const feedbackOptions = {
+    negative: [
+      { text: "Too Generic", tempRange: 0.2, topPRange: 0.1 },
+      { text: "Too Vague", tempRange: -0.2, topPRange: -0.1 },
+      { text: "Outdated Info", tempRange: 0.1, topPRange: 0.1 },
+      { text: "Not Relevant", tempRange: -0.1, topPRange: -0.1 },
+      { text: "Incorrect Info", tempRange: -0.3, topPRange: -0.2 },
+    ],
+    positive: [
+      { text: "Clear & Concise", tempRange: 0.1, topPRange: 0.1 },
+      { text: "Highly Relevant", tempRange: 0.1, topPRange: 0.1 },
+      { text: "Data-Driven", tempRange: 0, topPRange: 0.1 },
+      { text: "Actionable", tempRange: 0.1, topPRange: 0.1 },
+      { text: "Balanced View", tempRange: 0.1, topPRange: 0.1 },
+    ],
+  };
+
   const handleRatingSelect = (rating) => {
     setFinalRating(Number(rating));
+    if (rating === 1) {
+      setFeedbackText(""); // Clear feedback text if deselected
+    } else if (rating === -1) {
+      setFeedbackText(""); // Clear feedback text if deselected
+    }
     console.log("Selected Rating:", rating);
   };
 
+  // Function to handle feedback selection
+const handleFeedbackSelect = (option) => {
+  setFeedbackText(option.text); // Set the selected feedback text
+  
+  // Directly assign the adjusted temperature and top-p values
+  const adjustedTemp = ((temperature + option.tempRange) + temperature) / 2;
+  const adjustedTopP = ((topP + option.topPRange) + topP) / 2;
+  
+  // Set the adjusted temperature and top-p values
+  if(adjustedTemp < 0){
+    setTemperature(0);
+  }
+  else if (adjustedTemp > 2.0){
+    setTemperature(2.0)
+  }
+  else setTemperature(adjustedTemp);
+
+  if(adjustedTopP < 0){
+    setTopP(0);
+  }
+  else if (adjustedTopP > 1.0){
+    setTopP(1.0)
+  }
+  else setTopP(adjustedTopP);
+};
+
   // ---------- DataBase get and post methods ---------- //
   axios.defaults.headers.post['Content-Type'] = 'application/json';
-  const [data, setData] = useState([]);
   const [radarData, setRadarData] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:4000/api/data')
         .then(response => {
             console.log('Fetched data:', response.data);
-            setData(response.data);
+            setTemperature(response.data[0].temperature);
+            setTopP(response.data[0].top_p);
         })
         .catch(error => console.error('Error fetching data:', error));
   }, []);
@@ -258,6 +317,8 @@ const Home = () => {
       // First, wait for the GET request to finish
       const response = await axios.get('http://localhost:4000/api/latest-id');
       console.log("Latest ID:", response.data.latestId);
+      console.log(`new temp value ${temperature}`);
+      console.log(`new topP value ${topP}`);
   
       const latestId = response.data.latestId; // Get the latestId directly
       
@@ -265,8 +326,14 @@ const Home = () => {
         // Now, wait for the POST request to finish
         await axios.post('http://localhost:4000/api/data1', {
           insight_id: latestId,
-          feedback_text: `${feedBackText}`,
+          feedback_text: `${feedbackText}`,
           rating: finalRating
+        });
+
+        await axios.post('http://localhost:4000/api/data2', {
+          temperature: temperature,
+          top_p: topP,
+          parameter_id: 1
         });
         
         alert('Data added successfully');
@@ -549,38 +616,47 @@ const Home = () => {
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
             <div className="flex-grow space-y-2">
-              <div className='flex items-center space-x-2'>
+              <div className="flex items-center space-x-2">
                 <MessageSquareReplyIcon className="h-5 w-5 text-blue-600" />
-                <label
-                  htmlFor="search"
-                  className="block text-lg font-medium text-gray-700"
-                >
-                  Provide FeedBack
+                <label htmlFor="search" className="block text-lg font-medium text-gray-700">
+                  Provide Feedback
                 </label>
-                
                 <Rating onRatingSelect={handleRatingSelect} />
               </div>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <ArrowRight className="h-5 w-5 text-gray-400" />
+
+              {finalRating !== 0 && (
+                <div className="mt-4">
+                  <p className="text-gray-700">Please select a feedback prompt:</p>
+                  <div className="space-y-2 space-x-4">
+                    {finalRating === 1 ? (
+                      feedbackOptions.positive.map((option, index) => (
+                        <button
+                          key={index}
+                          className="w-full sm:w-auto px-6 py-2 bg-gray-100 text-black font-medium rounded-lg shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors duration-200"
+                          onClick={() => handleFeedbackSelect(option)}
+                        >
+                          {option.text}
+                        </button>
+                      ))
+                    ) : finalRating === -1 ? (
+                      feedbackOptions.negative.map((option, index) => (
+                        <button
+                          key={index}
+                          className="w-full sm:w-auto px-6 py-2 bg-gray-100 text-black font-medium rounded-lg shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors duration-200"
+                          onClick={() => handleFeedbackSelect(option)}
+                        >
+                          {option.text}
+                        </button>
+                      ))
+                    ) : null}
+                  </div>
                 </div>
-                <input
-                  id="search"
-                  type="text"
-                  placeholder="Enter FeedBack..."
-                  onChange={(e) => setFeedBackText(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg 
-                          shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                          text-sm placeholder:text-gray-400"
-                />
-              </div>
+              )}
             </div>
             <button
-              className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-medium 
-                     rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 
-                     focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200
-                     disabled:bg-blue-400 disabled:text-gray-200 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 disabled:bg-blue-400 disabled:text-gray-200 disabled:cursor-not-allowed"
               onClick={addData}
+              disabled={feedbackText === ""} // Disable if feedback text is empty
             >
               Submit Feedback
             </button>
