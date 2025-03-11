@@ -238,18 +238,18 @@ const Home = () => {
   // Predefined feedback options with their corresponding temperature and top-p adjustments
   const feedbackOptions = {
     negative: [
-      { text: "Too Generic", tempRange: [0.9, 1.0], topPRange: [1.0, 1.0] },
-      { text: "Too Vague", tempRange: [0.4, 0.5], topPRange: [0.7, 0.8] },
-      { text: "Outdated Info", tempRange: [0.8, 1.0], topPRange: [0.9, 1.0] },
-      { text: "Not Relevant", tempRange: [0.5, 0.6], topPRange: [0.8, 0.9] },
-      { text: "Incorrect Info", tempRange: [0.3, 0.4], topPRange: [0.7, 0.8] },
+      { text: "Too Generic", tempRange: 0.2, topPRange: 0.1 },
+      { text: "Too Vague", tempRange: -0.2, topPRange: -0.1 },
+      { text: "Outdated Info", tempRange: 0.1, topPRange: 0.1 },
+      { text: "Not Relevant", tempRange: -0.1, topPRange: -0.1 },
+      { text: "Incorrect Info", tempRange: -0.3, topPRange: -0.2 },
     ],
     positive: [
-      { text: "Clear & Concise", tempRange: [0.8, 0.9], topPRange: [1.0, 1.0] },
-      { text: "Highly Relevant", tempRange: [0.8, 1.0], topPRange: [0.9, 1.0] },
-      { text: "Data-Driven", tempRange: [0.7, 0.7], topPRange: [1.0, 1.0] },
-      { text: "Actionable", tempRange: [0.8, 1.0], topPRange: [0.9, 1.0] },
-      { text: "Balanced View", tempRange: [0.8, 1.0], topPRange: [0.9, 1.0] },
+      { text: "Clear & Concise", tempRange: 0.1, topPRange: 0.1 },
+      { text: "Highly Relevant", tempRange: 0.1, topPRange: 0.1 },
+      { text: "Data-Driven", tempRange: 0, topPRange: 0.1 },
+      { text: "Actionable", tempRange: 0.1, topPRange: 0.1 },
+      { text: "Balanced View", tempRange: 0.1, topPRange: 0.1 },
     ],
   };
 
@@ -264,26 +264,28 @@ const Home = () => {
   };
 
   // Function to handle feedback selection
-  const handleFeedbackSelect = (option) => {
-    setFeedbackText(option.text); // Set the selected feedback text
-    const [adjustedTempMin, adjustedTempMax] = option.tempRange;
-    const [adjustedTopPMin, adjustedTopPMax] = option.topPRange;
-    
-    // Set the adjusted temperature and top-p values
-    setTemperature((adjustedTempMin + adjustedTempMax) / 2);
-    setTopP((adjustedTopPMin + adjustedTopPMax) / 2);
-  };
+const handleFeedbackSelect = (option) => {
+  setFeedbackText(option.text); // Set the selected feedback text
+  
+  // Directly assign the adjusted temperature and top-p values
+  const adjustedTemp = option.tempRange;
+  const adjustedTopP = option.topPRange;
+  
+  // Set the adjusted temperature and top-p values
+  setTemperature(((temperature + adjustedTemp) + temperature) / 2);
+  setTopP(((topP + adjustedTopP) + topP) / 2);
+};
 
   // ---------- DataBase get and post methods ---------- //
   axios.defaults.headers.post['Content-Type'] = 'application/json';
-  const [data, setData] = useState([]);
   const [radarData, setRadarData] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:4000/api/data')
         .then(response => {
             console.log('Fetched data:', response.data);
-            setData(response.data);
+            setTemperature(response.data[0].temperature);
+            setTopP(response.data[0].top_p);
         })
         .catch(error => console.error('Error fetching data:', error));
   }, []);
@@ -302,6 +304,8 @@ const Home = () => {
       // First, wait for the GET request to finish
       const response = await axios.get('http://localhost:4000/api/latest-id');
       console.log("Latest ID:", response.data.latestId);
+      console.log(`new temp value ${temperature}`);
+      console.log(`new topP value ${topP}`);
   
       const latestId = response.data.latestId; // Get the latestId directly
       
@@ -597,7 +601,7 @@ const Home = () => {
               {finalRating !== 0 && (
                 <div className="mt-4">
                   <p className="text-gray-700">Please select a feedback prompt:</p>
-                  <div className="space-y-2">
+                  <div className="space-y-2 space-x-4">
                     {finalRating === 1 ? (
                       feedbackOptions.positive.map((option, index) => (
                         <button

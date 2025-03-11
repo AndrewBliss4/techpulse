@@ -28,7 +28,7 @@ app.use(express.json());
 
 app.get('/api/data', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM public.field');
+    const result = await pool.query('SELECT top_p,temperature FROM public.modelparameters ORDER BY parameter_id DESC LIMIT 1');
     console.log('Data fetched successfully:', result.rows);
     res.json(result.rows);
   } catch (error) {
