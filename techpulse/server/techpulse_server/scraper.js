@@ -44,7 +44,7 @@ const { XMLParser } = require("fast-xml-parser");
 async function fetchArxivPapers(field) {
   console.log(`Fetching ArXiv papers for field: ${field}`);
   const query = encodeURIComponent(field);
-  const url = `http://export.arxiv.org/api/query?search_query=all:${query}&max_results=50&sortBy=submittedDate`;
+  const url = `http://export.arxiv.org/api/query?search_query=all:${query}&max_results=5&sortBy=submittedDate`;
 
   try {
     const response = await axios.get(url);
