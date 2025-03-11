@@ -59,8 +59,16 @@ const AIPromptFieldButton = () => {
 
   return (
     <div>
-      <button onClick={handleButtonClick} disabled={isLoading}>
-        {isLoading ? 'Processing...' : 'Generate Text with Field Prompt'}
+      <button
+        type="submit"
+        className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-medium 
+               rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 
+               focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200
+               disabled:bg-blue-400 disabled:text-gray-200 disabled:cursor-not-allowed"
+        onClick={handleButtonClick}
+        disabled={isLoading}
+      >
+        {isLoading ? 'Processing...' : 'View Insights'}
       </button>
       {generatedText && (
         <div>
