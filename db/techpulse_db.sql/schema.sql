@@ -1,27 +1,24 @@
--- Create Field Table
 CREATE TABLE Field (
     field_id SERIAL PRIMARY KEY,
     field_name VARCHAR(255) NOT NULL,
     description TEXT
 );
 
--- Create Subfield Table
 CREATE TABLE Subfield (
     subfield_id SERIAL PRIMARY KEY,
-    field_id INT NOT NULL REFERENCES Field(field_id) ON DELETE CASCADE, -- Field reference, NOT NULL
+    field_id INT NOT NULL REFERENCES Field(field_id) ON DELETE CASCADE,
     subfield_name VARCHAR(255) NOT NULL,
     description TEXT
 );
 
--- Create TimedMetrics Table
 CREATE TABLE TimedMetrics (
     timed_metric_id SERIAL PRIMARY KEY,
     metric_1 FLOAT NOT NULL,
     metric_2 FLOAT NOT NULL,
     metric_3 FLOAT,
     metric_date TIMESTAMP NOT NULL,
-    field_id INT REFERENCES Field(field_id) ON DELETE CASCADE, -- Field reference
-    subfield_id INT REFERENCES Subfield(subfield_id) ON DELETE CASCADE, -- Subfield reference
+    field_id INT REFERENCES Field(field_id) ON DELETE CASCADE,
+    subfield_id INT REFERENCES Subfield(subfield_id) ON DELETE CASCADE,
     rationale TEXT,
     source TEXT,
     CHECK (
@@ -30,7 +27,6 @@ CREATE TABLE TimedMetrics (
     ) -- Ensures a TimedMetric entry belongs to either a Field or Subfield, not both
 );
 
--- Create Insight Table
 CREATE TABLE Insight (
     insight_id SERIAL PRIMARY KEY,
     field_id INT REFERENCES Field(field_id) ON DELETE CASCADE,
@@ -39,7 +35,6 @@ CREATE TABLE Insight (
     generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create Feedback Table
 CREATE TABLE Feedback (
     feedback_id SERIAL PRIMARY KEY,
     insight_id INT REFERENCES Insight(insight_id) ON DELETE CASCADE,
@@ -48,7 +43,6 @@ CREATE TABLE Feedback (
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create admin role with all privileges
 DO $$
 BEGIN
     IF NOT EXISTS (
