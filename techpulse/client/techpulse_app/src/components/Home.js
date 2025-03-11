@@ -316,6 +316,12 @@ const handleFeedbackSelect = (option) => {
           feedback_text: `${feedbackText}`,
           rating: finalRating
         });
+
+        await axios.post('http://localhost:4000/api/data2', {
+          temperature: temperature,
+          top_p: topP,
+          parameter_id: 1
+        });
         
         alert('Data added successfully');
       } else {
@@ -627,7 +633,6 @@ const handleFeedbackSelect = (option) => {
                 </div>
               )}
             </div>
-
             <button
               className="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 disabled:bg-blue-400 disabled:text-gray-200 disabled:cursor-not-allowed"
               onClick={addData}
