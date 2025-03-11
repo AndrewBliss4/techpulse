@@ -39,7 +39,8 @@ async function fetchFieldNames() {
   }
 }
 
-// Function to fetch articles from ArXiv API
+const { XMLParser } = require("fast-xml-parser");
+
 async function fetchArxivPapers(field) {
   console.log(`Fetching ArXiv papers for field: ${field}`);
   const query = encodeURIComponent(field);
@@ -49,30 +50,30 @@ async function fetchArxivPapers(field) {
     const response = await axios.get(url);
     console.log(`Received response for field: ${field}`);
 
-    const xmlData = response.data;
-    const entries = xmlData.split("<entry>").slice(1);
+    const parser = new XMLParser({ ignoreAttributes: false, parseTagValue: true });
+    const jsonObj = parser.parse(response.data);
 
-    return entries.map(entry => {
-      const idMatch = entry.match(/<id>(.*?)<\/id>/);
-      const titleMatch = entry.match(/<title>(.*?)<\/title>/);
-      const authorsMatch = [...entry.matchAll(/<name>(.*?)<\/name>/g)];
-      const publishedMatch = entry.match(/<published>(.*?)<\/published>/);
-      const summaryMatch = entry.match(/<summary>(.*?)<\/summary>/s);
+    if (!jsonObj.feed || !jsonObj.feed.entry) {
+      console.error(`No entries found for field: ${field}`);
+      return [];
+    }
 
-      return {
-        id: idMatch ? idMatch[1].split("/").pop() : "",
-        title: titleMatch ? titleMatch[1].trim() : "Unknown Title",
-        authors: authorsMatch.map(a => a[1]),
-        published: publishedMatch ? publishedMatch[1] : "Unknown Date",
-        summary: summaryMatch ? summaryMatch[1].replace(/\s+/g, " ").trim() : "No Summary Available",
-        field: field,
-      };
-    });
+    const entries = Array.isArray(jsonObj.feed.entry) ? jsonObj.feed.entry : [jsonObj.feed.entry];
+
+    return entries.map(entry => ({
+      id: entry.id ? entry.id.split("/").pop() : "Unknown ID",
+      title: entry.title ? entry.title.replace(/\s+/g, " ").trim() : "Unknown Title",
+      authors: entry.author ? (Array.isArray(entry.author) ? entry.author.map(a => a.name) : [entry.author.name]) : [],
+      published: entry.published || "Unknown Date",
+      summary: entry.summary ? entry.summary.replace(/\s+/g, " ").trim() : "No Summary Available",
+      field: field,
+    }));
   } catch (error) {
     console.error(`Error fetching articles for ${field}:`, error);
     return [];
   }
 }
+
 
 // Main function to fetch all articles
 async function main() {
