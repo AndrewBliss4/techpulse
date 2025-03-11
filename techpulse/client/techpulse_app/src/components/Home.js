@@ -411,7 +411,7 @@ const Home = () => {
                   Generate Insights
                 </label>
               </div>
-              <div className="relative">
+              {/* <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Search className="h-5 w-5 text-gray-400" />
                 </div>
@@ -437,8 +437,15 @@ const Home = () => {
               disabled={loading}
             >
               View Insights
-            </button>
+            </button> */}
+            <div className="flex justify-center">
+              <AIPromptFieldButton setTextResult={setTextResult}
+                setTrendingTopics={setTrendingTopics} setLatestInsights={setLatestInsights}
+                setLoading={setLoading} setCurrentLoaderIndex={setCurrentLoaderIndex} setError={setError}
+                setRenderText={setRenderText} setRenderTrends={setRenderTrends} />
+            </div>
           </div>
+        </div>
         </div>
 
         {/* Loading */}
@@ -476,7 +483,7 @@ const Home = () => {
                 Insights
               </label>
             </div>
-            <div className="mt-4 p-4 bg-white/80 rounded-lg shadow-sm border border-blue-200">
+            <div className="mt-4 p-4 bg-white/80 rounded-lg shadow-sm border border-blue-200 max-h-[800px] overflow-y-auto">
               {/* <p className="text-gray-700 leading-relaxed"> */}
               {parse(textResult)}
               {/* </p> */}
@@ -485,7 +492,7 @@ const Home = () => {
         </div>
         }
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Trending Topics */}
           {renderTrends && <div className="lg:col-span-2">
             <div className="bg-white p-6 rounded-xl shadow-sm">
@@ -508,7 +515,7 @@ const Home = () => {
           </div>}
 
           {/* Latest Insights */}
-          {renderTrends && <div className="bg-white p-6 rounded-xl shadow-sm">
+          {/* {renderTrends && <div className="bg-white p-6 rounded-xl shadow-sm">
             <h2 className="text-xl font-bold text-gray-900 mb-6">Latest Insights</h2>
             <div className="space-y-4">
               {latestInsights.map((insight, index) => (
@@ -522,7 +529,8 @@ const Home = () => {
               ))}
             </div>
           </div>}
-        </div>
+        </div> */}
+
         {/*
         <div className='databaseTest'>
           <h1>Data from PostgreSQL</h1>
@@ -535,7 +543,6 @@ const Home = () => {
           
         </div>
         */}
-        <AIPromptFieldButton />
 
         {/*FeedBack Section*/}
 
@@ -582,6 +589,8 @@ const Home = () => {
 
       </div>
     </div>
+    
   );
 }
+
 export default Home

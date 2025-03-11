@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const AIPromptFieldButton = () => {
+const AIPromptFieldButton = ({ setTextResult, setTrendingTopics, setLatestInsights, setLoading, setCurrentLoaderIndex, setError, setRenderText, setRenderTrends }) => {
   const [generatedText, setGeneratedText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -8,32 +8,43 @@ const AIPromptFieldButton = () => {
     setIsLoading(true);
     setGeneratedText(""); // Clear old responses before a new request
 
+    //display loading sign
+    setLoading(true);
+    //Reset loader cycle
+    setCurrentLoaderIndex(0);
+    //Reset error state
+    setError(false);
+    //reset the old output
+    setRenderText(false);
+    //reset trends
+    setRenderTrends(false);
+
     try {
-      console.log("Triggering metric reevaluation...");
+      // console.log("Triggering metric reevaluation...");
 
-      // Step 1: Trigger metric reevaluation
-      const reevaluateResponse = await fetch('http://localhost:4000/gpt-update-metrics', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
+      // // Step 1: Trigger metric reevaluation
+      // const reevaluateResponse = await fetch('http://localhost:4000/gpt-update-metrics', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      // });
 
-      if (!reevaluateResponse.ok) {
-        throw new Error(`Reevaluation failed: ${reevaluateResponse.statusText}`);
-      }
+      // if (!reevaluateResponse.ok) {
+      //   throw new Error(`Reevaluation failed: ${reevaluateResponse.statusText}`);
+      // }
 
-      console.log("Metrics reevaluated successfully. Proceeding to new field generation...");
+      // console.log("Metrics reevaluated successfully. Proceeding to new field generation...");
 
-      // Step 2: Proceed with generating new fields
-      const fieldResponse = await fetch('http://localhost:4000/gpt-field', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
+      // // Step 2: Proceed with generating new fields
+      // const fieldResponse = await fetch('http://localhost:4000/gpt-field', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      // });
 
-      if (!fieldResponse.ok) {
-        throw new Error(`Field generation failed: ${fieldResponse.statusText}`);
-      }
+      // if (!fieldResponse.ok) {
+      //   throw new Error(`Field generation failed: ${fieldResponse.statusText}`);
+      // }
 
-      console.log("Fields generated successfully. Proceeding to insight generation...");
+      // console.log("Fields generated successfully. Proceeding to insight generation...");
 
       // Step 3: Trigger insight generation
       const insightResponse = await fetch('http://localhost:4000/generate-insight', {
@@ -47,13 +58,34 @@ const AIPromptFieldButton = () => {
 
       const insightData = await insightResponse.json();
       console.log("Insight generated successfully:", insightData.insight);
-      setGeneratedText(insightData.insight);
+
+      let insightResult = insightData.insight;
+
+      setTextResult(insightResult);
+
+      // //Handle trends
+      // let tempTrendingTopics = [];
+      // for (const entry of resultArr[2].split("/")) {
+      //   tempTrendingTopics.push(JSON.parse(entry));
+      // };
+
+      // setTrendingTopics(tempTrendingTopics);
+
+      // //Handle Top Insights
+      // let tempInsights = [];
+      // for (const entry of resultArr[3].split("/")) {
+      //   tempInsights.push(JSON.parse(entry));
+      // };
+
+      // setLatestInsights(tempInsights);
 
     } catch (error) {
       console.error('Error:', error);
       setGeneratedText(`Error: ${error.message}`);
     } finally {
+      setRenderText(true);
       setIsLoading(false);
+      setLoading(false);
     }
   };
 

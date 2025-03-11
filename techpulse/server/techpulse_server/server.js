@@ -372,7 +372,7 @@ const generateInsight = async () => {
     const previousInsight = previousInsightQuery.rowCount > 0 ? previousInsightQuery.rows[0] : null;
 
     // Construct the dynamic prompt
-    let promptTemplate = await fsPromises.readFile("insight_prompt.txt", "utf8");
+    let promptTemplate = await fsPromises.readFile("insight_prompt_new.txt", "utf8");
 
     const metricsData = metricsQuery.rows.map(row => `
       field_name: ${row.field_name}

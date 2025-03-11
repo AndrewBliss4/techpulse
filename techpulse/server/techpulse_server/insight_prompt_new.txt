@@ -27,8 +27,6 @@ And the report you provided last time:
 
 {PREVIOUS_INSIGHT}
 
-The output will be formatted in sections, seperated by *** after each section and ONLY ***. Do not use ** for the titles.
-
 Based on the data above and recent knowledge about your competitors, generate a detailed insight that highlights trends, anomalies, or significant changes in the metrics. Provide actionable recommendations if applicable.
 Generate the insights by topic.
 
@@ -40,21 +38,4 @@ Generate the insights by topic.
 6. Key uncertainties 
 7. Big questions about the future.
 
-The total response for this section should be at least 500 words. Format this section's topics with <h1>technology</h1> <strong>topic</strong> and the text with <p>text</p>.
-Do not use *** to seperate the technologies.
-
-THIS FORMAT IS VERY IMPORTANT.
-
-***
-
-Provide a list of the 3 trending topics from this data, in this format for example: {"title": "AI Advances", "sources": "BCG, Mckinsey", "trend": "+24%" } seperated by / for each entry.
-MAINTAIN THIS JSON FORMAT.
-
-***
-
-Provide a list of the 3 most impactful insights from this data, in this format for example: {"title": "The Future of Quantum Computing", "category": "Emerging Tech", "date": "Nov. 18 2024"} seperated by / for each entry.
-MAINTAIN THIS JSON FORMAT.
-
-***
-Provide the a confidence score using the following format: 'Confidence Score:' (and then a float within 0 to 1)
-Ensure the sources dates are AS RECENT AS POSSIBLE.
+Ensure the output is at least 2000 words. Format this section's topics with <h1 class="text-2xl font-bold text-blue-600 mb-4">technology</h1> <strong class="text-xl font-semibold text-gray-600 mb-2 block">topic</strong> and the text with <p class="text-gray-500 leading-relaxed mb-4">text</p>.
