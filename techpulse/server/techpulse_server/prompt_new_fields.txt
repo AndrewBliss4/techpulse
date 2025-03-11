@@ -3,7 +3,7 @@ You are heavily encouraged to add any new fields to this list that are relevant 
 
 Provide these new fields using this **STRICT FORMAT**:
 
-field_name: (MUST BE A STRING)
+field_name: (MUST BE A STRING(try to keep the name of the field broad! we have a separate system in place for generating subfields!))
 description: (MUST BE A STRING) describe the field
  metric_1: provide your answer as a float on a scale of 0.00 to 5.00 (0.00: No meaningful developments that could impact banking in the foreseeable future.
       1.00: Early-stage developments with some research or niche use cases, but no mass adoption.
