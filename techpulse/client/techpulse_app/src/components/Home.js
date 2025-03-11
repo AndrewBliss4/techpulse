@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import '../styles/globals.css';
 import rbcLogo from '../assets/Royal-Bank-of-Canada-Logo.png';
-import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, CircleAlert, MessageSquareReplyIcon, ChevronDown, ArrowRight} from 'lucide-react'
+import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, Clock, MessageSquareReplyIcon, ChevronDown, ArrowRight, Info, CircleAlert } from 'lucide-react'
 import parse from 'html-react-parser';
 import Radar from './Radar.js';
 import Rating from './Rating.js';
@@ -305,11 +305,11 @@ const handleFeedbackSelect = (option) => {
 
   useEffect(() => {
     axios.get('http://localhost:4000/api/radar')
-        .then(response => {
-            console.log('Fetched data:', response.data);
-            setRadarData(response.data);
-        })
-        .catch(error => console.error('Error fetching data:', error));
+      .then(response => {
+        console.log('Fetched data:', response.data);
+        setRadarData(response.data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
   }, []);
 
   async function addData() {
@@ -320,8 +320,9 @@ const handleFeedbackSelect = (option) => {
       console.log(`new temp value ${temperature}`);
       console.log(`new topP value ${topP}`);
   
+
       const latestId = response.data.latestId; // Get the latestId directly
-      
+
       if (latestId !== undefined && latestId !== null) {
         // Now, wait for the POST request to finish
         await axios.post('http://localhost:4000/api/data1', {
@@ -413,10 +414,10 @@ const handleFeedbackSelect = (option) => {
       <div className="max-w-7xl mx-auto px-4 py-12">
 
         {/* Last Updated */}
-        
+
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg inline-block">
           <div className='flex items-center space-x-2'>
-            <CircleAlert className="h-5 w-5 text-blue-600" />
+            <Clock className="h-5 w-5 text-blue-600" />
             <span className="text-lg font-medium text-gray-700">
               Last Updated: <span className="text-blue-600">{(() => {
                 const today = new Date();
@@ -424,7 +425,7 @@ const handleFeedbackSelect = (option) => {
                 lastSunday.setDate(today.getDate() - today.getDay());
                 return lastSunday.toLocaleDateString('en-US', {
                   month: 'long',
-                  day: 'numeric', 
+                  day: 'numeric',
                   year: 'numeric'
                 });
               })()}</span>
@@ -435,7 +436,7 @@ const handleFeedbackSelect = (option) => {
         {/* Industry Radar */}
 
 
-            <Radar radarData={radarData} radarSearch={radarSearch} homePage={true}></Radar>
+        <Radar radarData={radarData} radarSearch={radarSearch} homePage={true}></Radar>
 
 
         {/* Understanding the Radar */}
@@ -443,12 +444,12 @@ const handleFeedbackSelect = (option) => {
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
           <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
             <div className="flex items-center space-x-2">
-              <Lightbulb className="h-5 w-5 text-blue-600" />
+              <Info className="h-5 w-5 text-blue-600" />
               <span className="text-lg font-medium text-gray-700">Understanding the Radar</span>
             </div>
             <ChevronDown className={`h-5 w-5 text-blue-600 transform transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
           </div>
-          
+
           {isExpanded && (
             <div className="mt-4 text-gray-600 space-y-3 animate-fadeIn">
               <p>
@@ -505,14 +506,14 @@ const handleFeedbackSelect = (option) => {
             >
               View Insights
             </button> */}
-            <div className="flex justify-center">
-              <AIPromptFieldButton setTextResult={setTextResult}
-                setTrendingTopics={setTrendingTopics} setLatestInsights={setLatestInsights}
-                setLoading={setLoading} setCurrentLoaderIndex={setCurrentLoaderIndex} setError={setError}
-                setRenderText={setRenderText} setRenderTrends={setRenderTrends} />
+              <div className="flex justify-center">
+                <AIPromptFieldButton setTextResult={setTextResult}
+                  setTrendingTopics={setTrendingTopics} setLatestInsights={setLatestInsights}
+                  setLoading={setLoading} setCurrentLoaderIndex={setCurrentLoaderIndex} setError={setError}
+                  setRenderText={setRenderText} setRenderTrends={setRenderTrends} />
+              </div>
             </div>
           </div>
-        </div>
         </div>
 
         {/* Loading */}
@@ -559,15 +560,15 @@ const handleFeedbackSelect = (option) => {
         </div>
         }
 
-        {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Trending Topics */}
-          {renderTrends && <div className="lg:col-span-2">
-            <div className="bg-white p-6 rounded-xl shadow-sm">
+          {renderTrends && <div className="lg:col-span-2 h-full">
+            <div className="bg-white p-6 rounded-xl shadow-sm h-full flex flex-col">
               <div className="flex items-center space-x-2 mb-6">
                 <TrendingUp className="h-5 w-5 text-blue-500" />
                 <h2 className="text-xl font-bold text-gray-900">Trending Topics</h2>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-4 flex-grow">
                 {trendingTopics.map((topic, index) => (
                   <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                     <span className="font-medium">{topic.title}</span>
@@ -582,21 +583,24 @@ const handleFeedbackSelect = (option) => {
           </div>}
 
           {/* Latest Insights */}
-          {/* {renderTrends && <div className="bg-white p-6 rounded-xl shadow-sm">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Latest Insights</h2>
-            <div className="space-y-4">
-              {latestInsights.map((insight, index) => (
-                <div key={index} className="border-b pb-4 last:border-b-0">
-                  <h3 className="font-medium text-gray-900 mb-1">{insight.title}</h3>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <span className="bg-gray-100 px-2 py-1 rounded">{insight.category}</span>
-                    <span className="ml-2">{insight.date}</span>
+          {renderTrends && <div className="h-full">
+            <div className="bg-white p-6 rounded-xl shadow-sm h-full flex flex-col">
+              <h2 className="text-xl font-bold text-gray-900 mb-6">Latest Insights</h2>
+              <div className="space-y-4 flex-grow">
+                {latestInsights.map((insight, index) => (
+                  <div key={index} className="border-b pb-4 last:border-b-0">
+                    <h3 className="font-medium text-gray-900 mb-1">{insight.title}</h3>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="bg-gray-100 px-2 py-1 rounded">{insight.category}</span>
+                      <span className="ml-2">{insight.date}</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>}
-        </div> */}
+        </div>
+
 
         {/*
         <div className='databaseTest'>
@@ -610,6 +614,8 @@ const handleFeedbackSelect = (option) => {
           
         </div>
         */}
+
+        <br></br>
 
         {/*FeedBack Section*/}
 
@@ -665,7 +671,7 @@ const handleFeedbackSelect = (option) => {
 
       </div>
     </div>
-    
+
   );
 }
 

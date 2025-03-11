@@ -146,7 +146,7 @@ let updateExistingFieldMetrics = async () => {
       
 
     // Read the prompt template from file
-    let promptTemplate = await fsPromises.readFile("prompt_update_metrics.txt", "utf8");
+    let promptTemplate = await fsPromises.readFile("./prompts/prompt_update_metrics.txt", "utf8");
     let dynamicPrompt = promptTemplate.replace("{FIELD_DATA}", fieldData);
 
     console.log("Generated Prompt:\n", dynamicPrompt);
@@ -244,7 +244,7 @@ let promptAIField = async () => {
     const fieldNames = fieldQuery.rows.map(row => row.field_name).join(", ");
 
     // Read and inject into prompt
-    let promptTemplate = await fsPromises.readFile("prompt_new_fields.txt", "utf8");
+    let promptTemplate = await fsPromises.readFile("./prompts/prompt_new_fields.txt", "utf8");
     let dynamicPrompt = promptTemplate.replace("{CURRENT_FIELDS}", fieldNames);
 
     console.log("Generated Prompt:\n", dynamicPrompt);
@@ -341,7 +341,7 @@ app.post("/gpt-field", async (req, res) => {
 
 
 //insight generation
-const generateInsight = async () => {
+const generateInsight = async (type) => {
   try {
     // Fetch the most recent timed metrics and rationales for each field
     const metricsQuery = await pool.query(`
@@ -383,7 +383,21 @@ const generateInsight = async () => {
     const previousInsight = previousInsightQuery.rowCount > 0 ? previousInsightQuery.rows[0] : null;
 
     // Construct the dynamic prompt
-    let promptTemplate = await fsPromises.readFile("insight_prompt_new.txt", "utf8");
+    let promptTemplate;
+    
+    switch (type) {
+      case "insight":
+        promptTemplate = await fsPromises.readFile("./prompts/insight_prompt_insights.txt", "utf8");
+        break;
+      case "trends":
+        promptTemplate = await fsPromises.readFile("./prompts/insight_prompt_trends.txt", "utf8");
+        break;
+      case "top":
+        promptTemplate = await fsPromises.readFile("./prompts/insight_prompt_top.txt", "utf8");
+        break;
+      default:
+        throw new Error("Invalid insight type");
+    };
 
     const metricsData = metricsQuery.rows.map(row => `
       field_name: ${row.field_name}
@@ -445,8 +459,9 @@ const generateInsight = async () => {
     return "ERROR: Unable to process request.";
   }
 };
+
 app.post("/generate-insight", async (req, res) => {
-  let aiResponse = await generateInsight();
+  let aiResponse = await generateInsight("insight");
   console.log("Raw AI Response:\n", aiResponse);
 
   if (aiResponse === "NO_METRICS") {
@@ -461,7 +476,6 @@ app.post("/generate-insight", async (req, res) => {
   res.status(200).json({ insight: aiResponse });
 });
 
-let promptAISubfield = async (fieldName) => {
   try {
     // Fetch current subfields for the given field
     const subfieldQuery = await pool.query(
@@ -469,36 +483,8 @@ let promptAISubfield = async (fieldName) => {
       [fieldName]
     );
     const subfieldNames = subfieldQuery.rows.map(row => row.subfield_name).join(", ");
-
-    // Read and inject into prompt
-    let promptTemplate = await fsPromises.readFile("prompt_subfield.txt", "utf8");
-    let dynamicPrompt = promptTemplate
-      .replace("{FIELD_NAME}", fieldName)
-      .replace("{SUBFIELDS}", subfieldNames);
-
-    console.log("Generated Prompt:\n", dynamicPrompt);
-
-    // Call OpenAI API
-    const response = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [{ role: "system", content: dynamicPrompt }],
-      temperature: 0,
-      max_tokens: 2048,
-      top_p: 1,
-    });
-
-    return response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
-
-  } catch (error) {
-    console.error("Error:", error);
-    return "ERROR: Unable to process request.";
-  }
-};
-
-// New endpoint to handle subfield generation
-app.post("/gpt-subfield", async (req, res) => {
-  const fieldName = "Quantum Computing"; // Hardcoded for now
-  let aiResponse = await promptAISubfield(fieldName);
+app.post("/generate-insight-trends", async (req, res) => {
+  let aiResponse = await generateInsight("trends");
   console.log("Raw AI Response:\n", aiResponse);
 
   // Split AI response into separate subfield entries
