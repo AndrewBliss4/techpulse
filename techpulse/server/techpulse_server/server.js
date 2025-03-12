@@ -143,7 +143,16 @@ let updateExistingFieldMetrics = async () => {
       metric_3: ${row.metric_3}
       rationale: ${row.rationale},
       metric_date: ${row.metric_date}`).join('\n\n');
-      
+
+    const tempTopPQuery = await pool.query(`SELECT top_p,temperature FROM public.modelparameters ORDER BY parameter_id DESC LIMIT 1`);
+    
+    if(tempTopPQuery.rowCount == 0) {
+      console.log("No TempTopP found.");
+      return "NO_TempTopP";
+    }
+
+    const tempTopPData = tempTopPQuery.rows[0];
+    console.log(`update temp:${tempTopPData.temperature} topP:${tempTopPData.top_p}`);
 
     // Read the prompt template from file
     let promptTemplate = await fsPromises.readFile("./prompts/prompt_update_metrics.txt", "utf8");
@@ -155,9 +164,9 @@ let updateExistingFieldMetrics = async () => {
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [{ role: "system", content: dynamicPrompt }],
-      temperature: 0,
+      temperature: tempTopPData.temperature,
       max_tokens: 2048,
-      top_p: 1
+      top_p: tempTopPData.top_p
     });
 
     return response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
