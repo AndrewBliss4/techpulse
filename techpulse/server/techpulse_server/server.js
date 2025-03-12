@@ -708,7 +708,7 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
         console.error("Error: AI response is in an invalid format.", entry);
         continue; // Skip invalid entry but continue processing the rest
       }
-
+ 
       const subfieldName = subfieldNameMatch[1].trim();
       const maturity = parseFloat(maturityMatch[1]);
       const innovation = parseFloat(innovationMatch[1]);

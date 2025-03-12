@@ -427,7 +427,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
             {useColorMode ? 'Color Legend' : 'Color Legend'}
           </span>
           <div
-          <div
             onClick={() => setUseColorMode(!useColorMode)}
             style={{
               position: 'relative',
