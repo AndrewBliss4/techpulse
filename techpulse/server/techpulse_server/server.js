@@ -429,7 +429,7 @@ const generateInsight = async (type) => {
 
     // Call OpenAI to generate the insight
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       messages: [{ role: "system", content: dynamicPrompt }],
       temperature: 0,
       max_tokens: 2048,
@@ -488,7 +488,7 @@ let promptAISubfield = async (fieldName) => {
 
     // Call OpenAI API
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4o-mini",
       messages: [{ role: "system", content: dynamicPrompt }],
       temperature: 0,
       max_tokens: 2048,
@@ -662,7 +662,7 @@ let updateSubfieldTimedMetrics = async (fieldName) => {
 
     // Call OpenAI
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       messages: [{ role: "system", content: dynamicPrompt }],
       temperature: tempTopPData.temperature,
       max_tokens: 2048,
