@@ -44,9 +44,10 @@ const { XMLParser } = require("fast-xml-parser");
 
 async function fetchArxivPapers(field) {
   console.log(`Fetching ArXiv papers for field: ${field}`);
-  const query = encodeURIComponent(field);
-  const url = `http://export.arxiv.org/api/query?search_query=all:${query}&max_results=1&sortBy=submittedDate`;
-
+  const categories = ["cs.CR", "q-fin.CP", "q-fin.GN"]; // Example categories
+  const categoryQuery = categories.map(cat => `cat:${cat}`).join(" OR ");
+  const query = encodeURIComponent(`${field} AND (${categoryQuery})`);
+  const url = `http://export.arxiv.org/api/query?search_query=${query}&max_results=5&sortBy=submittedDate`;
   try {
     const response = await axios.get(url);
     console.log(`Received response for field: ${field}`);
