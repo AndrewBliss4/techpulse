@@ -1,6 +1,7 @@
 const { Client } = require("pg");
 const axios = require("axios");
 const fs = require("fs");
+const path = require("path");
 
 console.log("Starting script...");
 
@@ -44,7 +45,7 @@ const { XMLParser } = require("fast-xml-parser");
 async function fetchArxivPapers(field) {
   console.log(`Fetching ArXiv papers for field: ${field}`);
   const query = encodeURIComponent(field);
-  const url = `http://export.arxiv.org/api/query?search_query=all:${query}&max_results=5&sortBy=submittedDate`;
+  const url = `http://export.arxiv.org/api/query?search_query=all:${query}&max_results=1&sortBy=submittedDate`;
 
   try {
     const response = await axios.get(url);
@@ -67,13 +68,13 @@ async function fetchArxivPapers(field) {
       published: entry.published || "Unknown Date",
       summary: entry.summary ? entry.summary.replace(/\s+/g, " ").trim() : "No Summary Available",
       field: field,
+      link: entry.id || "No Link Available", // Store the hyperlink
     }));
   } catch (error) {
     console.error(`Error fetching articles for ${field}:`, error);
     return [];
   }
 }
-
 
 // Main function to fetch all articles
 async function main() {
@@ -96,8 +97,26 @@ async function main() {
   }
 
   console.log("Saving dataset to arxiv_papers.json...");
-  fs.writeFileSync("arxiv_papers.json", JSON.stringify(articles, null, 4), "utf8");
-  console.log("Dataset saved successfully!");
+  // Construct path to the 'client' folder
+  const dbFolderPath = path.join(__dirname, "../../client/techpulse_app/public");
+
+  // Debugging: Log the path to check if it's correct
+  console.log(`Checking if db folder exists at: ${dbFolderPath}`);
+
+  if (!fs.existsSync(dbFolderPath)) {
+    console.log("db folder not found. Creating it now...");
+    fs.mkdirSync(dbFolderPath, { recursive: true });
+    console.log("db folder created successfully!");
+  } else {
+    console.log("db folder already exists.");
+  }
+
+  // Define JSON file path
+  const jsonFilePath = path.join(dbFolderPath, "arxiv_papers.json");
+
+  // Save the dataset
+  fs.writeFileSync(jsonFilePath, JSON.stringify(articles, null, 4), "utf8");
+  console.log(`Dataset saved successfully at: ${jsonFilePath}`);
 }
 
 // Run the script

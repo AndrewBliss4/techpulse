@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { RadarIcon, TrendingUp } from 'lucide-react';
 
 const Radar = ({ radarData, radarSearch, homePage, technology }) => {
@@ -9,7 +10,9 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [selectedField, setSelectedField] = useState('radar'); // Track the selected field
   const [clickedDataPoint, setClickedDataPoint] = useState(null); // State for clicked data point
   const [selectedTechnology, setSelectedTechnology] = useState(null); // State for selected technology
-  
+  const [articleSources, setArticleSources] = useState({});
+
+
   // State to toggle between colorful and blue-only mode
   const [useColorMode, setUseColorMode] = useState(false);
 
@@ -123,6 +126,38 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const handleHistoricalDataPointClick = (point) => {
     setClickedDataPoint(point);
   };
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const response = await axios.get("/arxiv_papers.json"); // Adjust path as needed
+        const articles = response.data;
+
+        // Transform articles into an object for quick lookup by field name
+        const sourcesMap = {};
+        articles.forEach(article => {
+          if (!sourcesMap[article.field]) {
+            sourcesMap[article.field] = [];
+          }
+          // Store both title and link
+          sourcesMap[article.field].push({
+            title: article.title || "No Title Available",
+            link: article.link || "#"
+          });
+        });
+
+        setArticleSources(sourcesMap);
+
+        // Debugging: Print available field names in the JSON
+        console.log("Available fields in JSON:", Object.keys(sourcesMap));
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
 
   return (
     <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
@@ -383,7 +418,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
           <span style={{ marginRight: '10px', fontSize: '14px' }}>
             {useColorMode ? 'Color Legend' : 'Color Legend'}
           </span>
-          <div 
+          <div
             onClick={() => setUseColorMode(!useColorMode)}
             style={{
               position: 'relative',
@@ -408,7 +443,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
             }} />
           </div>
         </div>
-        
+
         {/* Technology buttons */}
         <div style={{
           display: 'flex',
@@ -472,7 +507,20 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               ? <>
                 <strong>Rationale:</strong> {data.find(d => d.field_name === selectedTechnology)?.rationale || "No rationale available."}<br />
                 <strong>Field Description:</strong> {data.find(d => d.field_name === selectedTechnology)?.description || "No description available."}<br />
-                <strong>Sources:</strong> {data.find(d => d.field_name === selectedTechnology)?.source || "No sources available."}
+                <strong>Sources:</strong>
+                {articleSources[selectedTechnology] && articleSources[selectedTechnology].length > 0 ? (
+                  articleSources[selectedTechnology].map((article, index) => (
+                    <div key={index} style={{ marginBottom: "5px" }}>
+                      🔗 <a href={article.link} target="_blank" rel="noopener noreferrer" style={{ color: "blue", textDecoration: "underline" }}>
+                        {article.title}
+                      </a>
+                    </div>
+                  ))
+                ) : (
+                  "No sources available."
+                )}
+
+
               </>
               : "Click a technology to show its description and rationale."
             )
