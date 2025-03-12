@@ -1,32 +1,21 @@
 import React from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { RadarIcon, TrendingUp } from 'lucide-react';
 
 const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [data, setData] = useState([]);
   const [historicalData, setHistoricalData] = useState([]); // State for historical data
   const [selectedField, setSelectedField] = useState('radar'); // Track the selected field
+  const [clickedDataPoint, setClickedDataPoint] = useState(null); // State for clicked data point
   const [selectedTechnology, setSelectedTechnology] = useState(null); // State for selected technology
+  const [articleSources, setArticleSources] = useState({});
+
 
   // State to toggle between colorful and blue-only mode
   const [useColorMode, setUseColorMode] = useState(false);
-  const handlePointClick = async (point) => {
-    try {
-      const response = await fetch("http://localhost:4000/gpt-subfield", {  // <-- Update this if needed
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fieldName: point.field_name }),
-      });
-  
-      if (!response.ok) throw new Error("Failed to send data to server");
-  
-      console.log("Successfully sent:", point.field_name);
-    } catch (error) {
-      console.error("Error sending request:", error);
-    }
-  };
-  
+
   // Function to generate distinct colors using HSL
   const generateDistinctColors = (numColors) => {
     const colors = [];
@@ -77,6 +66,22 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     return Object.values(mostRecentData);
   };
 
+  const queryInsight = (dataPoint, index) => {
+    if (homePage) {
+      window.open(`/technology?name=${encodeURIComponent(dataPoint.field_name)}
+      &interest=${(dataPoint.metric_1 / 100).toFixed(2)}&innovation=${(dataPoint.metric_2 / 100).toFixed(2)}
+      &investments=${dataPoint.metric_3}`, '_blank');
+    } else {
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 100);
+      radarSearch(dataPoint.name);
+    }
+  };
+
   const handleFilterClick = (point) => {
     // Check if this point is currently selected
     const isCurrentlySelected = selectedTechnology === point.field_name;
@@ -109,6 +114,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         }));
       setHistoricalData(fieldHistoricalData);
     }
+    setClickedDataPoint(null);
   };
 
   // Format timestamp to readable date (YYYY-MM-DD)
@@ -116,6 +122,42 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     const date = new Date(timestamp);
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   };
+
+  const handleHistoricalDataPointClick = (point) => {
+    setClickedDataPoint(point);
+  };
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const response = await axios.get("/arxiv_papers.json"); // Adjust path as needed
+        const articles = response.data;
+
+        // Transform articles into an object for quick lookup by field name
+        const sourcesMap = {};
+        articles.forEach(article => {
+          if (!sourcesMap[article.field]) {
+            sourcesMap[article.field] = [];
+          }
+          // Store both title and link
+          sourcesMap[article.field].push({
+            title: article.title || "No Title Available",
+            link: article.link || "#"
+          });
+        });
+
+        setArticleSources(sourcesMap);
+
+        // Debugging: Print available field names in the JSON
+        console.log("Available fields in JSON:", Object.keys(sourcesMap));
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
 
   return (
     <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
@@ -248,10 +290,10 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                           data={[point]}
                           fill={colors[index % colors.length]} // Assign distinct color
                           fillOpacity={0.7}
+                          onClick={() => queryInsight(point, index)}
                           cursor="pointer"
                           shape="circle"
-                          size={point.metric_3 * 100} // Adjust size based on metric_3
-                          onClick={() => handlePointClick(point)} // Attach click handler
+                          size={point.metric_3 * 100} // Scaling by metric_3, adjust the factor as needed
                         />
                       ))}
                     </ScatterChart>
@@ -271,6 +313,11 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                   <ResponsiveContainer width="100%" height="92%">
                     <LineChart
                       data={historicalData}
+                      onClick={(e) => {
+                        if (e.activePayload) {
+                          handleHistoricalDataPointClick(e.activePayload[0].payload);
+                        }
+                      }}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis
@@ -448,17 +495,39 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
           margin: 0,
           color: '#666',
         }}>
-          {selectedTechnology
+          {clickedDataPoint
             ? <>
-              <strong>Rationale:</strong> {data.find(d => d.field_name === selectedTechnology)?.rationale || "No rationale available."}<br />
-              <strong>Field Description:</strong> {data.find(d => d.field_name === selectedTechnology)?.description || "No description available."}<br />
-              <strong>Sources:</strong> {data.find(d => d.field_name === selectedTechnology)?.source ?
-                <a href={data.find(d => d.field_name === selectedTechnology)?.source} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                  {data.find(d => d.field_name === selectedTechnology)?.source}
-                </a> :
+
+              <strong>Date of Scoring:</strong> {formatDate(clickedDataPoint.metric_date)}<br />
+              <strong>Rationale:</strong> {clickedDataPoint.rationale || "No rationale available."}<br />
+              <strong>Field Description: </strong>{clickedDataPoint.description || "No description available"}<br />
+              <strong>Sources:</strong> {clickedDataPoint.source ? 
+                <a href={clickedDataPoint.source} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  {clickedDataPoint.source}
+                </a> : 
                 "No sources available."}
             </>
-            : "Click a technology to show its description and rationale."
+            : (selectedTechnology
+              ? <>
+                <strong>Rationale:</strong> {data.find(d => d.field_name === selectedTechnology)?.rationale || "No rationale available."}<br />
+                <strong>Field Description:</strong> {data.find(d => d.field_name === selectedTechnology)?.description || "No description available."}<br />
+                <strong>Sources:</strong>
+                {articleSources[selectedTechnology] && articleSources[selectedTechnology].length > 0 ? (
+                  articleSources[selectedTechnology].map((article, index) => (
+                    <div key={index} style={{ marginBottom: "5px" }}>
+                      🔗 <a href={article.link} target="_blank" rel="noopener noreferrer" style={{ color: "blue", textDecoration: "underline" }}>
+                        {article.title}
+                      </a>
+                    </div>
+                  ))
+                ) : (
+                  "No sources available."
+                )}
+
+
+              </>
+              : "Click a technology to show its description and rationale."
+            )
           }
         </p>
       </div>
