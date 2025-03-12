@@ -479,7 +479,7 @@ let promptAISubfield = async (fieldName) => {
     const subfieldNames = subfieldQuery.rows.map(row => row.subfield_name).join(", ");
 
     // Read and inject into prompt
-    let promptTemplate = await fsPromises.readFile("prompt_subfield.txt", "utf8");
+    let promptTemplate = await fsPromises.readFile("./prompts/prompt_subfield.txt", "utf8");
     let dynamicPrompt = promptTemplate
       .replace("{FIELD_NAME}", fieldName)
       .replace("{SUBFIELDS}", subfieldNames);
@@ -631,7 +631,7 @@ let updateExistingTimedMetrics = async () => {
       metric_date: ${row.metric_date}`).join('\n\n');
 
     // Read the prompt template from file
-    let promptTemplate = await fsPromises.readFile("prompt_update_metrics.txt", "utf8");
+    let promptTemplate = await fsPromises.readFile("./prompts/prompt_update_metrics.txt", "utf8");
     let dynamicPrompt = promptTemplate.replace("{FIELD_DATA}", subfieldData);
 
     console.log("Generated Prompt:\n", dynamicPrompt);
@@ -652,7 +652,7 @@ let updateExistingTimedMetrics = async () => {
     return "ERROR: Unable to process request.";
   }
 };
-app.post("/gpt-update-timed-metrics", async (req, res) => {
+app.post("/gpt-update-timed-sub-metrics", async (req, res) => {
   const { field_name } = req.body;
 
   // Fetch subfields for the given field name
