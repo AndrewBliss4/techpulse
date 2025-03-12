@@ -432,7 +432,7 @@ const generateInsight = async (type) => {
       model: "gpt-4o",
       messages: [{ role: "system", content: dynamicPrompt }],
       temperature: 0,
-      max_tokens: 2048,
+      max_tokens: 4000,
       top_p: 1
     });
 
