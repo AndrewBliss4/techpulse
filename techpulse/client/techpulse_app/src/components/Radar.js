@@ -66,21 +66,28 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     return Object.values(mostRecentData);
   };
 
-  const queryInsight = (dataPoint, index) => {
-    if (homePage) {
-      window.open(`/technology?name=${encodeURIComponent(dataPoint.field_name)}
-      &interest=${(dataPoint.metric_1 / 100).toFixed(2)}&innovation=${(dataPoint.metric_2 / 100).toFixed(2)}
-      &investments=${dataPoint.metric_3}`, '_blank');
-    } else {
-      setTimeout(() => {
-        window.scrollTo({
-          top: document.body.scrollHeight,
-          behavior: 'smooth'
-        });
-      }, 100);
-      radarSearch(dataPoint.name);
+  const queryInsight = async (dataPoint, index) => {
+    try {
+      // Send request to update timed metrics
+      await fetch("/gpt-update-timed-metrics", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ field_id: dataPoint.field_id }),
+      });
+
+      // Then send request to generate a new subfield
+      await fetch("/gpt-subfield", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ field_id: dataPoint.field_id }),
+      });
+
+      console.log("Requests sent successfully for field:", dataPoint.field_id);
+    } catch (error) {
+      console.error("Error sending requests:", error);
     }
   };
+
 
   const handleFilterClick = (point) => {
     // Check if this point is currently selected
@@ -288,13 +295,14 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                           key={point.field_id}
                           name={point.field_name}
                           data={[point]}
-                          fill={colors[index % colors.length]} // Assign distinct color
+                          fill={colors[index % colors.length]}
                           fillOpacity={0.7}
-                          onClick={() => queryInsight(point, index)}
+                          onClick={() => queryInsight(point, index)} // Ensure it triggers on click
                           cursor="pointer"
                           shape="circle"
-                          size={point.metric_3 * 100} // Scaling by metric_3, adjust the factor as needed
+                          size={point.metric_3 * 100}
                         />
+
                       ))}
                     </ScatterChart>
                   </ResponsiveContainer>
@@ -419,6 +427,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
             {useColorMode ? 'Color Legend' : 'Color Legend'}
           </span>
           <div
+          <div
             onClick={() => setUseColorMode(!useColorMode)}
             style={{
               position: 'relative',
@@ -443,6 +452,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
             }} />
           </div>
         </div>
+
 
         {/* Technology buttons */}
         <div style={{
@@ -501,10 +511,10 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               <strong>Date of Scoring:</strong> {formatDate(clickedDataPoint.metric_date)}<br />
               <strong>Rationale:</strong> {clickedDataPoint.rationale || "No rationale available."}<br />
               <strong>Field Description: </strong>{clickedDataPoint.description || "No description available"}<br />
-              <strong>Sources:</strong> {clickedDataPoint.source ? 
+              <strong>Sources:</strong> {clickedDataPoint.source ?
                 <a href={clickedDataPoint.source} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                   {clickedDataPoint.source}
-                </a> : 
+                </a> :
                 "No sources available."}
             </>
             : (selectedTechnology
