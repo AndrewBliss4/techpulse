@@ -11,11 +11,27 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [clickedDataPoint, setClickedDataPoint] = useState(null); // State for clicked data point
   const [selectedTechnology, setSelectedTechnology] = useState(null); // State for selected technology
   const [articleSources, setArticleSources] = useState({});
-
-
   // State to toggle between colorful and blue-only mode
   const [useColorMode, setUseColorMode] = useState(false);
 
+
+  const handlePointClick = async (point) => {
+    try {
+      const response = await fetch("http://localhost:4000/gpt-subfield", {  // <-- Update this if needed
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fieldName: point.field_name }),
+      });
+  
+      if (!response.ok) throw new Error("Failed to send data to server");
+  
+      console.log("Successfully sent:", point.field_name);
+    } catch (error) {
+      console.error("Error sending request:", error);
+    }
+  };
+  
+  
   // Function to generate distinct colors using HSL
   const generateDistinctColors = (numColors) => {
     const colors = [];
@@ -64,28 +80,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     });
 
     return Object.values(mostRecentData);
-  };
-
-  const queryInsight = async (dataPoint, index) => {
-    try {
-      // Send request to update timed metrics
-      await fetch("/gpt-update-timed-metrics", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ field_id: dataPoint.field_id }),
-      });
-
-      // Then send request to generate a new subfield
-      await fetch("/gpt-subfield", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ field_id: dataPoint.field_id }),
-      });
-
-      console.log("Requests sent successfully for field:", dataPoint.field_id);
-    } catch (error) {
-      console.error("Error sending requests:", error);
-    }
   };
 
 
@@ -297,7 +291,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                           data={[point]}
                           fill={colors[index % colors.length]}
                           fillOpacity={0.7}
-                          onClick={() => queryInsight(point, index)} // Ensure it triggers on click
+                          onClick={() => handlePointClick(point)} // Ensure it triggers on click
                           cursor="pointer"
                           shape="circle"
                           size={point.metric_3 * 100}
