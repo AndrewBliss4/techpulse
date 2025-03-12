@@ -7,12 +7,26 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [data, setData] = useState([]);
   const [historicalData, setHistoricalData] = useState([]); // State for historical data
   const [selectedField, setSelectedField] = useState('radar'); // Track the selected field
-  const [clickedDataPoint, setClickedDataPoint] = useState(null); // State for clicked data point
   const [selectedTechnology, setSelectedTechnology] = useState(null); // State for selected technology
-  
+
   // State to toggle between colorful and blue-only mode
   const [useColorMode, setUseColorMode] = useState(false);
-
+  const handlePointClick = async (point) => {
+    try {
+      const response = await fetch("http://localhost:4000/gpt-subfield", {  // <-- Update this if needed
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fieldName: point.field_name }),
+      });
+  
+      if (!response.ok) throw new Error("Failed to send data to server");
+  
+      console.log("Successfully sent:", point.field_name);
+    } catch (error) {
+      console.error("Error sending request:", error);
+    }
+  };
+  
   // Function to generate distinct colors using HSL
   const generateDistinctColors = (numColors) => {
     const colors = [];
@@ -63,22 +77,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     return Object.values(mostRecentData);
   };
 
-  const queryInsight = (dataPoint, index) => {
-    if (homePage) {
-      window.open(`/technology?name=${encodeURIComponent(dataPoint.field_name)}
-      &interest=${(dataPoint.metric_1 / 100).toFixed(2)}&innovation=${(dataPoint.metric_2 / 100).toFixed(2)}
-      &investments=${dataPoint.metric_3}`, '_blank');
-    } else {
-      setTimeout(() => {
-        window.scrollTo({
-          top: document.body.scrollHeight,
-          behavior: 'smooth'
-        });
-      }, 100);
-      radarSearch(dataPoint.name);
-    }
-  };
-
   const handleFilterClick = (point) => {
     // Check if this point is currently selected
     const isCurrentlySelected = selectedTechnology === point.field_name;
@@ -111,17 +109,12 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         }));
       setHistoricalData(fieldHistoricalData);
     }
-    setClickedDataPoint(null);
   };
 
   // Format timestamp to readable date (YYYY-MM-DD)
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-  };
-
-  const handleHistoricalDataPointClick = (point) => {
-    setClickedDataPoint(point);
   };
 
   return (
@@ -255,10 +248,10 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                           data={[point]}
                           fill={colors[index % colors.length]} // Assign distinct color
                           fillOpacity={0.7}
-                          onClick={() => queryInsight(point, index)}
                           cursor="pointer"
                           shape="circle"
-                          size={point.metric_3 * 100} // Scaling by metric_3, adjust the factor as needed
+                          size={point.metric_3 * 100} // Adjust size based on metric_3
+                          onClick={() => handlePointClick(point)} // Attach click handler
                         />
                       ))}
                     </ScatterChart>
@@ -278,11 +271,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                   <ResponsiveContainer width="100%" height="92%">
                     <LineChart
                       data={historicalData}
-                      onClick={(e) => {
-                        if (e.activePayload) {
-                          handleHistoricalDataPointClick(e.activePayload[0].payload);
-                        }
-                      }}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis
@@ -383,7 +371,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
           <span style={{ marginRight: '10px', fontSize: '14px' }}>
             {useColorMode ? 'Color Legend' : 'Color Legend'}
           </span>
-          <div 
+          <div
             onClick={() => setUseColorMode(!useColorMode)}
             style={{
               position: 'relative',
@@ -408,7 +396,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
             }} />
           </div>
         </div>
-        
+
         {/* Technology buttons */}
         <div style={{
           display: 'flex',
@@ -460,30 +448,17 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
           margin: 0,
           color: '#666',
         }}>
-          {clickedDataPoint
+          {selectedTechnology
             ? <>
-
-              <strong>Date of Scoring:</strong> {formatDate(clickedDataPoint.metric_date)}<br />
-              <strong>Rationale:</strong> {clickedDataPoint.rationale || "No rationale available."}<br />
-              <strong>Field Description: </strong>{clickedDataPoint.description || "No description available"}<br />
-              <strong>Sources:</strong> {clickedDataPoint.source ? 
-                <a href={clickedDataPoint.source} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                  {clickedDataPoint.source}
-                </a> : 
+              <strong>Rationale:</strong> {data.find(d => d.field_name === selectedTechnology)?.rationale || "No rationale available."}<br />
+              <strong>Field Description:</strong> {data.find(d => d.field_name === selectedTechnology)?.description || "No description available."}<br />
+              <strong>Sources:</strong> {data.find(d => d.field_name === selectedTechnology)?.source ?
+                <a href={data.find(d => d.field_name === selectedTechnology)?.source} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  {data.find(d => d.field_name === selectedTechnology)?.source}
+                </a> :
                 "No sources available."}
             </>
-            : (selectedTechnology
-              ? <>
-                <strong>Rationale:</strong> {data.find(d => d.field_name === selectedTechnology)?.rationale || "No rationale available."}<br />
-                <strong>Field Description:</strong> {data.find(d => d.field_name === selectedTechnology)?.description || "No description available."}<br />
-                <strong>Sources:</strong> {data.find(d => d.field_name === selectedTechnology)?.source ? 
-                  <a href={data.find(d => d.field_name === selectedTechnology)?.source} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                    {data.find(d => d.field_name === selectedTechnology)?.source}
-                  </a> : 
-                  "No sources available."}
-              </>
-              : "Click a technology to show its description and rationale."
-            )
+            : "Click a technology to show its description and rationale."
           }
         </p>
       </div>
