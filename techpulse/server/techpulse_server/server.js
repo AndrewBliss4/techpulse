@@ -432,7 +432,7 @@ const generateInsight = async (type) => {
       model: "gpt-4o",
       messages: [{ role: "system", content: dynamicPrompt }],
       temperature: 0,
-      max_tokens: 2048,
+      max_tokens: 4000,
       top_p: 1
     });
 
@@ -479,7 +479,7 @@ let promptAISubfield = async (fieldName) => {
     const subfieldNames = subfieldQuery.rows.map(row => row.subfield_name).join(", ");
 
     // Read and inject into prompt
-    let promptTemplate = await fsPromises.readFile("prompt_subfield.txt", "utf8");
+    let promptTemplate = await fsPromises.readFile("./prompts/prompt_subfield.txt", "utf8");
     let dynamicPrompt = promptTemplate
       .replace("{FIELD_NAME}", fieldName)
       .replace("{SUBFIELDS}", subfieldNames);
@@ -505,7 +505,12 @@ let promptAISubfield = async (fieldName) => {
 
 // New endpoint to handle subfield generation
 app.post("/gpt-subfield", async (req, res) => {
-  const fieldName = "Quantum Computing"; // Hardcoded for now
+  const { fieldName } = req.body; // Get fieldName from the request body
+  console.log("Received fieldName:")
+  if (!fieldName) {
+    return res.status(400).send("Field name is required.");
+  }
+
   let aiResponse = await promptAISubfield(fieldName);
   console.log("Raw AI Response:\n", aiResponse);
 
@@ -560,7 +565,6 @@ app.post("/gpt-subfield", async (req, res) => {
         return;
       }
 
-
       const subfieldName = subfieldNameMatch[1].trim();
       const description = descriptionMatch[1].trim();
       const maturity = parseFloat(maturityMatch[1]);
@@ -606,53 +610,7 @@ app.post("/gpt-subfield", async (req, res) => {
     res.status(500).send("Error processing subfields.");
   }
 });
-
-let updateExistingTimedMetrics = async () => {
-  try {
-    // Fetch subfield data
-    const subfieldQuery = await pool.query(`
-      SELECT s.subfield_id, s.subfield_name, t.metric_1, t.metric_2, t.metric_3, t.rationale 
-      FROM Subfield s 
-      JOIN TIMEDMETRICS t ON s.subfield_id = t.subfield_id 
-      WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE subfield_id = s.subfield_id)
-    `);
-
-    if (subfieldQuery.rowCount === 0) {
-      console.log("No subfields found.");
-      return "NO_SUBFIELDS";
-    }
-
-    const subfieldData = subfieldQuery.rows.map(row => `
-      subfield_name: ${row.subfield_name}
-      metric_1: ${row.metric_1}
-      metric_2: ${row.metric_2}
-      metric_3: ${row.metric_3}
-      rationale: ${row.rationale},
-      metric_date: ${row.metric_date}`).join('\n\n');
-
-    // Read the prompt template from file
-    let promptTemplate = await fsPromises.readFile("prompt_update_metrics.txt", "utf8");
-    let dynamicPrompt = promptTemplate.replace("{FIELD_DATA}", subfieldData);
-
-    console.log("Generated Prompt:\n", dynamicPrompt);
-
-    // Call OpenAI
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [{ role: "system", content: dynamicPrompt }],
-      temperature: 0,
-      max_tokens: 2048,
-      top_p: 1
-    });
-
-    return response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
-
-  } catch (error) {
-    console.error("Error:", error);
-    return "ERROR: Unable to process request.";
-  }
-};
-app.post("/gpt-update-timed-metrics", async (req, res) => {
+app.post("/gpt-update-timed-sub-metrics", async (req, res) => {
   const { field_name } = req.body;
 
   // Fetch subfields for the given field name
