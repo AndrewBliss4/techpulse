@@ -5,7 +5,7 @@ const AIPromptFieldButton = ({ setTextResult, setTrendingTopics, setLatestInsigh
   const [isLoading, setIsLoading] = useState(false);
 
   const handleButtonClick = async () => {
-    const isConfirmed = window.confirm("⚠️ Warning: Are you sure you want to make this request?");
+    const isConfirmed = window.confirm("⚠️ Warning: Are you sure you want to make 10 Gajillion API calls? Each request costs tokens and I am poor! 💸");
     if (!isConfirmed) {
       return;
     }
