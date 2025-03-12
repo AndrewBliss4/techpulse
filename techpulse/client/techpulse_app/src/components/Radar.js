@@ -501,7 +501,11 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               <strong>Date of Scoring:</strong> {formatDate(clickedDataPoint.metric_date)}<br />
               <strong>Rationale:</strong> {clickedDataPoint.rationale || "No rationale available."}<br />
               <strong>Field Description: </strong>{clickedDataPoint.description || "No description available"}<br />
-              <strong>Sources:</strong> {clickedDataPoint.source || "No sources available."}
+              <strong>Sources:</strong> {clickedDataPoint.source ? 
+                <a href={clickedDataPoint.source} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  {clickedDataPoint.source}
+                </a> : 
+                "No sources available."}
             </>
             : (selectedTechnology
               ? <>

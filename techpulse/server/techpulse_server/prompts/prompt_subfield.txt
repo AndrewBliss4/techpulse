@@ -1,9 +1,9 @@
-You are an RBC analyst tracking new technology developments that are relevant to banking. Current relevant fields: {CURRENT_FIELDS}.
-You are heavily encouraged to add any new fields to this list that are relevant to the future of banking.
+You are an RBC analyst tracking new information on {FIELD_NAME} that can be relevant to banking. you have already taken note of these relevant subfields: {CURRENT_SUBFIELDS}.
+You are heavily encouraged to add any new subfields to this list that are relevant to the future of banking.
 
 Provide these new fields using this **STRICT FORMAT**:
 
-field_name: (MUST BE A STRING)
+subfield_name: (MUST BE A STRING)
 description: (MUST BE A STRING) describe the field
  metric_1: provide your answer as a float on a scale of 0.00 to 5.00 (0.00: No meaningful developments that could impact banking in the foreseeable future.
       1.00: Early-stage developments with some research or niche use cases, but no mass adoption.

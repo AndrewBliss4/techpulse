@@ -1,12 +1,27 @@
 import React, { useState } from 'react';
 
-const AIPromptFieldButton = () => {
+const AIPromptFieldButton = ({ setTextResult, setTrendingTopics, setLatestInsights, setLoading, setCurrentLoaderIndex, setError, setRenderText, setRenderTrends }) => {
   const [generatedText, setGeneratedText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleButtonClick = async () => {
+    const isConfirmed = window.confirm("⚠️ Warning: Are you sure you want to make 10 Gajillion API calls? Each request costs tokens and I am poor! 💸");
+    if (!isConfirmed) {
+      return;
+    }
     setIsLoading(true);
     setGeneratedText(""); // Clear old responses before a new request
+
+    //display loading sign
+    setLoading(true);
+    //Reset loader cycle
+    setCurrentLoaderIndex(0);
+    //Reset error state
+    setError(false);
+    //reset the old output
+    setRenderText(false);
+    //reset trends
+    setRenderTrends(false);
 
     try {
       console.log("Triggering metric reevaluation...");
@@ -23,7 +38,7 @@ const AIPromptFieldButton = () => {
 
       console.log("Metrics reevaluated successfully. Proceeding to new field generation...");
 
-      // Step 2: Proceed with generating new fields
+      //Step 2: Proceed with generating new fields
       const fieldResponse = await fetch('http://localhost:4000/gpt-field', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -47,13 +62,71 @@ const AIPromptFieldButton = () => {
 
       const insightData = await insightResponse.json();
       console.log("Insight generated successfully:", insightData.insight);
-      setGeneratedText(insightData.insight);
+
+      let insightResult = insightData.insight;
+
+      setTextResult(insightResult);
+
+      //Step 4: Generate trends
+
+      const trendsResponse = await fetch('http://localhost:4000/generate-insight-trends', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      
+      if (!trendsResponse.ok) {
+        throw new Error(`Trends generation failed: ${trendsResponse.statusText}`);
+      }
+
+      const trendsData = await trendsResponse.json();
+      console.log("Trends generated successfully:", trendsData.trends);
+
+      let trendsResult = trendsData.trends;
+
+      //Handle trends
+      let tempTrendingTopics = [];
+      for (const entry of trendsResult.split("/")) {
+        tempTrendingTopics.push(JSON.parse(entry));
+      };
+
+      setTrendingTopics(tempTrendingTopics);
+
+      //Step 5: Generate top insights
+
+      const topResponse = await fetch('http://localhost:4000/generate-insight-top', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!topResponse.ok) {
+        throw new Error(`Top insights generation failed: ${topResponse.statusText}`);
+      }
+
+      const topData = await topResponse.json();
+      console.log("Top insights generated successfully:", topData.top);
+
+      let topResult = topData.top;
+
+      //Handle Top Insights
+      let tempInsights = [];
+      for (const entry of topResult.split("/")) {
+        tempInsights.push(JSON.parse(entry));
+      };
+
+      setLatestInsights(tempInsights);
 
     } catch (error) {
+
       console.error('Error:', error);
       setGeneratedText(`Error: ${error.message}`);
+
     } finally {
+
+      setRenderText(true);
+      setRenderTrends(true);
       setIsLoading(false);
+      setLoading(false);
+
     }
   };
 

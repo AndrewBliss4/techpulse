@@ -23,28 +23,38 @@ metric_1: provide your answer on a scale of 0.00 to +5.00 (0.00: No meaningful d
 
 {METRICS_DATA}
 
+And the report you provided last time:
 
-Andd the report you provided last time:
 {PREVIOUS_INSIGHT}
-The output will be formatted in three sections, seperated by *** after each section.
-First section:
+
+The output will be formatted in sections, seperated by *** after each section and ONLY ***. Do not use ** for the titles.
+
 Based on the data above and recent knowledge about your competitors, generate a detailed insight that highlights trends, anomalies, or significant changes in the metrics. Provide actionable recommendations if applicable.
 Generate the insights by topic.
+
 1. The trend and why it matters.
 2. Latest developments.
 3. Adoption developments across the globe.
 4. Real-world examples
-5. Underlying technologies 
+5. Underlying technologies
 6. Key uncertainties 
-7. Big questions about the future. 
-The total response for this section should be at least 500 words. Format this section's topics with <strong>topic</strong> and the text with <p>text</p>.
+7. Big questions about the future.
+
+The total response for this section should be at least 500 words. Format this section's topics with <h1>technology</h1> <strong>topic</strong> and the text with <p>text</p>.
+Do not use *** to seperate the technologies.
+
 THIS FORMAT IS VERY IMPORTANT.
-Second section:
+
+***
+
 Provide a list of the 3 trending topics from this data, in this format for example: {"title": "AI Advances", "sources": "BCG, Mckinsey", "trend": "+24%" } seperated by / for each entry.
 MAINTAIN THIS JSON FORMAT.
-Third section:
+
+***
+
 Provide a list of the 3 most impactful insights from this data, in this format for example: {"title": "The Future of Quantum Computing", "category": "Emerging Tech", "date": "Nov. 18 2024"} seperated by / for each entry.
 MAINTAIN THIS JSON FORMAT.
-Fourth Section:
+
+***
 Provide the a confidence score using the following format: 'Confidence Score:' (and then a float within 0 to 1)
 Ensure the sources dates are AS RECENT AS POSSIBLE.
