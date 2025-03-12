@@ -57,7 +57,7 @@ BEGIN
         SELECT 1 FROM ModelParameters WHERE modelUse = 'NewFields'
     ) THEN
         INSERT INTO ModelParameters (modelUse, top_p, temperature)
-        VALUES ('NewFields', 1, 0);
+        VALUES ('NewFields', 0.9, 0.7);
     END IF;
 END $$;
 
