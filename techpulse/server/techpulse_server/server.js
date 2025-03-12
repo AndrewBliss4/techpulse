@@ -432,7 +432,7 @@ const generateInsight = async (type) => {
       model: "gpt-4o",
       messages: [{ role: "system", content: dynamicPrompt }],
       temperature: 0,
-      max_tokens: 4000,
+      max_tokens: 2048,
       top_p: 1
     });
 
@@ -479,7 +479,7 @@ let promptAISubfield = async (fieldName) => {
     const subfieldNames = subfieldQuery.rows.map(row => row.subfield_name).join(", ");
 
     // Read and inject into prompt
-    let promptTemplate = await fsPromises.readFile("./prompts/prompt_subfield.txt", "utf8");
+    let promptTemplate = await fsPromises.readFile("prompt_subfield.txt", "utf8");
     let dynamicPrompt = promptTemplate
       .replace("{FIELD_NAME}", fieldName)
       .replace("{SUBFIELDS}", subfieldNames);
@@ -505,12 +505,7 @@ let promptAISubfield = async (fieldName) => {
 
 // New endpoint to handle subfield generation
 app.post("/gpt-subfield", async (req, res) => {
-  const { fieldName } = req.body; // Get fieldName from the request body
-  console.log("Received fieldName:")
-  if (!fieldName) {
-    return res.status(400).send("Field name is required.");
-  }
-
+  const fieldName = "Quantum Computing"; // Hardcoded for now
   let aiResponse = await promptAISubfield(fieldName);
   console.log("Raw AI Response:\n", aiResponse);
 
@@ -564,6 +559,7 @@ app.post("/gpt-subfield", async (req, res) => {
         res.status(400).send("Invalid AI response format.");
         return;
       }
+
 
       const subfieldName = subfieldNameMatch[1].trim();
       const description = descriptionMatch[1].trim();

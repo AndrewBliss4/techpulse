@@ -1,6 +1,7 @@
 const { Client } = require("pg");
 const axios = require("axios");
 const fs = require("fs");
+const path = require("path");
 
 console.log("Starting script...");
 
@@ -39,35 +40,37 @@ async function fetchFieldNames() {
   }
 }
 
-// Function to fetch articles from ArXiv API
+const { XMLParser } = require("fast-xml-parser");
+
 async function fetchArxivPapers(field) {
   console.log(`Fetching ArXiv papers for field: ${field}`);
-  const query = encodeURIComponent(field);
-  const url = `http://export.arxiv.org/api/query?search_query=all:${query}&max_results=50&sortBy=submittedDate`;
-
+  const categories = ["cs.CR", "q-fin.CP", "q-fin.GN"]; // Example categories
+  const categoryQuery = categories.map(cat => `cat:${cat}`).join(" OR ");
+  const query = encodeURIComponent(`${field} AND (${categoryQuery})`);
+  const url = `http://export.arxiv.org/api/query?search_query=${query}&max_results=5&sortBy=submittedDate`;
   try {
     const response = await axios.get(url);
     console.log(`Received response for field: ${field}`);
 
-    const xmlData = response.data;
-    const entries = xmlData.split("<entry>").slice(1);
+    const parser = new XMLParser({ ignoreAttributes: false, parseTagValue: true });
+    const jsonObj = parser.parse(response.data);
 
-    return entries.map(entry => {
-      const idMatch = entry.match(/<id>(.*?)<\/id>/);
-      const titleMatch = entry.match(/<title>(.*?)<\/title>/);
-      const authorsMatch = [...entry.matchAll(/<name>(.*?)<\/name>/g)];
-      const publishedMatch = entry.match(/<published>(.*?)<\/published>/);
-      const summaryMatch = entry.match(/<summary>(.*?)<\/summary>/s);
+    if (!jsonObj.feed || !jsonObj.feed.entry) {
+      console.error(`No entries found for field: ${field}`);
+      return [];
+    }
 
-      return {
-        id: idMatch ? idMatch[1].split("/").pop() : "",
-        title: titleMatch ? titleMatch[1].trim() : "Unknown Title",
-        authors: authorsMatch.map(a => a[1]),
-        published: publishedMatch ? publishedMatch[1] : "Unknown Date",
-        summary: summaryMatch ? summaryMatch[1].replace(/\s+/g, " ").trim() : "No Summary Available",
-        field: field,
-      };
-    });
+    const entries = Array.isArray(jsonObj.feed.entry) ? jsonObj.feed.entry : [jsonObj.feed.entry];
+
+    return entries.map(entry => ({
+      id: entry.id ? entry.id.split("/").pop() : "Unknown ID",
+      title: entry.title ? entry.title.replace(/\s+/g, " ").trim() : "Unknown Title",
+      authors: entry.author ? (Array.isArray(entry.author) ? entry.author.map(a => a.name) : [entry.author.name]) : [],
+      published: entry.published || "Unknown Date",
+      summary: entry.summary ? entry.summary.replace(/\s+/g, " ").trim() : "No Summary Available",
+      field: field,
+      link: entry.id || "No Link Available", // Store the hyperlink
+    }));
   } catch (error) {
     console.error(`Error fetching articles for ${field}:`, error);
     return [];
@@ -95,8 +98,26 @@ async function main() {
   }
 
   console.log("Saving dataset to arxiv_papers.json...");
-  fs.writeFileSync("arxiv_papers.json", JSON.stringify(articles, null, 4), "utf8");
-  console.log("Dataset saved successfully!");
+  // Construct path to the 'client' folder
+  const dbFolderPath = path.join(__dirname, "../../client/techpulse_app/public");
+
+  // Debugging: Log the path to check if it's correct
+  console.log(`Checking if db folder exists at: ${dbFolderPath}`);
+
+  if (!fs.existsSync(dbFolderPath)) {
+    console.log("db folder not found. Creating it now...");
+    fs.mkdirSync(dbFolderPath, { recursive: true });
+    console.log("db folder created successfully!");
+  } else {
+    console.log("db folder already exists.");
+  }
+
+  // Define JSON file path
+  const jsonFilePath = path.join(dbFolderPath, "arxiv_papers.json");
+
+  // Save the dataset
+  fs.writeFileSync(jsonFilePath, JSON.stringify(articles, null, 4), "utf8");
+  console.log(`Dataset saved successfully at: ${jsonFilePath}`);
 }
 
 // Run the script

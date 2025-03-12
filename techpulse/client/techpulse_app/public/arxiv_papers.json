@@ -1,0 +1,939 @@
+[
+    {
+        "id": "2503.08607v1",
+        "title": "A Fair and Lightweight Consensus Algorithm for IoT",
+        "authors": [
+            "Sokratis Vavilis",
+            "Harris Niavis",
+            "Konstantinos Loupos"
+        ],
+        "published": "2025-03-11T16:45:51Z",
+        "summary": "As hyperconnected devices and decentralized data architectures expand, securing IoT transactions becomes increasingly challenging. Blockchain offers a promising solution, but its effectiveness relies on the underlying consensus algorithm. Traditional mechanisms like PoW and PoS are often impractical for resource-constrained IoT environments. To address these limitations, this work introduces a fair and lightweight hybrid consensus algorithm tailored for IoT. The proposed approach minimizes resource demands on the nodes while ensuring a secure and fair agreement process. Specifically, it leverages a distributed lottery mechanism to fairly propose blocks without requiring specialized hardware. In addition, a reputation-based block voting mechanism is incorporated to enhance trust and establish finality. Finally, experimental evaluation was conducted to validate the key features of the consensus algorithm.",
+        "field": "Quantum Computing",
+        "link": "http://arxiv.org/abs/2503.08607v1"
+    },
+    {
+        "id": "2503.08359v1",
+        "title": "Efficient Query Verification for Blockchain Superlight Clients Using SNARKs",
+        "authors": [
+            "Stefano De Angelis",
+            "Ivan Visconti",
+            "Andrea Vitaletti",
+            "Marco Zecchini"
+        ],
+        "published": "2025-03-11T12:16:35Z",
+        "summary": "Blockchains are among the most powerful technologies to realize decentralized information systems. In order to safely enjoy all guarantees provided by a blockchain, one should maintain a full node, therefore maintaining an updated local copy of the ledger. This allows one to locally verify transactions, states of smart contracts, and to compute any information over them. Unfortunately, for obvious practical reasons, a very large part of blockchain-based information systems consists of users relying on clients that access data stored in blockchains only through servers, without verifying what is received. In notable use cases, the user has application-specific queries that can be answered only by very few servers, sometimes all belonging to the same organization. This clearly re-introduces a single point of failure. In this work we present an architecture allowing superlight clients (i.e., clients that do not want to download the involved transactions) to outsource the computation of a query to a (possibly untrusted) server, receiving a trustworthy answer. Our architecture relies on the power of SNARKs and makes them lighter to compute by using data obtained from full nodes and blockchain explorers, possibly leveraging the existence of smart contracts. The viability of our architecture is confirmed by an experimental evaluation on concrete scenarios. Our work paves the road towards blockchain-based information systems that remain decentralized and reliable even when users rely on common superlight clients (e.g., smartphones).",
+        "field": "Quantum Computing",
+        "link": "http://arxiv.org/abs/2503.08359v1"
+    },
+    {
+        "id": "2503.08284v1",
+        "title": "Neural cyberattacks applied to the vision under realistic visual stimuli",
+        "authors": [
+            "Victoria Magdalena López Madejska",
+            "Sergio López Bernal",
+            "Gregorio Martínez Pérez",
+            "Alberto Huertas Celdrán"
+        ],
+        "published": "2025-03-11T10:58:58Z",
+        "summary": "Brain-Computer Interfaces (BCIs) are systems traditionally used in medicine and designed to interact with the brain to record or stimulate neurons. Despite their benefits, the literature has demonstrated that invasive BCIs focused on neurostimulation present vulnerabilities allowing attackers to gain control. In this context, neural cyberattacks emerged as threats able to disrupt spontaneous neural activity by performing neural overstimulation or inhibition. Previous work validated these attacks in small-scale simulations with a reduced number of neurons, lacking real-world complexity. Thus, this work tackles this limitation by analyzing the impact of two existing neural attacks, Neuronal Flooding (FLO) and Neuronal Jamming (JAM), on a complex neuronal topology of the primary visual cortex of mice consisting of approximately 230,000 neurons, tested on three realistic visual stimuli: flash effect, movie, and drifting gratings. Each attack was evaluated over three relevant events per stimulus, also testing the impact of attacking 25% and 50% of the neurons. The results, based on the number of spikes and shift percentages metrics, showed that the attacks caused the greatest impact on the movie, while dark and fixed events are the most robust. Although both attacks can significantly affect neural activity, JAM was generally more damaging, producing longer temporal delays, and had a larger prevalence. Finally, JAM did not require to alter many neurons to significantly affect neural activity, while the impact in FLO increased with the number of neurons attacked.",
+        "field": "Quantum Computing",
+        "link": "http://arxiv.org/abs/2503.08284v1"
+    },
+    {
+        "id": "2503.08256v1",
+        "title": "SoK: A cloudy view on trust relationships of CVMs -- How Confidential Virtual Machines are falling short in Public Cloud",
+        "authors": [
+            "Jana Eisoldt",
+            "Anna Galanou",
+            "Andrey Ruzhanskiy",
+            "Nils Küchenmeister",
+            "Yewgenij Baburkin",
+            "Tianxiang Dai",
+            "Ivan Gudymenko",
+            "Stefan Köpsell",
+            "Rüdiger Kapitza"
+        ],
+        "published": "2025-03-11T10:21:29Z",
+        "summary": "Confidential computing in the public cloud intends to safeguard workload privacy while outsourcing infrastructure management to a cloud provider. This is achieved by executing customer workloads within so called Trusted Execution Environments (TEEs), such as Confidential Virtual Machines (CVMs), which protect them from unauthorized access by cloud administrators and privileged system software. At the core of confidential computing lies remote attestation -- a mechanism that enables workload owners to verify the initial state of their workload and furthermore authenticate the underlying hardware. hile this represents a significant advancement in cloud security, this SoK critically examines the confidential computing offerings of market-leading cloud providers to assess whether they genuinely adhere to its core principles. We develop a taxonomy based on carefully selected criteria to systematically evaluate these offerings, enabling us to analyse the components responsible for remote attestation, the evidence provided at each stage, the extent of cloud provider influence and whether this undermines the threat model of confidential computing. Specifically, we investigate how CVMs are deployed in the public cloud infrastructures, the extent to which customers can request and verify attestation evidence, and their ability to define and enforce configuration and attestation requirements. This analysis provides insight into whether confidential computing guarantees -- namely confidentiality and integrity -- are genuinely upheld. Our findings reveal that all major cloud providers retain control over critical parts of the trusted software stack and, in some cases, intervene in the standard remote attestation process. This directly contradicts their claims of delivering confidential computing, as the model fundamentally excludes the cloud provider from the set of trusted entities.",
+        "field": "Quantum Computing",
+        "link": "http://arxiv.org/abs/2503.08256v1"
+    },
+    {
+        "id": "2503.08085v1",
+        "title": "PRISM: Privacy-Preserving Improved Stochastic Masking for Federated Generative Models",
+        "authors": [
+            "Kyeongkook Seo",
+            "Dong-Jun Han",
+            "Jaejun Yoo"
+        ],
+        "published": "2025-03-11T06:37:54Z",
+        "summary": "Despite recent advancements in federated learning (FL), the integration of generative models into FL has been limited due to challenges such as high communication costs and unstable training in heterogeneous data environments. To address these issues, we propose PRISM, a FL framework tailored for generative models that ensures (i) stable performance in heterogeneous data distributions and (ii) resource efficiency in terms of communication cost and final model size. The key of our method is to search for an optimal stochastic binary mask for a random network rather than updating the model weights, identifying a sparse subnetwork with high generative performance; i.e., a ``strong lottery ticket''. By communicating binary masks in a stochastic manner, PRISM minimizes communication overhead. This approach, combined with the utilization of maximum mean discrepancy (MMD) loss and a mask-aware dynamic moving average aggregation method (MADA) on the server side, facilitates stable and strong generative capabilities by mitigating local divergence in FL scenarios. Moreover, thanks to its sparsifying characteristic, PRISM yields a lightweight model without extra pruning or quantization, making it ideal for environments such as edge devices. Experiments on MNIST, FMNIST, CelebA, and CIFAR10 demonstrate that PRISM outperforms existing methods, while maintaining privacy with minimal communication costs. PRISM is the first to successfully generate images under challenging non-IID and privacy-preserving FL environments on complex datasets, where previous methods have struggled.",
+        "field": "Quantum Computing",
+        "link": "http://arxiv.org/abs/2503.08085v1"
+    },
+    {
+        "id": "2503.06279v1",
+        "title": "Mitigating Blockchain extractable value (BEV) threats by Distributed Transaction Sequencing in Blockchains",
+        "authors": [
+            "Xiongfei Zhao",
+            "Hou-Wan Long",
+            "Zhengzhe Li",
+            "Jiangchuan Liu",
+            "Yain-Whar Si"
+        ],
+        "published": "2025-03-08T16:55:52Z",
+        "summary": "The rapid growth of Blockchain and Decentralized Finance (DeFi) has introduced new challenges and vulnerabilities that threaten the integrity and efficiency of the ecosystem. This study identifies critical issues such as Transaction Order Dependence (TOD), Blockchain Extractable Value (BEV), and Transaction Importance Diversity (TID), which collectively undermine the fairness and security of DeFi systems. BEV-related activities, including Sandwich attacks, Liquidations, and Transaction Replay, have emerged as significant threats, collectively generating $540.54 million in losses over 32 months across 11,289 addresses, involving 49,691 cryptocurrencies and 60,830 on-chain markets. These attacks exploit transaction mechanics to manipulate asset prices and extract value at the expense of other participants, with Sandwich attacks being particularly impactful. Additionally, the growing adoption of Blockchain in traditional finance highlights the challenge of TID, where high transaction volumes can strain systems and compromise time-sensitive operations. To address these pressing issues, we propose a novel Distributed Transaction Sequencing Strategy (DTSS), which combines forking mechanisms and the Analytic Hierarchy Process (AHP) to enforce fair and transparent transaction ordering in a decentralized manner. Our approach is further enhanced by an optimization framework and the introduction of the Normalized Allocation Disparity Metric (NADM), which ensures optimal parameter selection for transaction prioritization. Experimental evaluations demonstrate that DTSS effectively mitigates BEV risks, enhances transaction fairness, and significantly improves the security and transparency of DeFi ecosystems. This work is essential for protecting the future of decentralized finance and promoting its integration into global financial systems.",
+        "field": "Decentralized Finance (DeFi)",
+        "link": "http://arxiv.org/abs/2503.06279v1"
+    },
+    {
+        "id": "2503.04850v2",
+        "title": "Slow is Fast! Dissecting Ethereum's Slow Liquidity Drain Scams",
+        "authors": [
+            "Minh Trung Tran",
+            "Nasrin Sohrabi",
+            "Zahir Tari",
+            "Qin Wang",
+            "Xiaoyu Xia"
+        ],
+        "published": "2025-03-06T02:24:35Z",
+        "summary": "We identify the slow liquidity drain (SLID) scam, an insidious and highly profitable threat to decentralized finance (DeFi), posing a large-scale, persistent, and growing risk to the ecosystem. Unlike traditional scams such as rug pulls or honeypots (USENIX Sec'19, USENIX Sec'23), SLID gradually siphons funds from liquidity pools over extended periods, making detection significantly more challenging. In this paper, we conducted the first large-scale empirical analysis of 319,166 liquidity pools across six major decentralized exchanges (DEXs) since 2018. We identified 3,117 SLID affected liquidity pools, resulting in cumulative losses of more than US$103 million. We propose a rule-based heuristic and an enhanced machine learning model for early detection. Our machine learning model achieves a detection speed 4.77 times faster than the heuristic while maintaining 95% accuracy. Our study establishes a foundation for protecting DeFi investors at an early stage and promoting transparency in the DeFi ecosystem.",
+        "field": "Decentralized Finance (DeFi)",
+        "link": "http://arxiv.org/abs/2503.04850v2"
+    },
+    {
+        "id": "2503.01944v1",
+        "title": "Protecting DeFi Platforms against Non-Price Flash Loan Attacks",
+        "authors": [
+            "Abdulrahman Alhaidari",
+            "Balaji Palanisamy",
+            "Prashant Krishnamurthy"
+        ],
+        "published": "2025-03-03T18:18:05Z",
+        "summary": "Smart contracts in Decentralized Finance (DeFi) platforms are attractive targets for attacks as their vulnerabilities can lead to massive amounts of financial losses. Flash loan attacks, in particular, pose a major threat to DeFi protocols that hold a Total Value Locked (TVL) exceeding \\$106 billion. These attacks use the atomicity property of blockchains to drain funds from smart contracts in a single transaction. While existing research primarily focuses on price manipulation attacks, such as oracle manipulation, mitigating non-price flash loan attacks that often exploit smart contracts' zero-day vulnerabilities remains largely unaddressed. These attacks are challenging to detect because of their unique patterns, time sensitivity, and complexity. In this paper, we present FlashGuard, a runtime detection and mitigation method for non-price flash loan attacks. Our approach targets smart contract function signatures to identify attacks in real-time and counterattack by disrupting the attack transaction atomicity by leveraging the short window when transactions are visible in the mempool but not yet confirmed. When FlashGuard detects an attack, it dispatches a stealthy dusting counterattack transaction to miners to change the victim contract's state which disrupts the attack's atomicity and forces the attack transaction to revert. We evaluate our approach using 20 historical attacks and several unseen attacks. FlashGuard achieves an average real-time detection latency of 150.31ms, a detection accuracy of over 99.93\\%, and an average disruption time of 410.92ms. FlashGuard could have potentially rescued over \\$405.71 million in losses if it were deployed prior to these attack instances. FlashGuard demonstrates significant potential as a DeFi security solution to mitigate and handle rising threats of non-price flash loan attacks.",
+        "field": "Decentralized Finance (DeFi)",
+        "link": "http://arxiv.org/abs/2503.01944v1"
+    },
+    {
+        "id": "2502.11521v1",
+        "title": "DeFiScope: Detecting Various DeFi Price Manipulations with LLM Reasoning",
+        "authors": [
+            "Juantao Zhong",
+            "Daoyuan Wu",
+            "Ye Liu",
+            "Maoyi Xie",
+            "Yang Liu",
+            "Yi Li",
+            "Ning Liu"
+        ],
+        "published": "2025-02-17T07:45:03Z",
+        "summary": "DeFi (Decentralized Finance) is one of the most important applications of today's cryptocurrencies and smart contracts. It manages hundreds of billions in Total Value Locked (TVL) on-chain, yet it remains susceptible to common DeFi price manipulation attacks. Despite state-of-the-art (SOTA) systems like DeFiRanger and DeFort, we found that they are less effective to non-standard price models in custom DeFi protocols, which account for 44.2% of the 95 DeFi price manipulation attacks reported over the past three years. In this paper, we introduce the first LLM-based approach, DeFiScope, for detecting DeFi price manipulation attacks in both standard and custom price models. Our insight is that large language models (LLMs) have certain intelligence to abstract price calculation from code and infer the trend of token price changes based on the extracted price models. To further strengthen LLMs in this aspect, we leverage Foundry to synthesize on-chain data and use it to fine-tune a DeFi price-specific LLM. Together with the high-level DeFi operations recovered from low-level transaction data, DeFiScope detects various DeFi price manipulations according to systematically mined patterns. Experimental results show that DeFiScope achieves a high precision of 96% and a recall rate of 80%, significantly outperforming SOTA approaches. Moreover, we evaluate DeFiScope's cost-effectiveness and demonstrate its practicality by helping our industry partner confirm 147 real-world price manipulation attacks, including discovering 81 previously unknown historical incidents.",
+        "field": "Decentralized Finance (DeFi)",
+        "link": "http://arxiv.org/abs/2502.11521v1"
+    },
+    {
+        "id": "2502.13167v1",
+        "title": "SmartLLM: Smart Contract Auditing using Custom Generative AI",
+        "authors": [
+            "Jun Kevin",
+            "Pujianto Yugopuspito"
+        ],
+        "published": "2025-02-17T06:22:05Z",
+        "summary": "Smart contracts are essential to decentralized finance (DeFi) and blockchain ecosystems but are increasingly vulnerable to exploits due to coding errors and complex attack vectors. Traditional static analysis tools and existing vulnerability detection methods often fail to address these challenges comprehensively, leading to high false-positive rates and an inability to detect dynamic vulnerabilities. This paper introduces SmartLLM, a novel approach leveraging fine-tuned LLaMA 3.1 models with Retrieval-Augmented Generation (RAG) to enhance the accuracy and efficiency of smart contract auditing. By integrating domain-specific knowledge from ERC standards and employing advanced techniques such as QLoRA for efficient fine-tuning, SmartLLM achieves superior performance compared to static analysis tools like Mythril and Slither, as well as zero-shot large language model (LLM) prompting methods such as GPT-3.5 and GPT-4. Experimental results demonstrate a perfect recall of 100% and an accuracy score of 70%, highlighting the model's robustness in identifying vulnerabilities, including reentrancy and access control issues. This research advances smart contract security by offering a scalable and effective auditing solution, supporting the secure adoption of decentralized applications.",
+        "field": "Decentralized Finance (DeFi)",
+        "link": "http://arxiv.org/abs/2502.13167v1"
+    },
+    {
+        "id": "2503.00070v1",
+        "title": "Systematic Review of Cybersecurity in Banking: Evolution from Pre-Industry 4.0 to Post-Industry 4.0 in Artificial Intelligence, Blockchain, Policies and Practice",
+        "authors": [
+            "Tue Nhi Tran"
+        ],
+        "published": "2025-02-27T14:17:06Z",
+        "summary": "Throughout the history from pre-industry 4.0 to post-industry 4.0, cybersecurity at banks has undergone significant changes. Pre-industry 4.0 cyber security at banks relied on individual security methods that were highly manual and had low accuracy. When moving to post-industry 4.0, cybersecurity at banks had a major turning point with security methods that combined different technologies such as Artificial Intelligence (AI), Blockchain, IoT, automating necessary processes and significantly increasing the defence layer for banks. However, along with the development of new technologies, the current challenge of cybersecurity at banks lies in scalability, high costs and resources in both money and time for R&D of defence methods along with the threat of high-tech cybercriminals growing and expanding. This report goes from introducing the importance of cybersecurity at banks, analyzing their management, operational and business objectives, evaluating pre-industry 4.0 technologies used for cybersecurity at banks to assessing post-industry 4.0 technologies focusing on Artificial Intelligence and Blockchain, discussing current policies and practices and ending with discussing key advantages and challenges for 4.0 technologies and recommendations for further developing cybersecurity at banks.",
+        "field": "Artificial Intelligence (AI) in Banking",
+        "link": "http://arxiv.org/abs/2503.00070v1"
+    },
+    {
+        "id": "2502.14766v2",
+        "title": "Multi-Layer Deep xVA: Structural Credit Models, Measure Changes and Convergence Analysis",
+        "authors": [
+            "Kristoffer Andersson",
+            "Alessandro Gnoatto"
+        ],
+        "published": "2025-02-20T17:41:55Z",
+        "summary": "We propose a structural default model for portfolio-wide valuation adjustments (xVAs) and represent it as a system of coupled backward stochastic differential equations. The framework is divided into four layers, each capturing a key component: (i) clean values, (ii) initial margin and Collateral Valuation Adjustment (ColVA), (iii) Credit/Debit Valuation Adjustments (CVA/DVA) together with Margin Valuation Adjustment (MVA), and (iv) Funding Valuation Adjustment (FVA). Because these layers depend on one another through collateral and default effects, a naive Monte Carlo approach would require deeply nested simulations, making the problem computationally intractable. To address this challenge, we use an iterative deep BSDE approach, handling each layer sequentially so that earlier outputs serve as inputs to the subsequent layers. Initial margin is computed via deep quantile regression to reflect margin requirements over the Margin Period of Risk. We also adopt a change-of-measure method that highlights rare but significant defaults of the bank or counterparty, ensuring that these events are accurately captured in the training process. We further extend Han and Long's (2020) a posteriori error analysis to BSDEs on bounded domains. Due to the random exit from the domain, we obtain an order of convergence of $\\mathcal{O}(h^{1/4-\\epsilon})$ rather than the usual $\\mathcal{O}(h^{1/2})$. Numerical experiments illustrate that this method drastically reduces computational demands and successfully scales to high-dimensional, non-symmetric portfolios. The results confirm its effectiveness and accuracy, offering a practical alternative to nested Monte Carlo simulations in multi-counterparty xVA analyses.",
+        "field": "Artificial Intelligence (AI) in Banking",
+        "link": "http://arxiv.org/abs/2502.14766v2"
+    },
+    {
+        "id": "2502.14393v1",
+        "title": "Innovative Financing Solutions: A Transformative Driver for Financial Performance of Businesses in Morocco",
+        "authors": [
+            "Nohayla Badrane",
+            "Zineb Bamousse"
+        ],
+        "published": "2025-02-20T09:31:43Z",
+        "summary": "In a rapidly evolving landscape marked by continuous change and complex challenges, effective cash management stands as a cornerstone for ensuring business sustainability and driving performance. To address these pressing demands, cash managersare increasingly turning to innovative financing solutions such as venture capital, green finance, crowdfunding, advanced services from Pan-African banks, and blockchain technology. These cutting-edge tools are pivotal in bolstering resilience against market volatility, ecological transitions, and the accelerating pace of technological change. The present article aims to examine how such innovative financial approaches can serve as strategic drivers, enabling businesses to transform challenges into opportunities. The analysis underscores that rethinking cash management through innovation is a critical pathway toboost the performance of Moroccan companies. Therefore, embracing these forward-thinking strategies unlocks new avenues for development empowering them to adapt with agility amidst the uncertainties of a shifting environment.",
+        "field": "Artificial Intelligence (AI) in Banking",
+        "link": "http://arxiv.org/abs/2502.14393v1"
+    },
+    {
+        "id": "2502.11650v1",
+        "title": "\"I'm 73, you can't expect me to have multiple passwords\": Password Management Concerns and Solutions of Irish Older Adults",
+        "authors": [
+            "Ashley Sheil",
+            "Jacob Camilleri",
+            "Michelle O'Keeffe",
+            "Melanie Gruben",
+            "Moya Cronin",
+            "Hazel Murray"
+        ],
+        "published": "2025-02-17T10:42:13Z",
+        "summary": "Based on Irish older adult's perceptions, practices, and challenges regarding password management, the goal of this study was to compile suitable advice that can benefit this demographic. To achieve this, we first conducted semi structured interviews (n=37), we then collated advice based on best practice and what we learned from these interviews. We facilitated two independent focus groups (n=31) to evaluate and adjust this advice and tested the finalized advice through an observational study (n=15). The participants were aged between 59 and 86 and came from various counties in Ireland, both rural and urban. The findings revealed that managing multiple passwords was a significant source of frustration, leading some participants to adopt novel and informal strategies for storing them. A notable hesitation to adopt digital password managers and passphrases was also observed. Participants appreciated guidance on improving their password practices, with many affirming that securely writing down passwords was a practical strategy. Irish older adults demonstrated strong intuition regarding cybersecurity, notably expressing concerns over knowledge-based security checks used by banks and government institutions. This study aims to contribute to the aggregation of practical password advice suited to older adults, making password security more manageable and less burdensome for this demographic.",
+        "field": "Artificial Intelligence (AI) in Banking",
+        "link": "http://arxiv.org/abs/2502.11650v1"
+    },
+    {
+        "id": "2502.09553v1",
+        "title": "SyntheticPop: Attacking Speaker Verification Systems With Synthetic VoicePops",
+        "authors": [
+            "Eshaq Jamdar",
+            "Amith Kamath Belman"
+        ],
+        "published": "2025-02-13T18:05:12Z",
+        "summary": "Voice Authentication (VA), also known as Automatic Speaker Verification (ASV), is a widely adopted authentication method, particularly in automated systems like banking services, where it serves as a secondary layer of user authentication. Despite its popularity, VA systems are vulnerable to various attacks, including replay, impersonation, and the emerging threat of deepfake audio that mimics the voice of legitimate users. To mitigate these risks, several defense mechanisms have been proposed. One such solution, Voice Pops, aims to distinguish an individual's unique phoneme pronunciations during the enrollment process. While promising, the effectiveness of VA+VoicePop against a broader range of attacks, particularly logical or adversarial attacks, remains insufficiently explored. We propose a novel attack method, which we refer to as SyntheticPop, designed to target the phoneme recognition capabilities of the VA+VoicePop system. The SyntheticPop attack involves embedding synthetic \"pop\" noises into spoofed audio samples, significantly degrading the model's performance. We achieve an attack success rate of over 95% while poisoning 20% of the training dataset. Our experiments demonstrate that VA+VoicePop achieves 69% accuracy under normal conditions, 37% accuracy when subjected to a baseline label flipping attack, and just 14% accuracy under our proposed SyntheticPop attack, emphasizing the effectiveness of our method.",
+        "field": "Artificial Intelligence (AI) in Banking",
+        "link": "http://arxiv.org/abs/2502.09553v1"
+    },
+    {
+        "id": "2412.04051v1",
+        "title": "How to design a Public Key Infrastructure for a Central Bank Digital Currency",
+        "authors": [
+            "Makan Rafiee",
+            "Lars Hupel"
+        ],
+        "published": "2024-12-05T10:41:38Z",
+        "summary": "Central Bank Digital Currency (CBDC) is a new form of money, issued by a country's or region's central bank, that can be used for a variety of payment scenarios. Depending on its concrete implementation, there are many participants in a production CBDC ecosystem, including the central bank, commercial banks, merchants, individuals, and wallet providers. There is a need for robust and scalable Public Key Infrastructure (PKI) for CBDC to ensure the continued trust of all entities in the system. This paper discusses the criteria that should flow into the design of a PKI and proposes a certificate hierarchy, together with a rollover concept ensuring continuous operation of the system. We further consider several peculiarities, such as the circulation of offline-capable hardware wallets.",
+        "field": "Central Bank Digital Currencies (CBDCs)",
+        "link": "http://arxiv.org/abs/2412.04051v1"
+    },
+    {
+        "id": "2411.06362v1",
+        "title": "Will Central Bank Digital Currencies (CBDC) and Blockchain Cryptocurrencies Coexist in the Post Quantum Era?",
+        "authors": [
+            "Abraham Itzhak Weinberg",
+            "Pythagoras Petratos",
+            "Alessio Faccia"
+        ],
+        "published": "2024-11-10T05:05:55Z",
+        "summary": "This paper explores the coexistence possibilities of Central Bank Digital Currencies (CBDCs) and blockchain-based cryptocurrencies within a post-quantum computing landscape. It examines the implications of emerging quantum algorithms and cryptographic techniques such as Multi-Party Computation (MPC) and Oblivious Transfer (OT). While exploring how CBDCs and cryptocurrencies might integrate defenses like post-quantum cryptography, it highlights the substantial hurdles in transitioning legacy systems and fostering widespread adoption of new standards. The paper includes comprehensive evaluations of CBDCs in a quantum context. It also features comparisons to alternative cryptocurrency models. Additionally, the paper provides insightful analyses of pertinent quantum methodologies. Examinations of interfaces between these methods and blockchain architectures are also included. The paper carries out considered appraisals of quantum threats and their relevance for cryptocurrency schemes. Furthermore, it features discussions of the influence of anticipated advances in quantum computing on algorithms and their applications. The paper renders the judicious conclusion that long-term coexistence is viable provided challenges are constructively addressed through ongoing collaborative efforts to validate solutions and guide evolving policies.",
+        "field": "Central Bank Digital Currencies (CBDCs)",
+        "link": "http://arxiv.org/abs/2411.06362v1"
+    },
+    {
+        "id": "2408.06956v1",
+        "title": "PayOff: A Regulated Central Bank Digital Currency with Private Offline Payments",
+        "authors": [
+            "Carolin Beer",
+            "Sheila Zingg",
+            "Kari Kostiainen",
+            "Karl Wüst",
+            "Vedran Capkun",
+            "Srdjan Capkun"
+        ],
+        "published": "2024-08-13T15:15:06Z",
+        "summary": "The European Central Bank is preparing for the potential issuance of a central bank digital currency (CBDC), called the digital euro. A recent regulatory proposal by the European Commission defines several requirements for the digital euro, such as support for both online and offline payments. Offline payments are expected to enable cash-like privacy, local payment settlement, and the enforcement of holding limits. While other central banks have expressed similar desired functionality, achieving such offline payments poses a novel technical challenge. We observe that none of the existing research solutions, including offline E-cash schemes, are fully compliant. Proposed solutions based on secure elements offer no guarantees in case of compromise and can therefore lead to significant payment fraud. The main contribution of this paper is PayOff, a novel CBDC design motivated by the digital euro regulation, which focuses on offline payments. We analyze the security implications of local payment settlement and identify new security objectives. PayOff protects user privacy, supports complex regulations such as holding limits, and implements safeguards to increase robustness against secure element failure. Our analysis shows that PayOff provides strong privacy and identifies residual leakages that may arise in real-world deployments. Our evaluation shows that offline payments can be fast and that the central bank can handle high payment loads with moderate computing resources. However, the main limitation of PayOff is that offline payment messages and storage requirements grow in the number of payments that the sender makes or receives without going online in between.",
+        "field": "Central Bank Digital Currencies (CBDCs)",
+        "link": "http://arxiv.org/abs/2408.06956v1"
+    },
+    {
+        "id": "2407.13776v1",
+        "title": "Offline Digital Euro: a Minimum Viable CBDC using Groth-Sahai proofs",
+        "authors": [
+            "Leon Kempen",
+            "Johan Pouwelse"
+        ],
+        "published": "2024-07-01T09:55:14Z",
+        "summary": "Current digital payment solutions are fragile and offer less privacy than traditional cash. Their critical dependency on an online service used to perform and validate transactions makes them void if this service is unreachable. Moreover, no transaction can be executed during server malfunctions or power outages. Due to climate change, the likelihood of extreme weather increases. As extreme weather is a major cause of power outages, the frequency of power outages is expected to increase. The lack of privacy is an inherent result of their account-based design or the use of a public ledger. The critical dependency and lack of privacy can be resolved with a Central Bank Digital Currency that can be used offline. This thesis proposes a design and a first implementation for an offline-first digital euro. The protocol offers complete privacy during transactions using zero-knowledge proofs. Furthermore, transactions can be executed offline without third parties and retroactive double-spending detection is facilitated. To protect the users' privacy, but also guard against money laundering, we have added the following privacy-guarding mechanism. The bank and trusted third parties for law enforcement must collaborate to decrypt transactions, revealing the digital pseudonym used in the transaction. Importantly, the transaction can be decrypted without decrypting prior transactions attached to the digital euro. The protocol has a working initial implementation showcasing its usability and demonstrating functionality.",
+        "field": "Central Bank Digital Currencies (CBDCs)",
+        "link": "http://arxiv.org/abs/2407.13776v1"
+    },
+    {
+        "id": "2405.10678v1",
+        "title": "IT Strategic alignment in the decentralized finance (DeFi): CBDC and digital currencies",
+        "authors": [
+            "Carlos Alberto Durigan Junior",
+            "Fernando Jose Barbin Laurindo"
+        ],
+        "published": "2024-05-17T10:19:20Z",
+        "summary": "Cryptocurrency can be understood as a digital asset transacted among participants in the crypto economy. Every cryptocurrency must have an associated Blockchain. Blockchain is a Distributed Ledger Technology (DLT) which supports cryptocurrencies, this may be considered as the most promising disruptive technology in the industry 4.0 context. Decentralized finance (DeFi) is a Blockchain-based financial infrastructure, the term generally refers to an open, permissionless, and highly interoperable protocol stack built on public smart contract platforms, such as the Ethereum Blockchain. It replicates existing financial services in a more open and transparent way. DeFi does not rely on intermediaries and centralized institutions. Instead, it is based on open protocols and decentralized applications (Dapps). Considering that there are many digital coins, stablecoins and central bank digital currencies (CBDCs), these currencies should interact among each other sometime. For this interaction the Information Technology elements play an important whole as enablers and IT strategic alignment. This paper considers the strategic alignment model proposed by Henderson and Venkatraman (1993) and Luftman (1996). This paper seeks to answer two main questions 1) What are the common IT elements in the DeFi? And 2) How the elements connect to the IT strategic alignment in DeFi? Through a Systematic Literature Review (SLR). Results point out that there are many IT elements already mentioned by literature, however there is a lack in the literature about the connection between IT elements and IT strategic alignment in a Decentralized Finance (DeFi) architectural network. After final considerations, limitations and future research agenda are presented. Keywords: IT Strategic alignment, Decentralized Finance (DeFi), Cryptocurrency, Digital Economy.",
+        "field": "Central Bank Digital Currencies (CBDCs)",
+        "link": "http://arxiv.org/abs/2405.10678v1"
+    },
+    {
+        "id": "2503.00070v1",
+        "title": "Systematic Review of Cybersecurity in Banking: Evolution from Pre-Industry 4.0 to Post-Industry 4.0 in Artificial Intelligence, Blockchain, Policies and Practice",
+        "authors": [
+            "Tue Nhi Tran"
+        ],
+        "published": "2025-02-27T14:17:06Z",
+        "summary": "Throughout the history from pre-industry 4.0 to post-industry 4.0, cybersecurity at banks has undergone significant changes. Pre-industry 4.0 cyber security at banks relied on individual security methods that were highly manual and had low accuracy. When moving to post-industry 4.0, cybersecurity at banks had a major turning point with security methods that combined different technologies such as Artificial Intelligence (AI), Blockchain, IoT, automating necessary processes and significantly increasing the defence layer for banks. However, along with the development of new technologies, the current challenge of cybersecurity at banks lies in scalability, high costs and resources in both money and time for R&D of defence methods along with the threat of high-tech cybercriminals growing and expanding. This report goes from introducing the importance of cybersecurity at banks, analyzing their management, operational and business objectives, evaluating pre-industry 4.0 technologies used for cybersecurity at banks to assessing post-industry 4.0 technologies focusing on Artificial Intelligence and Blockchain, discussing current policies and practices and ending with discussing key advantages and challenges for 4.0 technologies and recommendations for further developing cybersecurity at banks.",
+        "field": "Cybersecurity in Banking",
+        "link": "http://arxiv.org/abs/2503.00070v1"
+    },
+    {
+        "id": "2502.14766v2",
+        "title": "Multi-Layer Deep xVA: Structural Credit Models, Measure Changes and Convergence Analysis",
+        "authors": [
+            "Kristoffer Andersson",
+            "Alessandro Gnoatto"
+        ],
+        "published": "2025-02-20T17:41:55Z",
+        "summary": "We propose a structural default model for portfolio-wide valuation adjustments (xVAs) and represent it as a system of coupled backward stochastic differential equations. The framework is divided into four layers, each capturing a key component: (i) clean values, (ii) initial margin and Collateral Valuation Adjustment (ColVA), (iii) Credit/Debit Valuation Adjustments (CVA/DVA) together with Margin Valuation Adjustment (MVA), and (iv) Funding Valuation Adjustment (FVA). Because these layers depend on one another through collateral and default effects, a naive Monte Carlo approach would require deeply nested simulations, making the problem computationally intractable. To address this challenge, we use an iterative deep BSDE approach, handling each layer sequentially so that earlier outputs serve as inputs to the subsequent layers. Initial margin is computed via deep quantile regression to reflect margin requirements over the Margin Period of Risk. We also adopt a change-of-measure method that highlights rare but significant defaults of the bank or counterparty, ensuring that these events are accurately captured in the training process. We further extend Han and Long's (2020) a posteriori error analysis to BSDEs on bounded domains. Due to the random exit from the domain, we obtain an order of convergence of $\\mathcal{O}(h^{1/4-\\epsilon})$ rather than the usual $\\mathcal{O}(h^{1/2})$. Numerical experiments illustrate that this method drastically reduces computational demands and successfully scales to high-dimensional, non-symmetric portfolios. The results confirm its effectiveness and accuracy, offering a practical alternative to nested Monte Carlo simulations in multi-counterparty xVA analyses.",
+        "field": "Cybersecurity in Banking",
+        "link": "http://arxiv.org/abs/2502.14766v2"
+    },
+    {
+        "id": "2502.14393v1",
+        "title": "Innovative Financing Solutions: A Transformative Driver for Financial Performance of Businesses in Morocco",
+        "authors": [
+            "Nohayla Badrane",
+            "Zineb Bamousse"
+        ],
+        "published": "2025-02-20T09:31:43Z",
+        "summary": "In a rapidly evolving landscape marked by continuous change and complex challenges, effective cash management stands as a cornerstone for ensuring business sustainability and driving performance. To address these pressing demands, cash managersare increasingly turning to innovative financing solutions such as venture capital, green finance, crowdfunding, advanced services from Pan-African banks, and blockchain technology. These cutting-edge tools are pivotal in bolstering resilience against market volatility, ecological transitions, and the accelerating pace of technological change. The present article aims to examine how such innovative financial approaches can serve as strategic drivers, enabling businesses to transform challenges into opportunities. The analysis underscores that rethinking cash management through innovation is a critical pathway toboost the performance of Moroccan companies. Therefore, embracing these forward-thinking strategies unlocks new avenues for development empowering them to adapt with agility amidst the uncertainties of a shifting environment.",
+        "field": "Cybersecurity in Banking",
+        "link": "http://arxiv.org/abs/2502.14393v1"
+    },
+    {
+        "id": "2502.11650v1",
+        "title": "\"I'm 73, you can't expect me to have multiple passwords\": Password Management Concerns and Solutions of Irish Older Adults",
+        "authors": [
+            "Ashley Sheil",
+            "Jacob Camilleri",
+            "Michelle O'Keeffe",
+            "Melanie Gruben",
+            "Moya Cronin",
+            "Hazel Murray"
+        ],
+        "published": "2025-02-17T10:42:13Z",
+        "summary": "Based on Irish older adult's perceptions, practices, and challenges regarding password management, the goal of this study was to compile suitable advice that can benefit this demographic. To achieve this, we first conducted semi structured interviews (n=37), we then collated advice based on best practice and what we learned from these interviews. We facilitated two independent focus groups (n=31) to evaluate and adjust this advice and tested the finalized advice through an observational study (n=15). The participants were aged between 59 and 86 and came from various counties in Ireland, both rural and urban. The findings revealed that managing multiple passwords was a significant source of frustration, leading some participants to adopt novel and informal strategies for storing them. A notable hesitation to adopt digital password managers and passphrases was also observed. Participants appreciated guidance on improving their password practices, with many affirming that securely writing down passwords was a practical strategy. Irish older adults demonstrated strong intuition regarding cybersecurity, notably expressing concerns over knowledge-based security checks used by banks and government institutions. This study aims to contribute to the aggregation of practical password advice suited to older adults, making password security more manageable and less burdensome for this demographic.",
+        "field": "Cybersecurity in Banking",
+        "link": "http://arxiv.org/abs/2502.11650v1"
+    },
+    {
+        "id": "2502.09553v1",
+        "title": "SyntheticPop: Attacking Speaker Verification Systems With Synthetic VoicePops",
+        "authors": [
+            "Eshaq Jamdar",
+            "Amith Kamath Belman"
+        ],
+        "published": "2025-02-13T18:05:12Z",
+        "summary": "Voice Authentication (VA), also known as Automatic Speaker Verification (ASV), is a widely adopted authentication method, particularly in automated systems like banking services, where it serves as a secondary layer of user authentication. Despite its popularity, VA systems are vulnerable to various attacks, including replay, impersonation, and the emerging threat of deepfake audio that mimics the voice of legitimate users. To mitigate these risks, several defense mechanisms have been proposed. One such solution, Voice Pops, aims to distinguish an individual's unique phoneme pronunciations during the enrollment process. While promising, the effectiveness of VA+VoicePop against a broader range of attacks, particularly logical or adversarial attacks, remains insufficiently explored. We propose a novel attack method, which we refer to as SyntheticPop, designed to target the phoneme recognition capabilities of the VA+VoicePop system. The SyntheticPop attack involves embedding synthetic \"pop\" noises into spoofed audio samples, significantly degrading the model's performance. We achieve an attack success rate of over 95% while poisoning 20% of the training dataset. Our experiments demonstrate that VA+VoicePop achieves 69% accuracy under normal conditions, 37% accuracy when subjected to a baseline label flipping attack, and just 14% accuracy under our proposed SyntheticPop attack, emphasizing the effectiveness of our method.",
+        "field": "Cybersecurity in Banking",
+        "link": "http://arxiv.org/abs/2502.09553v1"
+    },
+    {
+        "id": "2503.00070v1",
+        "title": "Systematic Review of Cybersecurity in Banking: Evolution from Pre-Industry 4.0 to Post-Industry 4.0 in Artificial Intelligence, Blockchain, Policies and Practice",
+        "authors": [
+            "Tue Nhi Tran"
+        ],
+        "published": "2025-02-27T14:17:06Z",
+        "summary": "Throughout the history from pre-industry 4.0 to post-industry 4.0, cybersecurity at banks has undergone significant changes. Pre-industry 4.0 cyber security at banks relied on individual security methods that were highly manual and had low accuracy. When moving to post-industry 4.0, cybersecurity at banks had a major turning point with security methods that combined different technologies such as Artificial Intelligence (AI), Blockchain, IoT, automating necessary processes and significantly increasing the defence layer for banks. However, along with the development of new technologies, the current challenge of cybersecurity at banks lies in scalability, high costs and resources in both money and time for R&D of defence methods along with the threat of high-tech cybercriminals growing and expanding. This report goes from introducing the importance of cybersecurity at banks, analyzing their management, operational and business objectives, evaluating pre-industry 4.0 technologies used for cybersecurity at banks to assessing post-industry 4.0 technologies focusing on Artificial Intelligence and Blockchain, discussing current policies and practices and ending with discussing key advantages and challenges for 4.0 technologies and recommendations for further developing cybersecurity at banks.",
+        "field": "Biometrics in Banking",
+        "link": "http://arxiv.org/abs/2503.00070v1"
+    },
+    {
+        "id": "2502.14766v2",
+        "title": "Multi-Layer Deep xVA: Structural Credit Models, Measure Changes and Convergence Analysis",
+        "authors": [
+            "Kristoffer Andersson",
+            "Alessandro Gnoatto"
+        ],
+        "published": "2025-02-20T17:41:55Z",
+        "summary": "We propose a structural default model for portfolio-wide valuation adjustments (xVAs) and represent it as a system of coupled backward stochastic differential equations. The framework is divided into four layers, each capturing a key component: (i) clean values, (ii) initial margin and Collateral Valuation Adjustment (ColVA), (iii) Credit/Debit Valuation Adjustments (CVA/DVA) together with Margin Valuation Adjustment (MVA), and (iv) Funding Valuation Adjustment (FVA). Because these layers depend on one another through collateral and default effects, a naive Monte Carlo approach would require deeply nested simulations, making the problem computationally intractable. To address this challenge, we use an iterative deep BSDE approach, handling each layer sequentially so that earlier outputs serve as inputs to the subsequent layers. Initial margin is computed via deep quantile regression to reflect margin requirements over the Margin Period of Risk. We also adopt a change-of-measure method that highlights rare but significant defaults of the bank or counterparty, ensuring that these events are accurately captured in the training process. We further extend Han and Long's (2020) a posteriori error analysis to BSDEs on bounded domains. Due to the random exit from the domain, we obtain an order of convergence of $\\mathcal{O}(h^{1/4-\\epsilon})$ rather than the usual $\\mathcal{O}(h^{1/2})$. Numerical experiments illustrate that this method drastically reduces computational demands and successfully scales to high-dimensional, non-symmetric portfolios. The results confirm its effectiveness and accuracy, offering a practical alternative to nested Monte Carlo simulations in multi-counterparty xVA analyses.",
+        "field": "Biometrics in Banking",
+        "link": "http://arxiv.org/abs/2502.14766v2"
+    },
+    {
+        "id": "2502.14393v1",
+        "title": "Innovative Financing Solutions: A Transformative Driver for Financial Performance of Businesses in Morocco",
+        "authors": [
+            "Nohayla Badrane",
+            "Zineb Bamousse"
+        ],
+        "published": "2025-02-20T09:31:43Z",
+        "summary": "In a rapidly evolving landscape marked by continuous change and complex challenges, effective cash management stands as a cornerstone for ensuring business sustainability and driving performance. To address these pressing demands, cash managersare increasingly turning to innovative financing solutions such as venture capital, green finance, crowdfunding, advanced services from Pan-African banks, and blockchain technology. These cutting-edge tools are pivotal in bolstering resilience against market volatility, ecological transitions, and the accelerating pace of technological change. The present article aims to examine how such innovative financial approaches can serve as strategic drivers, enabling businesses to transform challenges into opportunities. The analysis underscores that rethinking cash management through innovation is a critical pathway toboost the performance of Moroccan companies. Therefore, embracing these forward-thinking strategies unlocks new avenues for development empowering them to adapt with agility amidst the uncertainties of a shifting environment.",
+        "field": "Biometrics in Banking",
+        "link": "http://arxiv.org/abs/2502.14393v1"
+    },
+    {
+        "id": "2502.11650v1",
+        "title": "\"I'm 73, you can't expect me to have multiple passwords\": Password Management Concerns and Solutions of Irish Older Adults",
+        "authors": [
+            "Ashley Sheil",
+            "Jacob Camilleri",
+            "Michelle O'Keeffe",
+            "Melanie Gruben",
+            "Moya Cronin",
+            "Hazel Murray"
+        ],
+        "published": "2025-02-17T10:42:13Z",
+        "summary": "Based on Irish older adult's perceptions, practices, and challenges regarding password management, the goal of this study was to compile suitable advice that can benefit this demographic. To achieve this, we first conducted semi structured interviews (n=37), we then collated advice based on best practice and what we learned from these interviews. We facilitated two independent focus groups (n=31) to evaluate and adjust this advice and tested the finalized advice through an observational study (n=15). The participants were aged between 59 and 86 and came from various counties in Ireland, both rural and urban. The findings revealed that managing multiple passwords was a significant source of frustration, leading some participants to adopt novel and informal strategies for storing them. A notable hesitation to adopt digital password managers and passphrases was also observed. Participants appreciated guidance on improving their password practices, with many affirming that securely writing down passwords was a practical strategy. Irish older adults demonstrated strong intuition regarding cybersecurity, notably expressing concerns over knowledge-based security checks used by banks and government institutions. This study aims to contribute to the aggregation of practical password advice suited to older adults, making password security more manageable and less burdensome for this demographic.",
+        "field": "Biometrics in Banking",
+        "link": "http://arxiv.org/abs/2502.11650v1"
+    },
+    {
+        "id": "2502.09553v1",
+        "title": "SyntheticPop: Attacking Speaker Verification Systems With Synthetic VoicePops",
+        "authors": [
+            "Eshaq Jamdar",
+            "Amith Kamath Belman"
+        ],
+        "published": "2025-02-13T18:05:12Z",
+        "summary": "Voice Authentication (VA), also known as Automatic Speaker Verification (ASV), is a widely adopted authentication method, particularly in automated systems like banking services, where it serves as a secondary layer of user authentication. Despite its popularity, VA systems are vulnerable to various attacks, including replay, impersonation, and the emerging threat of deepfake audio that mimics the voice of legitimate users. To mitigate these risks, several defense mechanisms have been proposed. One such solution, Voice Pops, aims to distinguish an individual's unique phoneme pronunciations during the enrollment process. While promising, the effectiveness of VA+VoicePop against a broader range of attacks, particularly logical or adversarial attacks, remains insufficiently explored. We propose a novel attack method, which we refer to as SyntheticPop, designed to target the phoneme recognition capabilities of the VA+VoicePop system. The SyntheticPop attack involves embedding synthetic \"pop\" noises into spoofed audio samples, significantly degrading the model's performance. We achieve an attack success rate of over 95% while poisoning 20% of the training dataset. Our experiments demonstrate that VA+VoicePop achieves 69% accuracy under normal conditions, 37% accuracy when subjected to a baseline label flipping attack, and just 14% accuracy under our proposed SyntheticPop attack, emphasizing the effectiveness of our method.",
+        "field": "Biometrics in Banking",
+        "link": "http://arxiv.org/abs/2502.09553v1"
+    },
+    {
+        "id": "2503.00070v1",
+        "title": "Systematic Review of Cybersecurity in Banking: Evolution from Pre-Industry 4.0 to Post-Industry 4.0 in Artificial Intelligence, Blockchain, Policies and Practice",
+        "authors": [
+            "Tue Nhi Tran"
+        ],
+        "published": "2025-02-27T14:17:06Z",
+        "summary": "Throughout the history from pre-industry 4.0 to post-industry 4.0, cybersecurity at banks has undergone significant changes. Pre-industry 4.0 cyber security at banks relied on individual security methods that were highly manual and had low accuracy. When moving to post-industry 4.0, cybersecurity at banks had a major turning point with security methods that combined different technologies such as Artificial Intelligence (AI), Blockchain, IoT, automating necessary processes and significantly increasing the defence layer for banks. However, along with the development of new technologies, the current challenge of cybersecurity at banks lies in scalability, high costs and resources in both money and time for R&D of defence methods along with the threat of high-tech cybercriminals growing and expanding. This report goes from introducing the importance of cybersecurity at banks, analyzing their management, operational and business objectives, evaluating pre-industry 4.0 technologies used for cybersecurity at banks to assessing post-industry 4.0 technologies focusing on Artificial Intelligence and Blockchain, discussing current policies and practices and ending with discussing key advantages and challenges for 4.0 technologies and recommendations for further developing cybersecurity at banks.",
+        "field": "Edge Computing in Banking",
+        "link": "http://arxiv.org/abs/2503.00070v1"
+    },
+    {
+        "id": "2502.14766v2",
+        "title": "Multi-Layer Deep xVA: Structural Credit Models, Measure Changes and Convergence Analysis",
+        "authors": [
+            "Kristoffer Andersson",
+            "Alessandro Gnoatto"
+        ],
+        "published": "2025-02-20T17:41:55Z",
+        "summary": "We propose a structural default model for portfolio-wide valuation adjustments (xVAs) and represent it as a system of coupled backward stochastic differential equations. The framework is divided into four layers, each capturing a key component: (i) clean values, (ii) initial margin and Collateral Valuation Adjustment (ColVA), (iii) Credit/Debit Valuation Adjustments (CVA/DVA) together with Margin Valuation Adjustment (MVA), and (iv) Funding Valuation Adjustment (FVA). Because these layers depend on one another through collateral and default effects, a naive Monte Carlo approach would require deeply nested simulations, making the problem computationally intractable. To address this challenge, we use an iterative deep BSDE approach, handling each layer sequentially so that earlier outputs serve as inputs to the subsequent layers. Initial margin is computed via deep quantile regression to reflect margin requirements over the Margin Period of Risk. We also adopt a change-of-measure method that highlights rare but significant defaults of the bank or counterparty, ensuring that these events are accurately captured in the training process. We further extend Han and Long's (2020) a posteriori error analysis to BSDEs on bounded domains. Due to the random exit from the domain, we obtain an order of convergence of $\\mathcal{O}(h^{1/4-\\epsilon})$ rather than the usual $\\mathcal{O}(h^{1/2})$. Numerical experiments illustrate that this method drastically reduces computational demands and successfully scales to high-dimensional, non-symmetric portfolios. The results confirm its effectiveness and accuracy, offering a practical alternative to nested Monte Carlo simulations in multi-counterparty xVA analyses.",
+        "field": "Edge Computing in Banking",
+        "link": "http://arxiv.org/abs/2502.14766v2"
+    },
+    {
+        "id": "2502.14393v1",
+        "title": "Innovative Financing Solutions: A Transformative Driver for Financial Performance of Businesses in Morocco",
+        "authors": [
+            "Nohayla Badrane",
+            "Zineb Bamousse"
+        ],
+        "published": "2025-02-20T09:31:43Z",
+        "summary": "In a rapidly evolving landscape marked by continuous change and complex challenges, effective cash management stands as a cornerstone for ensuring business sustainability and driving performance. To address these pressing demands, cash managersare increasingly turning to innovative financing solutions such as venture capital, green finance, crowdfunding, advanced services from Pan-African banks, and blockchain technology. These cutting-edge tools are pivotal in bolstering resilience against market volatility, ecological transitions, and the accelerating pace of technological change. The present article aims to examine how such innovative financial approaches can serve as strategic drivers, enabling businesses to transform challenges into opportunities. The analysis underscores that rethinking cash management through innovation is a critical pathway toboost the performance of Moroccan companies. Therefore, embracing these forward-thinking strategies unlocks new avenues for development empowering them to adapt with agility amidst the uncertainties of a shifting environment.",
+        "field": "Edge Computing in Banking",
+        "link": "http://arxiv.org/abs/2502.14393v1"
+    },
+    {
+        "id": "2502.11650v1",
+        "title": "\"I'm 73, you can't expect me to have multiple passwords\": Password Management Concerns and Solutions of Irish Older Adults",
+        "authors": [
+            "Ashley Sheil",
+            "Jacob Camilleri",
+            "Michelle O'Keeffe",
+            "Melanie Gruben",
+            "Moya Cronin",
+            "Hazel Murray"
+        ],
+        "published": "2025-02-17T10:42:13Z",
+        "summary": "Based on Irish older adult's perceptions, practices, and challenges regarding password management, the goal of this study was to compile suitable advice that can benefit this demographic. To achieve this, we first conducted semi structured interviews (n=37), we then collated advice based on best practice and what we learned from these interviews. We facilitated two independent focus groups (n=31) to evaluate and adjust this advice and tested the finalized advice through an observational study (n=15). The participants were aged between 59 and 86 and came from various counties in Ireland, both rural and urban. The findings revealed that managing multiple passwords was a significant source of frustration, leading some participants to adopt novel and informal strategies for storing them. A notable hesitation to adopt digital password managers and passphrases was also observed. Participants appreciated guidance on improving their password practices, with many affirming that securely writing down passwords was a practical strategy. Irish older adults demonstrated strong intuition regarding cybersecurity, notably expressing concerns over knowledge-based security checks used by banks and government institutions. This study aims to contribute to the aggregation of practical password advice suited to older adults, making password security more manageable and less burdensome for this demographic.",
+        "field": "Edge Computing in Banking",
+        "link": "http://arxiv.org/abs/2502.11650v1"
+    },
+    {
+        "id": "2502.09553v1",
+        "title": "SyntheticPop: Attacking Speaker Verification Systems With Synthetic VoicePops",
+        "authors": [
+            "Eshaq Jamdar",
+            "Amith Kamath Belman"
+        ],
+        "published": "2025-02-13T18:05:12Z",
+        "summary": "Voice Authentication (VA), also known as Automatic Speaker Verification (ASV), is a widely adopted authentication method, particularly in automated systems like banking services, where it serves as a secondary layer of user authentication. Despite its popularity, VA systems are vulnerable to various attacks, including replay, impersonation, and the emerging threat of deepfake audio that mimics the voice of legitimate users. To mitigate these risks, several defense mechanisms have been proposed. One such solution, Voice Pops, aims to distinguish an individual's unique phoneme pronunciations during the enrollment process. While promising, the effectiveness of VA+VoicePop against a broader range of attacks, particularly logical or adversarial attacks, remains insufficiently explored. We propose a novel attack method, which we refer to as SyntheticPop, designed to target the phoneme recognition capabilities of the VA+VoicePop system. The SyntheticPop attack involves embedding synthetic \"pop\" noises into spoofed audio samples, significantly degrading the model's performance. We achieve an attack success rate of over 95% while poisoning 20% of the training dataset. Our experiments demonstrate that VA+VoicePop achieves 69% accuracy under normal conditions, 37% accuracy when subjected to a baseline label flipping attack, and just 14% accuracy under our proposed SyntheticPop attack, emphasizing the effectiveness of our method.",
+        "field": "Edge Computing in Banking",
+        "link": "http://arxiv.org/abs/2502.09553v1"
+    },
+    {
+        "id": "2503.00070v1",
+        "title": "Systematic Review of Cybersecurity in Banking: Evolution from Pre-Industry 4.0 to Post-Industry 4.0 in Artificial Intelligence, Blockchain, Policies and Practice",
+        "authors": [
+            "Tue Nhi Tran"
+        ],
+        "published": "2025-02-27T14:17:06Z",
+        "summary": "Throughout the history from pre-industry 4.0 to post-industry 4.0, cybersecurity at banks has undergone significant changes. Pre-industry 4.0 cyber security at banks relied on individual security methods that were highly manual and had low accuracy. When moving to post-industry 4.0, cybersecurity at banks had a major turning point with security methods that combined different technologies such as Artificial Intelligence (AI), Blockchain, IoT, automating necessary processes and significantly increasing the defence layer for banks. However, along with the development of new technologies, the current challenge of cybersecurity at banks lies in scalability, high costs and resources in both money and time for R&D of defence methods along with the threat of high-tech cybercriminals growing and expanding. This report goes from introducing the importance of cybersecurity at banks, analyzing their management, operational and business objectives, evaluating pre-industry 4.0 technologies used for cybersecurity at banks to assessing post-industry 4.0 technologies focusing on Artificial Intelligence and Blockchain, discussing current policies and practices and ending with discussing key advantages and challenges for 4.0 technologies and recommendations for further developing cybersecurity at banks.",
+        "field": "Internet of Things (IoT) in Banking",
+        "link": "http://arxiv.org/abs/2503.00070v1"
+    },
+    {
+        "id": "2502.14766v2",
+        "title": "Multi-Layer Deep xVA: Structural Credit Models, Measure Changes and Convergence Analysis",
+        "authors": [
+            "Kristoffer Andersson",
+            "Alessandro Gnoatto"
+        ],
+        "published": "2025-02-20T17:41:55Z",
+        "summary": "We propose a structural default model for portfolio-wide valuation adjustments (xVAs) and represent it as a system of coupled backward stochastic differential equations. The framework is divided into four layers, each capturing a key component: (i) clean values, (ii) initial margin and Collateral Valuation Adjustment (ColVA), (iii) Credit/Debit Valuation Adjustments (CVA/DVA) together with Margin Valuation Adjustment (MVA), and (iv) Funding Valuation Adjustment (FVA). Because these layers depend on one another through collateral and default effects, a naive Monte Carlo approach would require deeply nested simulations, making the problem computationally intractable. To address this challenge, we use an iterative deep BSDE approach, handling each layer sequentially so that earlier outputs serve as inputs to the subsequent layers. Initial margin is computed via deep quantile regression to reflect margin requirements over the Margin Period of Risk. We also adopt a change-of-measure method that highlights rare but significant defaults of the bank or counterparty, ensuring that these events are accurately captured in the training process. We further extend Han and Long's (2020) a posteriori error analysis to BSDEs on bounded domains. Due to the random exit from the domain, we obtain an order of convergence of $\\mathcal{O}(h^{1/4-\\epsilon})$ rather than the usual $\\mathcal{O}(h^{1/2})$. Numerical experiments illustrate that this method drastically reduces computational demands and successfully scales to high-dimensional, non-symmetric portfolios. The results confirm its effectiveness and accuracy, offering a practical alternative to nested Monte Carlo simulations in multi-counterparty xVA analyses.",
+        "field": "Internet of Things (IoT) in Banking",
+        "link": "http://arxiv.org/abs/2502.14766v2"
+    },
+    {
+        "id": "2502.14393v1",
+        "title": "Innovative Financing Solutions: A Transformative Driver for Financial Performance of Businesses in Morocco",
+        "authors": [
+            "Nohayla Badrane",
+            "Zineb Bamousse"
+        ],
+        "published": "2025-02-20T09:31:43Z",
+        "summary": "In a rapidly evolving landscape marked by continuous change and complex challenges, effective cash management stands as a cornerstone for ensuring business sustainability and driving performance. To address these pressing demands, cash managersare increasingly turning to innovative financing solutions such as venture capital, green finance, crowdfunding, advanced services from Pan-African banks, and blockchain technology. These cutting-edge tools are pivotal in bolstering resilience against market volatility, ecological transitions, and the accelerating pace of technological change. The present article aims to examine how such innovative financial approaches can serve as strategic drivers, enabling businesses to transform challenges into opportunities. The analysis underscores that rethinking cash management through innovation is a critical pathway toboost the performance of Moroccan companies. Therefore, embracing these forward-thinking strategies unlocks new avenues for development empowering them to adapt with agility amidst the uncertainties of a shifting environment.",
+        "field": "Internet of Things (IoT) in Banking",
+        "link": "http://arxiv.org/abs/2502.14393v1"
+    },
+    {
+        "id": "2502.11650v1",
+        "title": "\"I'm 73, you can't expect me to have multiple passwords\": Password Management Concerns and Solutions of Irish Older Adults",
+        "authors": [
+            "Ashley Sheil",
+            "Jacob Camilleri",
+            "Michelle O'Keeffe",
+            "Melanie Gruben",
+            "Moya Cronin",
+            "Hazel Murray"
+        ],
+        "published": "2025-02-17T10:42:13Z",
+        "summary": "Based on Irish older adult's perceptions, practices, and challenges regarding password management, the goal of this study was to compile suitable advice that can benefit this demographic. To achieve this, we first conducted semi structured interviews (n=37), we then collated advice based on best practice and what we learned from these interviews. We facilitated two independent focus groups (n=31) to evaluate and adjust this advice and tested the finalized advice through an observational study (n=15). The participants were aged between 59 and 86 and came from various counties in Ireland, both rural and urban. The findings revealed that managing multiple passwords was a significant source of frustration, leading some participants to adopt novel and informal strategies for storing them. A notable hesitation to adopt digital password managers and passphrases was also observed. Participants appreciated guidance on improving their password practices, with many affirming that securely writing down passwords was a practical strategy. Irish older adults demonstrated strong intuition regarding cybersecurity, notably expressing concerns over knowledge-based security checks used by banks and government institutions. This study aims to contribute to the aggregation of practical password advice suited to older adults, making password security more manageable and less burdensome for this demographic.",
+        "field": "Internet of Things (IoT) in Banking",
+        "link": "http://arxiv.org/abs/2502.11650v1"
+    },
+    {
+        "id": "2502.09553v1",
+        "title": "SyntheticPop: Attacking Speaker Verification Systems With Synthetic VoicePops",
+        "authors": [
+            "Eshaq Jamdar",
+            "Amith Kamath Belman"
+        ],
+        "published": "2025-02-13T18:05:12Z",
+        "summary": "Voice Authentication (VA), also known as Automatic Speaker Verification (ASV), is a widely adopted authentication method, particularly in automated systems like banking services, where it serves as a secondary layer of user authentication. Despite its popularity, VA systems are vulnerable to various attacks, including replay, impersonation, and the emerging threat of deepfake audio that mimics the voice of legitimate users. To mitigate these risks, several defense mechanisms have been proposed. One such solution, Voice Pops, aims to distinguish an individual's unique phoneme pronunciations during the enrollment process. While promising, the effectiveness of VA+VoicePop against a broader range of attacks, particularly logical or adversarial attacks, remains insufficiently explored. We propose a novel attack method, which we refer to as SyntheticPop, designed to target the phoneme recognition capabilities of the VA+VoicePop system. The SyntheticPop attack involves embedding synthetic \"pop\" noises into spoofed audio samples, significantly degrading the model's performance. We achieve an attack success rate of over 95% while poisoning 20% of the training dataset. Our experiments demonstrate that VA+VoicePop achieves 69% accuracy under normal conditions, 37% accuracy when subjected to a baseline label flipping attack, and just 14% accuracy under our proposed SyntheticPop attack, emphasizing the effectiveness of our method.",
+        "field": "Internet of Things (IoT) in Banking",
+        "link": "http://arxiv.org/abs/2502.09553v1"
+    },
+    {
+        "id": "2503.00070v1",
+        "title": "Systematic Review of Cybersecurity in Banking: Evolution from Pre-Industry 4.0 to Post-Industry 4.0 in Artificial Intelligence, Blockchain, Policies and Practice",
+        "authors": [
+            "Tue Nhi Tran"
+        ],
+        "published": "2025-02-27T14:17:06Z",
+        "summary": "Throughout the history from pre-industry 4.0 to post-industry 4.0, cybersecurity at banks has undergone significant changes. Pre-industry 4.0 cyber security at banks relied on individual security methods that were highly manual and had low accuracy. When moving to post-industry 4.0, cybersecurity at banks had a major turning point with security methods that combined different technologies such as Artificial Intelligence (AI), Blockchain, IoT, automating necessary processes and significantly increasing the defence layer for banks. However, along with the development of new technologies, the current challenge of cybersecurity at banks lies in scalability, high costs and resources in both money and time for R&D of defence methods along with the threat of high-tech cybercriminals growing and expanding. This report goes from introducing the importance of cybersecurity at banks, analyzing their management, operational and business objectives, evaluating pre-industry 4.0 technologies used for cybersecurity at banks to assessing post-industry 4.0 technologies focusing on Artificial Intelligence and Blockchain, discussing current policies and practices and ending with discussing key advantages and challenges for 4.0 technologies and recommendations for further developing cybersecurity at banks.",
+        "field": "5G Technology in Banking",
+        "link": "http://arxiv.org/abs/2503.00070v1"
+    },
+    {
+        "id": "2502.14766v2",
+        "title": "Multi-Layer Deep xVA: Structural Credit Models, Measure Changes and Convergence Analysis",
+        "authors": [
+            "Kristoffer Andersson",
+            "Alessandro Gnoatto"
+        ],
+        "published": "2025-02-20T17:41:55Z",
+        "summary": "We propose a structural default model for portfolio-wide valuation adjustments (xVAs) and represent it as a system of coupled backward stochastic differential equations. The framework is divided into four layers, each capturing a key component: (i) clean values, (ii) initial margin and Collateral Valuation Adjustment (ColVA), (iii) Credit/Debit Valuation Adjustments (CVA/DVA) together with Margin Valuation Adjustment (MVA), and (iv) Funding Valuation Adjustment (FVA). Because these layers depend on one another through collateral and default effects, a naive Monte Carlo approach would require deeply nested simulations, making the problem computationally intractable. To address this challenge, we use an iterative deep BSDE approach, handling each layer sequentially so that earlier outputs serve as inputs to the subsequent layers. Initial margin is computed via deep quantile regression to reflect margin requirements over the Margin Period of Risk. We also adopt a change-of-measure method that highlights rare but significant defaults of the bank or counterparty, ensuring that these events are accurately captured in the training process. We further extend Han and Long's (2020) a posteriori error analysis to BSDEs on bounded domains. Due to the random exit from the domain, we obtain an order of convergence of $\\mathcal{O}(h^{1/4-\\epsilon})$ rather than the usual $\\mathcal{O}(h^{1/2})$. Numerical experiments illustrate that this method drastically reduces computational demands and successfully scales to high-dimensional, non-symmetric portfolios. The results confirm its effectiveness and accuracy, offering a practical alternative to nested Monte Carlo simulations in multi-counterparty xVA analyses.",
+        "field": "5G Technology in Banking",
+        "link": "http://arxiv.org/abs/2502.14766v2"
+    },
+    {
+        "id": "2502.14393v1",
+        "title": "Innovative Financing Solutions: A Transformative Driver for Financial Performance of Businesses in Morocco",
+        "authors": [
+            "Nohayla Badrane",
+            "Zineb Bamousse"
+        ],
+        "published": "2025-02-20T09:31:43Z",
+        "summary": "In a rapidly evolving landscape marked by continuous change and complex challenges, effective cash management stands as a cornerstone for ensuring business sustainability and driving performance. To address these pressing demands, cash managersare increasingly turning to innovative financing solutions such as venture capital, green finance, crowdfunding, advanced services from Pan-African banks, and blockchain technology. These cutting-edge tools are pivotal in bolstering resilience against market volatility, ecological transitions, and the accelerating pace of technological change. The present article aims to examine how such innovative financial approaches can serve as strategic drivers, enabling businesses to transform challenges into opportunities. The analysis underscores that rethinking cash management through innovation is a critical pathway toboost the performance of Moroccan companies. Therefore, embracing these forward-thinking strategies unlocks new avenues for development empowering them to adapt with agility amidst the uncertainties of a shifting environment.",
+        "field": "5G Technology in Banking",
+        "link": "http://arxiv.org/abs/2502.14393v1"
+    },
+    {
+        "id": "2502.11650v1",
+        "title": "\"I'm 73, you can't expect me to have multiple passwords\": Password Management Concerns and Solutions of Irish Older Adults",
+        "authors": [
+            "Ashley Sheil",
+            "Jacob Camilleri",
+            "Michelle O'Keeffe",
+            "Melanie Gruben",
+            "Moya Cronin",
+            "Hazel Murray"
+        ],
+        "published": "2025-02-17T10:42:13Z",
+        "summary": "Based on Irish older adult's perceptions, practices, and challenges regarding password management, the goal of this study was to compile suitable advice that can benefit this demographic. To achieve this, we first conducted semi structured interviews (n=37), we then collated advice based on best practice and what we learned from these interviews. We facilitated two independent focus groups (n=31) to evaluate and adjust this advice and tested the finalized advice through an observational study (n=15). The participants were aged between 59 and 86 and came from various counties in Ireland, both rural and urban. The findings revealed that managing multiple passwords was a significant source of frustration, leading some participants to adopt novel and informal strategies for storing them. A notable hesitation to adopt digital password managers and passphrases was also observed. Participants appreciated guidance on improving their password practices, with many affirming that securely writing down passwords was a practical strategy. Irish older adults demonstrated strong intuition regarding cybersecurity, notably expressing concerns over knowledge-based security checks used by banks and government institutions. This study aims to contribute to the aggregation of practical password advice suited to older adults, making password security more manageable and less burdensome for this demographic.",
+        "field": "5G Technology in Banking",
+        "link": "http://arxiv.org/abs/2502.11650v1"
+    },
+    {
+        "id": "2502.09553v1",
+        "title": "SyntheticPop: Attacking Speaker Verification Systems With Synthetic VoicePops",
+        "authors": [
+            "Eshaq Jamdar",
+            "Amith Kamath Belman"
+        ],
+        "published": "2025-02-13T18:05:12Z",
+        "summary": "Voice Authentication (VA), also known as Automatic Speaker Verification (ASV), is a widely adopted authentication method, particularly in automated systems like banking services, where it serves as a secondary layer of user authentication. Despite its popularity, VA systems are vulnerable to various attacks, including replay, impersonation, and the emerging threat of deepfake audio that mimics the voice of legitimate users. To mitigate these risks, several defense mechanisms have been proposed. One such solution, Voice Pops, aims to distinguish an individual's unique phoneme pronunciations during the enrollment process. While promising, the effectiveness of VA+VoicePop against a broader range of attacks, particularly logical or adversarial attacks, remains insufficiently explored. We propose a novel attack method, which we refer to as SyntheticPop, designed to target the phoneme recognition capabilities of the VA+VoicePop system. The SyntheticPop attack involves embedding synthetic \"pop\" noises into spoofed audio samples, significantly degrading the model's performance. We achieve an attack success rate of over 95% while poisoning 20% of the training dataset. Our experiments demonstrate that VA+VoicePop achieves 69% accuracy under normal conditions, 37% accuracy when subjected to a baseline label flipping attack, and just 14% accuracy under our proposed SyntheticPop attack, emphasizing the effectiveness of our method.",
+        "field": "5G Technology in Banking",
+        "link": "http://arxiv.org/abs/2502.09553v1"
+    },
+    {
+        "id": "2503.08607v1",
+        "title": "A Fair and Lightweight Consensus Algorithm for IoT",
+        "authors": [
+            "Sokratis Vavilis",
+            "Harris Niavis",
+            "Konstantinos Loupos"
+        ],
+        "published": "2025-03-11T16:45:51Z",
+        "summary": "As hyperconnected devices and decentralized data architectures expand, securing IoT transactions becomes increasingly challenging. Blockchain offers a promising solution, but its effectiveness relies on the underlying consensus algorithm. Traditional mechanisms like PoW and PoS are often impractical for resource-constrained IoT environments. To address these limitations, this work introduces a fair and lightweight hybrid consensus algorithm tailored for IoT. The proposed approach minimizes resource demands on the nodes while ensuring a secure and fair agreement process. Specifically, it leverages a distributed lottery mechanism to fairly propose blocks without requiring specialized hardware. In addition, a reputation-based block voting mechanism is incorporated to enhance trust and establish finality. Finally, experimental evaluation was conducted to validate the key features of the consensus algorithm.",
+        "field": "Neuromorphic Computing",
+        "link": "http://arxiv.org/abs/2503.08607v1"
+    },
+    {
+        "id": "2503.08359v1",
+        "title": "Efficient Query Verification for Blockchain Superlight Clients Using SNARKs",
+        "authors": [
+            "Stefano De Angelis",
+            "Ivan Visconti",
+            "Andrea Vitaletti",
+            "Marco Zecchini"
+        ],
+        "published": "2025-03-11T12:16:35Z",
+        "summary": "Blockchains are among the most powerful technologies to realize decentralized information systems. In order to safely enjoy all guarantees provided by a blockchain, one should maintain a full node, therefore maintaining an updated local copy of the ledger. This allows one to locally verify transactions, states of smart contracts, and to compute any information over them. Unfortunately, for obvious practical reasons, a very large part of blockchain-based information systems consists of users relying on clients that access data stored in blockchains only through servers, without verifying what is received. In notable use cases, the user has application-specific queries that can be answered only by very few servers, sometimes all belonging to the same organization. This clearly re-introduces a single point of failure. In this work we present an architecture allowing superlight clients (i.e., clients that do not want to download the involved transactions) to outsource the computation of a query to a (possibly untrusted) server, receiving a trustworthy answer. Our architecture relies on the power of SNARKs and makes them lighter to compute by using data obtained from full nodes and blockchain explorers, possibly leveraging the existence of smart contracts. The viability of our architecture is confirmed by an experimental evaluation on concrete scenarios. Our work paves the road towards blockchain-based information systems that remain decentralized and reliable even when users rely on common superlight clients (e.g., smartphones).",
+        "field": "Neuromorphic Computing",
+        "link": "http://arxiv.org/abs/2503.08359v1"
+    },
+    {
+        "id": "2503.08284v1",
+        "title": "Neural cyberattacks applied to the vision under realistic visual stimuli",
+        "authors": [
+            "Victoria Magdalena López Madejska",
+            "Sergio López Bernal",
+            "Gregorio Martínez Pérez",
+            "Alberto Huertas Celdrán"
+        ],
+        "published": "2025-03-11T10:58:58Z",
+        "summary": "Brain-Computer Interfaces (BCIs) are systems traditionally used in medicine and designed to interact with the brain to record or stimulate neurons. Despite their benefits, the literature has demonstrated that invasive BCIs focused on neurostimulation present vulnerabilities allowing attackers to gain control. In this context, neural cyberattacks emerged as threats able to disrupt spontaneous neural activity by performing neural overstimulation or inhibition. Previous work validated these attacks in small-scale simulations with a reduced number of neurons, lacking real-world complexity. Thus, this work tackles this limitation by analyzing the impact of two existing neural attacks, Neuronal Flooding (FLO) and Neuronal Jamming (JAM), on a complex neuronal topology of the primary visual cortex of mice consisting of approximately 230,000 neurons, tested on three realistic visual stimuli: flash effect, movie, and drifting gratings. Each attack was evaluated over three relevant events per stimulus, also testing the impact of attacking 25% and 50% of the neurons. The results, based on the number of spikes and shift percentages metrics, showed that the attacks caused the greatest impact on the movie, while dark and fixed events are the most robust. Although both attacks can significantly affect neural activity, JAM was generally more damaging, producing longer temporal delays, and had a larger prevalence. Finally, JAM did not require to alter many neurons to significantly affect neural activity, while the impact in FLO increased with the number of neurons attacked.",
+        "field": "Neuromorphic Computing",
+        "link": "http://arxiv.org/abs/2503.08284v1"
+    },
+    {
+        "id": "2503.08256v1",
+        "title": "SoK: A cloudy view on trust relationships of CVMs -- How Confidential Virtual Machines are falling short in Public Cloud",
+        "authors": [
+            "Jana Eisoldt",
+            "Anna Galanou",
+            "Andrey Ruzhanskiy",
+            "Nils Küchenmeister",
+            "Yewgenij Baburkin",
+            "Tianxiang Dai",
+            "Ivan Gudymenko",
+            "Stefan Köpsell",
+            "Rüdiger Kapitza"
+        ],
+        "published": "2025-03-11T10:21:29Z",
+        "summary": "Confidential computing in the public cloud intends to safeguard workload privacy while outsourcing infrastructure management to a cloud provider. This is achieved by executing customer workloads within so called Trusted Execution Environments (TEEs), such as Confidential Virtual Machines (CVMs), which protect them from unauthorized access by cloud administrators and privileged system software. At the core of confidential computing lies remote attestation -- a mechanism that enables workload owners to verify the initial state of their workload and furthermore authenticate the underlying hardware. hile this represents a significant advancement in cloud security, this SoK critically examines the confidential computing offerings of market-leading cloud providers to assess whether they genuinely adhere to its core principles. We develop a taxonomy based on carefully selected criteria to systematically evaluate these offerings, enabling us to analyse the components responsible for remote attestation, the evidence provided at each stage, the extent of cloud provider influence and whether this undermines the threat model of confidential computing. Specifically, we investigate how CVMs are deployed in the public cloud infrastructures, the extent to which customers can request and verify attestation evidence, and their ability to define and enforce configuration and attestation requirements. This analysis provides insight into whether confidential computing guarantees -- namely confidentiality and integrity -- are genuinely upheld. Our findings reveal that all major cloud providers retain control over critical parts of the trusted software stack and, in some cases, intervene in the standard remote attestation process. This directly contradicts their claims of delivering confidential computing, as the model fundamentally excludes the cloud provider from the set of trusted entities.",
+        "field": "Neuromorphic Computing",
+        "link": "http://arxiv.org/abs/2503.08256v1"
+    },
+    {
+        "id": "2503.08085v1",
+        "title": "PRISM: Privacy-Preserving Improved Stochastic Masking for Federated Generative Models",
+        "authors": [
+            "Kyeongkook Seo",
+            "Dong-Jun Han",
+            "Jaejun Yoo"
+        ],
+        "published": "2025-03-11T06:37:54Z",
+        "summary": "Despite recent advancements in federated learning (FL), the integration of generative models into FL has been limited due to challenges such as high communication costs and unstable training in heterogeneous data environments. To address these issues, we propose PRISM, a FL framework tailored for generative models that ensures (i) stable performance in heterogeneous data distributions and (ii) resource efficiency in terms of communication cost and final model size. The key of our method is to search for an optimal stochastic binary mask for a random network rather than updating the model weights, identifying a sparse subnetwork with high generative performance; i.e., a ``strong lottery ticket''. By communicating binary masks in a stochastic manner, PRISM minimizes communication overhead. This approach, combined with the utilization of maximum mean discrepancy (MMD) loss and a mask-aware dynamic moving average aggregation method (MADA) on the server side, facilitates stable and strong generative capabilities by mitigating local divergence in FL scenarios. Moreover, thanks to its sparsifying characteristic, PRISM yields a lightweight model without extra pruning or quantization, making it ideal for environments such as edge devices. Experiments on MNIST, FMNIST, CelebA, and CIFAR10 demonstrate that PRISM outperforms existing methods, while maintaining privacy with minimal communication costs. PRISM is the first to successfully generate images under challenging non-IID and privacy-preserving FL environments on complex datasets, where previous methods have struggled.",
+        "field": "Neuromorphic Computing",
+        "link": "http://arxiv.org/abs/2503.08085v1"
+    },
+    {
+        "id": "2503.08359v1",
+        "title": "Efficient Query Verification for Blockchain Superlight Clients Using SNARKs",
+        "authors": [
+            "Stefano De Angelis",
+            "Ivan Visconti",
+            "Andrea Vitaletti",
+            "Marco Zecchini"
+        ],
+        "published": "2025-03-11T12:16:35Z",
+        "summary": "Blockchains are among the most powerful technologies to realize decentralized information systems. In order to safely enjoy all guarantees provided by a blockchain, one should maintain a full node, therefore maintaining an updated local copy of the ledger. This allows one to locally verify transactions, states of smart contracts, and to compute any information over them. Unfortunately, for obvious practical reasons, a very large part of blockchain-based information systems consists of users relying on clients that access data stored in blockchains only through servers, without verifying what is received. In notable use cases, the user has application-specific queries that can be answered only by very few servers, sometimes all belonging to the same organization. This clearly re-introduces a single point of failure. In this work we present an architecture allowing superlight clients (i.e., clients that do not want to download the involved transactions) to outsource the computation of a query to a (possibly untrusted) server, receiving a trustworthy answer. Our architecture relies on the power of SNARKs and makes them lighter to compute by using data obtained from full nodes and blockchain explorers, possibly leveraging the existence of smart contracts. The viability of our architecture is confirmed by an experimental evaluation on concrete scenarios. Our work paves the road towards blockchain-based information systems that remain decentralized and reliable even when users rely on common superlight clients (e.g., smartphones).",
+        "field": "Digital Identity Verification",
+        "link": "http://arxiv.org/abs/2503.08359v1"
+    },
+    {
+        "id": "2503.07200v1",
+        "title": "A Formally Verified Lightning Network",
+        "authors": [
+            "Grzegorz Fabiański",
+            "Rafał Stefański",
+            "Orfeas Stefanos Thyfronitis Litos"
+        ],
+        "published": "2025-03-10T11:33:22Z",
+        "summary": "In this work we use formal verification to prove that the Lightning Network (LN), the most prominent scaling technique for Bitcoin, always safeguards the funds of honest users. We provide a custom implementation of (a simplification of) LN, express the desired security goals and, for the first time, we provide a machine checkable proof that they are upheld under every scenario, all in an integrated fashion. We build our system using the Why3 platform.",
+        "field": "Digital Identity Verification",
+        "link": "http://arxiv.org/abs/2503.07200v1"
+    },
+    {
+        "id": "2503.04260v1",
+        "title": "DTL: Data Tumbling Layer. A Composable Unlinkability for Smart Contracts",
+        "authors": [
+            "Mohsen Minaei",
+            "Pedro Moreno-Sanchez",
+            "Zhiyong Fang",
+            "Srinivasan Raghuraman",
+            "Navid Alamati",
+            "Panagiotis Chatzigiannis",
+            "Ranjit Kumaresan",
+            "Duc V. Le"
+        ],
+        "published": "2025-03-06T09:43:34Z",
+        "summary": "We propose Data Tumbling Layer (DTL), a cryptographic scheme for non-interactive data tumbling. The core concept is to enable users to commit to specific data and subsequently re-use to the encrypted version of these data across different applications while removing the link to the previous data commit action. We define the following security and privacy notions for DTL: (i) no one-more redemption: a malicious user cannot redeem and use the same data more than the number of times they have committed the data; (ii) theft prevention: a malicious user cannot use data that has not been committed by them; (iii) non-slanderabilty: a malicious user cannot prevent an honest user from using their previously committed data; and (iv) unlinkability: a malicious user cannot link tainted data from an honest user to the corresponding data after it has been tumbled. To showcase the practicality of DTL, we use DTL to realize applications for (a) unlinkable fixed-amount payments; (b) unlinkable and confidential payments for variable amounts; (c) unlinkable weighted voting protocol. Finally, we implemented and evaluated all the proposed applications. For the unlinkable and confidential payment application, a user can initiate such a transaction in less than $1.5$s on a personal laptop. In terms of on-chain verification, the gas cost is less than $1.8$ million.",
+        "field": "Digital Identity Verification",
+        "link": "http://arxiv.org/abs/2503.04260v1"
+    },
+    {
+        "id": "2503.04036v2",
+        "title": "Robust Data Watermarking in Language Models by Injecting Fictitious Knowledge",
+        "authors": [
+            "Xinyue Cui",
+            "Johnny Tian-Zheng Wei",
+            "Swabha Swayamdipta",
+            "Robin Jia"
+        ],
+        "published": "2025-03-06T02:40:51Z",
+        "summary": "Data watermarking in language models injects traceable signals, such as specific token sequences or stylistic patterns, into copyrighted text, allowing copyright holders to track and verify training data ownership. Previous data watermarking techniques primarily focus on effective memorization after pretraining, while overlooking challenges that arise in other stages of the LLM pipeline, such as the risk of watermark filtering during data preprocessing, or potential forgetting through post-training, or verification difficulties due to API-only access. We propose a novel data watermarking approach that injects coherent and plausible yet fictitious knowledge into training data using generated passages describing a fictitious entity and its associated attributes. Our watermarks are designed to be memorized by the LLM through seamlessly integrating in its training data, making them harder to detect lexically during preprocessing. We demonstrate that our watermarks can be effectively memorized by LLMs, and that increasing our watermarks' density, length, and diversity of attributes strengthens their memorization. We further show that our watermarks remain robust throughout LLM development, maintaining their effectiveness after continual pretraining and supervised finetuning. Finally, we show that our data watermarks can be evaluated even under API-only access via question answering.",
+        "field": "Digital Identity Verification",
+        "link": "http://arxiv.org/abs/2503.04036v2"
+    },
+    {
+        "id": "2503.04837v1",
+        "title": "FedPalm: A General Federated Learning Framework for Closed- and Open-Set Palmprint Verification",
+        "authors": [
+            "Ziyuan Yang",
+            "Yingyu Chen",
+            "Chengrui Gao",
+            "Andrew Beng Jin Teoh",
+            "Bob Zhang",
+            "Yi Zhang"
+        ],
+        "published": "2025-03-05T14:49:42Z",
+        "summary": "Current deep learning (DL)-based palmprint verification models rely on centralized training with large datasets, which raises significant privacy concerns due to biometric data's sensitive and immutable nature. Federated learning~(FL), a privacy-preserving distributed learning paradigm, offers a compelling alternative by enabling collaborative model training without the need for data sharing. However, FL-based palmprint verification faces critical challenges, including data heterogeneity from diverse identities and the absence of standardized evaluation benchmarks. This paper addresses these gaps by establishing a comprehensive benchmark for FL-based palmprint verification, which explicitly defines and evaluates two practical scenarios: closed-set and open-set verification. We propose FedPalm, a unified FL framework that balances local adaptability with global generalization. Each client trains a personalized textural expert tailored to local data and collaboratively contributes to a shared global textural expert for extracting generalized features. To further enhance verification performance, we introduce a Textural Expert Interaction Module that dynamically routes textural features among experts to generate refined side textural features. Learnable parameters are employed to model relationships between original and side features, fostering cross-texture-expert interaction and improving feature discrimination. Extensive experiments validate the effectiveness of FedPalm, demonstrating robust performance across both scenarios and providing a promising foundation for advancing FL-based palmprint verification research.",
+        "field": "Digital Identity Verification",
+        "link": "http://arxiv.org/abs/2503.04837v1"
+    },
+    {
+        "id": "2503.06707v1",
+        "title": "Axes that matter: PCA with a difference",
+        "authors": [
+            "Brian Huge",
+            "Antoine Savine"
+        ],
+        "published": "2025-03-09T17:47:25Z",
+        "summary": "We extend the scope of differential machine learning and introduce a new breed of supervised principal component analysis to reduce dimensionality of Derivatives problems. Applications include the specification and calibration of pricing models, the identification of regression features in least-square Monte-Carlo, and the pre-processing of simulated datasets for (differential) machine learning.",
+        "field": "Autonomous Finance",
+        "link": "http://arxiv.org/abs/2503.06707v1"
+    },
+    {
+        "id": "2503.06279v1",
+        "title": "Mitigating Blockchain extractable value (BEV) threats by Distributed Transaction Sequencing in Blockchains",
+        "authors": [
+            "Xiongfei Zhao",
+            "Hou-Wan Long",
+            "Zhengzhe Li",
+            "Jiangchuan Liu",
+            "Yain-Whar Si"
+        ],
+        "published": "2025-03-08T16:55:52Z",
+        "summary": "The rapid growth of Blockchain and Decentralized Finance (DeFi) has introduced new challenges and vulnerabilities that threaten the integrity and efficiency of the ecosystem. This study identifies critical issues such as Transaction Order Dependence (TOD), Blockchain Extractable Value (BEV), and Transaction Importance Diversity (TID), which collectively undermine the fairness and security of DeFi systems. BEV-related activities, including Sandwich attacks, Liquidations, and Transaction Replay, have emerged as significant threats, collectively generating $540.54 million in losses over 32 months across 11,289 addresses, involving 49,691 cryptocurrencies and 60,830 on-chain markets. These attacks exploit transaction mechanics to manipulate asset prices and extract value at the expense of other participants, with Sandwich attacks being particularly impactful. Additionally, the growing adoption of Blockchain in traditional finance highlights the challenge of TID, where high transaction volumes can strain systems and compromise time-sensitive operations. To address these pressing issues, we propose a novel Distributed Transaction Sequencing Strategy (DTSS), which combines forking mechanisms and the Analytic Hierarchy Process (AHP) to enforce fair and transparent transaction ordering in a decentralized manner. Our approach is further enhanced by an optimization framework and the introduction of the Normalized Allocation Disparity Metric (NADM), which ensures optimal parameter selection for transaction prioritization. Experimental evaluations demonstrate that DTSS effectively mitigates BEV risks, enhances transaction fairness, and significantly improves the security and transparency of DeFi ecosystems. This work is essential for protecting the future of decentralized finance and promoting its integration into global financial systems.",
+        "field": "Autonomous Finance",
+        "link": "http://arxiv.org/abs/2503.06279v1"
+    },
+    {
+        "id": "2503.05966v1",
+        "title": "Explaining the Unexplainable: A Systematic Review of Explainable AI in Finance",
+        "authors": [
+            "Md Talha Mohsin",
+            "Nabid Bin Nasim"
+        ],
+        "published": "2025-03-07T22:36:44Z",
+        "summary": "Practitioners and researchers trying to strike a balance between accuracy and transparency center Explainable Artificial Intelligence (XAI) at the junction of finance. This paper offers a thorough overview of the changing scene of XAI applications in finance together with domain-specific implementations, methodological developments, and trend mapping of research. Using bibliometric and content analysis, we find topic clusters, significant research, and most often used explainability strategies used in financial industries. Our results show a substantial dependence on post-hoc interpretability techniques; attention mechanisms, feature importance analysis and SHAP are the most often used techniques among them. This review stresses the need of multidisciplinary approaches combining financial knowledge with improved explainability paradigms and exposes important shortcomings in present XAI systems.",
+        "field": "Autonomous Finance",
+        "link": "http://arxiv.org/abs/2503.05966v1"
+    },
+    {
+        "id": "2503.05185v1",
+        "title": "FinTMMBench: Benchmarking Temporal-Aware Multi-Modal RAG in Finance",
+        "authors": [
+            "Fengbin Zhu",
+            "Junfeng Li",
+            "Liangming Pan",
+            "Wenjie Wang",
+            "Fuli Feng",
+            "Chao Wang",
+            "Huanbo Luan",
+            "Tat-Seng Chua"
+        ],
+        "published": "2025-03-07T07:13:59Z",
+        "summary": "Finance decision-making often relies on in-depth data analysis across various data sources, including financial tables, news articles, stock prices, etc. In this work, we introduce FinTMMBench, the first comprehensive benchmark for evaluating temporal-aware multi-modal Retrieval-Augmented Generation (RAG) systems in finance. Built from heterologous data of NASDAQ 100 companies, FinTMMBench offers three significant advantages. 1) Multi-modal Corpus: It encompasses a hybrid of financial tables, news articles, daily stock prices, and visual technical charts as the corpus. 2) Temporal-aware Questions: Each question requires the retrieval and interpretation of its relevant data over a specific time period, including daily, weekly, monthly, quarterly, and annual periods. 3) Diverse Financial Analysis Tasks: The questions involve 10 different tasks, including information extraction, trend analysis, sentiment analysis and event detection, etc. We further propose a novel TMMHybridRAG method, which first leverages LLMs to convert data from other modalities (e.g., tabular, visual and time-series data) into textual format and then incorporates temporal information in each node when constructing graphs and dense indexes. Its effectiveness has been validated in extensive experiments, but notable gaps remain, highlighting the challenges presented by our FinTMMBench.",
+        "field": "Autonomous Finance",
+        "link": "http://arxiv.org/abs/2503.05185v1"
+    },
+    {
+        "id": "2503.04662v1",
+        "title": "Risk-aware Trading Portfolio Optimization",
+        "authors": [
+            "Marco Bianchetti",
+            "Gabriele D'Acunto",
+            "Gianmarco De Francisci Morales",
+            "Yuko Kuroki",
+            "Marco Scaringi",
+            "Fabio Vitale"
+        ],
+        "published": "2025-03-06T17:56:57Z",
+        "summary": "We investigate portfolio optimization in financial markets from a trading and risk management perspective. We term this task Risk-Aware Trading Portfolio Optimization (RATPO), formulate the corresponding optimization problem, and propose an efficient Risk-Aware Trading Swarm (RATS) algorithm to solve it. The key elements of RATPO are a generic initial portfolio P, a specific set of Unique Eligible Instruments (UEIs), their combination into an Eligible Optimization Strategy (EOS), an objective function, and a set of constraints. RATS searches for an optimal EOS that, added to P, improves the objective function repecting the constraints. RATS is a specialized Particle Swarm Optimization method that leverages the parameterization of P in terms of UEIs, enables parallel computation with a large number of particles, and is fully general with respect to specific choices of the key elements, which can be customized to encode financial knowledge and needs of traders and risk managers. We showcase two RATPO applications involving a real trading portfolio made of hundreds of different financial instruments, an objective function combining both market risk (VaR) and profit&loss measures, constrains on market sensitivities and UEIs trading costs. In the case of small-sized EOS, RATS successfully identifies the optimal solution and demonstrates robustness with respect to hyper-parameters tuning. In the case of large-sized EOS, RATS markedly improves the portfolio objective value, optimizing risk and capital charge while respecting risk limits and preserving expected profits. Our work bridges the gap between the implementation of effective trading strategies and compliance with stringent regulatory and economic capital requirements, allowing a better alignment of business and risk management objectives.",
+        "field": "Autonomous Finance",
+        "link": "http://arxiv.org/abs/2503.04662v1"
+    },
+    {
+        "id": "2503.00070v1",
+        "title": "Systematic Review of Cybersecurity in Banking: Evolution from Pre-Industry 4.0 to Post-Industry 4.0 in Artificial Intelligence, Blockchain, Policies and Practice",
+        "authors": [
+            "Tue Nhi Tran"
+        ],
+        "published": "2025-02-27T14:17:06Z",
+        "summary": "Throughout the history from pre-industry 4.0 to post-industry 4.0, cybersecurity at banks has undergone significant changes. Pre-industry 4.0 cyber security at banks relied on individual security methods that were highly manual and had low accuracy. When moving to post-industry 4.0, cybersecurity at banks had a major turning point with security methods that combined different technologies such as Artificial Intelligence (AI), Blockchain, IoT, automating necessary processes and significantly increasing the defence layer for banks. However, along with the development of new technologies, the current challenge of cybersecurity at banks lies in scalability, high costs and resources in both money and time for R&D of defence methods along with the threat of high-tech cybercriminals growing and expanding. This report goes from introducing the importance of cybersecurity at banks, analyzing their management, operational and business objectives, evaluating pre-industry 4.0 technologies used for cybersecurity at banks to assessing post-industry 4.0 technologies focusing on Artificial Intelligence and Blockchain, discussing current policies and practices and ending with discussing key advantages and challenges for 4.0 technologies and recommendations for further developing cybersecurity at banks.",
+        "field": "Synthetic Data in Banking",
+        "link": "http://arxiv.org/abs/2503.00070v1"
+    },
+    {
+        "id": "2502.14766v2",
+        "title": "Multi-Layer Deep xVA: Structural Credit Models, Measure Changes and Convergence Analysis",
+        "authors": [
+            "Kristoffer Andersson",
+            "Alessandro Gnoatto"
+        ],
+        "published": "2025-02-20T17:41:55Z",
+        "summary": "We propose a structural default model for portfolio-wide valuation adjustments (xVAs) and represent it as a system of coupled backward stochastic differential equations. The framework is divided into four layers, each capturing a key component: (i) clean values, (ii) initial margin and Collateral Valuation Adjustment (ColVA), (iii) Credit/Debit Valuation Adjustments (CVA/DVA) together with Margin Valuation Adjustment (MVA), and (iv) Funding Valuation Adjustment (FVA). Because these layers depend on one another through collateral and default effects, a naive Monte Carlo approach would require deeply nested simulations, making the problem computationally intractable. To address this challenge, we use an iterative deep BSDE approach, handling each layer sequentially so that earlier outputs serve as inputs to the subsequent layers. Initial margin is computed via deep quantile regression to reflect margin requirements over the Margin Period of Risk. We also adopt a change-of-measure method that highlights rare but significant defaults of the bank or counterparty, ensuring that these events are accurately captured in the training process. We further extend Han and Long's (2020) a posteriori error analysis to BSDEs on bounded domains. Due to the random exit from the domain, we obtain an order of convergence of $\\mathcal{O}(h^{1/4-\\epsilon})$ rather than the usual $\\mathcal{O}(h^{1/2})$. Numerical experiments illustrate that this method drastically reduces computational demands and successfully scales to high-dimensional, non-symmetric portfolios. The results confirm its effectiveness and accuracy, offering a practical alternative to nested Monte Carlo simulations in multi-counterparty xVA analyses.",
+        "field": "Synthetic Data in Banking",
+        "link": "http://arxiv.org/abs/2502.14766v2"
+    },
+    {
+        "id": "2502.14393v1",
+        "title": "Innovative Financing Solutions: A Transformative Driver for Financial Performance of Businesses in Morocco",
+        "authors": [
+            "Nohayla Badrane",
+            "Zineb Bamousse"
+        ],
+        "published": "2025-02-20T09:31:43Z",
+        "summary": "In a rapidly evolving landscape marked by continuous change and complex challenges, effective cash management stands as a cornerstone for ensuring business sustainability and driving performance. To address these pressing demands, cash managersare increasingly turning to innovative financing solutions such as venture capital, green finance, crowdfunding, advanced services from Pan-African banks, and blockchain technology. These cutting-edge tools are pivotal in bolstering resilience against market volatility, ecological transitions, and the accelerating pace of technological change. The present article aims to examine how such innovative financial approaches can serve as strategic drivers, enabling businesses to transform challenges into opportunities. The analysis underscores that rethinking cash management through innovation is a critical pathway toboost the performance of Moroccan companies. Therefore, embracing these forward-thinking strategies unlocks new avenues for development empowering them to adapt with agility amidst the uncertainties of a shifting environment.",
+        "field": "Synthetic Data in Banking",
+        "link": "http://arxiv.org/abs/2502.14393v1"
+    },
+    {
+        "id": "2502.11650v1",
+        "title": "\"I'm 73, you can't expect me to have multiple passwords\": Password Management Concerns and Solutions of Irish Older Adults",
+        "authors": [
+            "Ashley Sheil",
+            "Jacob Camilleri",
+            "Michelle O'Keeffe",
+            "Melanie Gruben",
+            "Moya Cronin",
+            "Hazel Murray"
+        ],
+        "published": "2025-02-17T10:42:13Z",
+        "summary": "Based on Irish older adult's perceptions, practices, and challenges regarding password management, the goal of this study was to compile suitable advice that can benefit this demographic. To achieve this, we first conducted semi structured interviews (n=37), we then collated advice based on best practice and what we learned from these interviews. We facilitated two independent focus groups (n=31) to evaluate and adjust this advice and tested the finalized advice through an observational study (n=15). The participants were aged between 59 and 86 and came from various counties in Ireland, both rural and urban. The findings revealed that managing multiple passwords was a significant source of frustration, leading some participants to adopt novel and informal strategies for storing them. A notable hesitation to adopt digital password managers and passphrases was also observed. Participants appreciated guidance on improving their password practices, with many affirming that securely writing down passwords was a practical strategy. Irish older adults demonstrated strong intuition regarding cybersecurity, notably expressing concerns over knowledge-based security checks used by banks and government institutions. This study aims to contribute to the aggregation of practical password advice suited to older adults, making password security more manageable and less burdensome for this demographic.",
+        "field": "Synthetic Data in Banking",
+        "link": "http://arxiv.org/abs/2502.11650v1"
+    },
+    {
+        "id": "2502.09553v1",
+        "title": "SyntheticPop: Attacking Speaker Verification Systems With Synthetic VoicePops",
+        "authors": [
+            "Eshaq Jamdar",
+            "Amith Kamath Belman"
+        ],
+        "published": "2025-02-13T18:05:12Z",
+        "summary": "Voice Authentication (VA), also known as Automatic Speaker Verification (ASV), is a widely adopted authentication method, particularly in automated systems like banking services, where it serves as a secondary layer of user authentication. Despite its popularity, VA systems are vulnerable to various attacks, including replay, impersonation, and the emerging threat of deepfake audio that mimics the voice of legitimate users. To mitigate these risks, several defense mechanisms have been proposed. One such solution, Voice Pops, aims to distinguish an individual's unique phoneme pronunciations during the enrollment process. While promising, the effectiveness of VA+VoicePop against a broader range of attacks, particularly logical or adversarial attacks, remains insufficiently explored. We propose a novel attack method, which we refer to as SyntheticPop, designed to target the phoneme recognition capabilities of the VA+VoicePop system. The SyntheticPop attack involves embedding synthetic \"pop\" noises into spoofed audio samples, significantly degrading the model's performance. We achieve an attack success rate of over 95% while poisoning 20% of the training dataset. Our experiments demonstrate that VA+VoicePop achieves 69% accuracy under normal conditions, 37% accuracy when subjected to a baseline label flipping attack, and just 14% accuracy under our proposed SyntheticPop attack, emphasizing the effectiveness of our method.",
+        "field": "Synthetic Data in Banking",
+        "link": "http://arxiv.org/abs/2502.09553v1"
+    },
+    {
+        "id": "2503.08359v1",
+        "title": "Efficient Query Verification for Blockchain Superlight Clients Using SNARKs",
+        "authors": [
+            "Stefano De Angelis",
+            "Ivan Visconti",
+            "Andrea Vitaletti",
+            "Marco Zecchini"
+        ],
+        "published": "2025-03-11T12:16:35Z",
+        "summary": "Blockchains are among the most powerful technologies to realize decentralized information systems. In order to safely enjoy all guarantees provided by a blockchain, one should maintain a full node, therefore maintaining an updated local copy of the ledger. This allows one to locally verify transactions, states of smart contracts, and to compute any information over them. Unfortunately, for obvious practical reasons, a very large part of blockchain-based information systems consists of users relying on clients that access data stored in blockchains only through servers, without verifying what is received. In notable use cases, the user has application-specific queries that can be answered only by very few servers, sometimes all belonging to the same organization. This clearly re-introduces a single point of failure. In this work we present an architecture allowing superlight clients (i.e., clients that do not want to download the involved transactions) to outsource the computation of a query to a (possibly untrusted) server, receiving a trustworthy answer. Our architecture relies on the power of SNARKs and makes them lighter to compute by using data obtained from full nodes and blockchain explorers, possibly leveraging the existence of smart contracts. The viability of our architecture is confirmed by an experimental evaluation on concrete scenarios. Our work paves the road towards blockchain-based information systems that remain decentralized and reliable even when users rely on common superlight clients (e.g., smartphones).",
+        "field": "Green Finance Technology",
+        "link": "http://arxiv.org/abs/2503.08359v1"
+    },
+    {
+        "id": "2503.07568v1",
+        "title": "Runtime Detection of Adversarial Attacks in AI Accelerators Using Performance Counters",
+        "authors": [
+            "Habibur Rahaman",
+            "Atri Chatterjee",
+            "Swarup Bhunia"
+        ],
+        "published": "2025-03-10T17:38:42Z",
+        "summary": "Rapid adoption of AI technologies raises several major security concerns, including the risks of adversarial perturbations, which threaten the confidentiality and integrity of AI applications. Protecting AI hardware from misuse and diverse security threats is a challenging task. To address this challenge, we propose SAMURAI, a novel framework for safeguarding against malicious usage of AI hardware and its resilience to attacks. SAMURAI introduces an AI Performance Counter (APC) for tracking dynamic behavior of an AI model coupled with an on-chip Machine Learning (ML) analysis engine, known as TANTO (Trained Anomaly Inspection Through Trace Observation). APC records the runtime profile of the low-level hardware events of different AI operations. Subsequently, the summary information recorded by the APC is processed by TANTO to efficiently identify potential security breaches and ensure secure, responsible use of AI. SAMURAI enables real-time detection of security threats and misuse without relying on traditional software-based solutions that require model integration. Experimental results demonstrate that SAMURAI achieves up to 97% accuracy in detecting adversarial attacks with moderate overhead on various AI models, significantly outperforming conventional software-based approaches. It enhances security and regulatory compliance, providing a comprehensive solution for safeguarding AI against emergent threats.",
+        "field": "Green Finance Technology",
+        "link": "http://arxiv.org/abs/2503.07568v1"
+    },
+    {
+        "id": "2503.05206v2",
+        "title": "Operationalizing Cybersecurity Knowledge: Design, Implementation & Evaluation of a Knowledge Management System for CACAO Playbooks",
+        "authors": [
+            "Orestis Tsirakis",
+            "Konstantinos Fysarakis",
+            "Vasileios Mavroeidis",
+            "Ioannis Papaefstathiou"
+        ],
+        "published": "2025-03-07T07:54:43Z",
+        "summary": "Modern cybersecurity threats are growing in complexity, targeting increasingly intricate & interconnected systems. To effectively defend against these evolving threats, security teams utilize automation & orchestration to enhance response efficiency and consistency. In that sense, cybersecurity playbooks are key enablers, providing a structured, reusable, and continuously improving approach to incident response, enabling organizations to codify requirements, domain expertise, and best practices and automate decision-making processes to the extent possible. The emerging Collaborative Automated Course of Action Operations (CACAO) standard defines a common machine-processable schema for cybersecurity playbooks, facilitating interoperability for their exchange and ensuring the ability to orchestrate and automate cybersecurity operations. However, despite its potential and the fact that it is a relatively new standardization work, there is a lack of tools to support its adoption and, in particular, the management & lifecycle development of CACAO playbooks, limiting their practical deployment. Motivated by the above, this work presents the design, development, and evaluation of a Knowledge Management System (KMS) for managing CACAO cybersecurity playbooks throughout their lifecycle, providing essential tools to streamline playbook management. Using open technologies & standards, the proposed approach fosters standards-based interoperability & enhances the usability of state-of-the-art cybersecurity orchestration & automation primitives. To encourage adoption, the resulting implementation is released as open-source, which, to the extent of our knowledge, comprises the first publicly available & documented work in this domain, supporting the broader uptake of CACAO playbooks & promoting the widespread use of interoperable automation and orchestration mechanisms in cybersecurity operations.",
+        "field": "Green Finance Technology",
+        "link": "http://arxiv.org/abs/2503.05206v2"
+    },
+    {
+        "id": "2503.05839v1",
+        "title": "Enhancing AUTOSAR-Based Firmware Over-the-Air Updates in the Automotive Industry with a Practical Implementation on a Steering System",
+        "authors": [
+            "Mostafa Ahmed Mostafa Ahmed",
+            "Mohamed Khaled Mohamed Elsayed",
+            "Radwa Waheed Ezzat Abdelmohsen"
+        ],
+        "published": "2025-03-06T23:54:40Z",
+        "summary": "The automotive industry is increasingly reliant on software to manage complex vehicle functionalities, making efficient and secure firmware updates essential. Traditional firmware update methods, requiring physical connections through On-Board Diagnostics (OBD) ports, are inconvenient, costly, and time-consuming. Firmware Over-the-Air (FOTA) technology offers a revolutionary solution by enabling wireless updates, reducing operational costs, and enhancing the user experience. This project aims to design and implement an advanced FOTA system tailored for modern vehicles, incorporating the AUTOSAR architecture for scalability and standardization, and utilizing delta updating to minimize firmware update sizes, thereby improving bandwidth efficiency and reducing flashing times. To ensure security, the system integrates the UDS 0x27 protocol for authentication and data integrity during the update process. Communication between Electronic Control Units (ECUs) is achieved using the CAN protocol, while the ESP8266 module and the master ECU communicate via SPI for data transfer. The system's architecture includes key components such as a bootloader, boot manager, and bootloader updater to facilitate seamless firmware updates. The functionality of the system is demonstrated through two applications: a blinking LED and a Lane Keeping Assist (LKA) system, showcasing its versatility in handling critical automotive features. This project represents a significant step forward in automotive technology, offering a user-centric, efficient, and secure solution for automotive firmware management.",
+        "field": "Green Finance Technology",
+        "link": "http://arxiv.org/abs/2503.05839v1"
+    },
+    {
+        "id": "2503.04866v1",
+        "title": "Privacy in Responsible AI: Approaches to Facial Recognition from Cloud Providers",
+        "authors": [
+            "Anna Elivanova"
+        ],
+        "published": "2025-03-06T12:04:12Z",
+        "summary": "As the use of facial recognition technology is expanding in different domains, ensuring its responsible use is gaining more importance. This paper conducts a comprehensive literature review of existing studies on facial recognition technology from the perspective of privacy, which is one of the key Responsible AI principles. Cloud providers, such as Microsoft, AWS, and Google, are at the forefront of delivering facial-related technology services, but their approaches to responsible use of these technologies vary significantly. This paper compares how these cloud giants implement the privacy principle into their facial recognition and detection services. By analysing their approaches, it identifies both common practices and notable differences. The results of this research will be valuable for developers and businesses by providing them insights into best practices of three major companies for integration responsible AI, particularly privacy, into their cloud-based facial recognition technologies.",
+        "field": "Green Finance Technology",
+        "link": "http://arxiv.org/abs/2503.04866v1"
+    }
+]
