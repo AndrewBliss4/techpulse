@@ -481,7 +481,12 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
           })}
         </div>
       </div>
-      {selectedFieldId && <SubfieldChart subfieldData={subfieldData} />}
+      {selectedFieldId && (
+        <SubfieldChart
+          radarData={radarData}
+          selectedFieldId={selectedFieldId}
+        />
+      )}
       {/*Rationale section*/}
       <div style={{
         padding: '15px',
