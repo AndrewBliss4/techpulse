@@ -20,11 +20,8 @@ CREATE TABLE TimedMetrics (
     field_id INT REFERENCES Field(field_id) ON DELETE CASCADE,
     subfield_id INT REFERENCES Subfield(subfield_id) ON DELETE CASCADE,
     rationale TEXT,
-    source TEXT,
-    CHECK (
-        (field_id IS NOT NULL AND subfield_id IS NULL) OR 
-        (subfield_id IS NOT NULL AND field_id IS NULL)
-    ) -- Ensures a TimedMetric entry belongs to either a Field or Subfield, not both
+    source TEXT
+    -- Removed the CHECK constraint to allow both field_id and subfield_id to be non-NULL
 );
 
 CREATE TABLE Insight (
