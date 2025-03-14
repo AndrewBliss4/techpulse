@@ -66,3 +66,10 @@ BEGIN
         GRANT ALL PRIVILEGES ON DATABASE techpulse TO admin;
     END IF;
 END $$;
+
+/*UPDATE TimedMetrics tm
+SET field_id = sf.field_id
+FROM Subfield sf
+WHERE tm.subfield_id IS NOT NULL
+  AND tm.subfield_id = sf.subfield_id
+  AND tm.field_id IS NULL;*/
