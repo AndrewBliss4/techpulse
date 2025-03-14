@@ -9,6 +9,12 @@ const SubfieldChart = ({ radarData, selectedFieldId }) => {
     (point) => point.field_id === selectedFieldId && point.subfield_id !== null
   );
 
+  // Get unique subfields (remove duplicates)
+  const uniqueSubfields = Array.from(new Set(subfieldData.map((point) => point.subfield_id)))
+    .map((subfieldId) => {
+      return subfieldData.find((point) => point.subfield_id === subfieldId);
+    });
+
   // Generate distinct colors for subfields
   const generateDistinctColors = (numColors) => {
     const colors = [];
@@ -24,7 +30,7 @@ const SubfieldChart = ({ radarData, selectedFieldId }) => {
     return colors;
   };
 
-  const colors = generateDistinctColors(subfieldData.length);
+  const colors = generateDistinctColors(uniqueSubfields.length);
 
   // Handle subfield filter button click
   const handleSubfieldClick = (subfieldId) => {
@@ -36,7 +42,7 @@ const SubfieldChart = ({ radarData, selectedFieldId }) => {
   };
 
   // If no subfield data, show a message
-  if (!subfieldData || subfieldData.length === 0) {
+  if (!uniqueSubfields || uniqueSubfields.length === 0) {
     return <div>No subfield data available for the selected field.</div>;
   }
 
@@ -51,7 +57,7 @@ const SubfieldChart = ({ radarData, selectedFieldId }) => {
         gap: '8px',
         marginBottom: '20px',
       }}>
-        {subfieldData.map((point, index) => {
+        {uniqueSubfields.map((point, index) => {
           const isSelected = selectedSubfield === point.subfield_id; // Check if this button is selected
           return (
             <button
