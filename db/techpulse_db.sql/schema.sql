@@ -21,7 +21,6 @@ CREATE TABLE TimedMetrics (
     subfield_id INT REFERENCES Subfield(subfield_id) ON DELETE CASCADE,
     rationale TEXT,
     source TEXT
-    -- Removed the CHECK constraint to allow both field_id and subfield_id to be non-NULL
 );
 
 CREATE TABLE Insight (

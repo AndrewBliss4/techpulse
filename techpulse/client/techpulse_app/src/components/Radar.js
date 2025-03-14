@@ -3,6 +3,7 @@ import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Lab
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { RadarIcon, TrendingUp } from 'lucide-react';
+import SubfieldChart from './SubfieldChart';
 
 const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [data, setData] = useState([]);
@@ -11,27 +12,20 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [clickedDataPoint, setClickedDataPoint] = useState(null); // State for clicked data point
   const [selectedTechnology, setSelectedTechnology] = useState(null); // State for selected technology
   const [articleSources, setArticleSources] = useState({});
-  // State to toggle between colorful and blue-only mode
   const [useColorMode, setUseColorMode] = useState(false);
+  const [subfieldData, setSubfieldData] = useState([]); // State for subfield data
+  const [selectedFieldId, setSelectedFieldId] = useState(null); // Track the selected field ID for subfields
 
-
-  const handlePointClick = async (point) => {
+  const handleFieldClick = async (fieldId) => {
+    setSelectedFieldId(fieldId);
     try {
-      const response = await fetch("http://localhost:4000/gpt-subfield", {  // <-- Update this if needed
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fieldName: point.field_name }),
-      });
-  
-      if (!response.ok) throw new Error("Failed to send data to server");
-  
-      console.log("Successfully sent:", point.field_name);
+      const response = await axios.post('http://localhost:4000/api/subfields', { fieldId });
+      setSubfieldData(response.data.metrics);
     } catch (error) {
-      console.error("Error sending request:", error);
+      console.error('Error fetching subfields:', error);
     }
   };
-  
-  
+
   // Function to generate distinct colors using HSL
   const generateDistinctColors = (numColors) => {
     const colors = [];
@@ -71,17 +65,18 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     const mostRecentData = {};
 
     data.forEach(item => {
-      const fieldId = item.field_id;
-      const currentDate = new Date(item.metric_date);
+      if (item.subfield_id === null) {  // Only process if subfield_id is null
+        const fieldId = item.field_id;
+        const currentDate = new Date(item.metric_date);
 
-      if (!mostRecentData[fieldId] || new Date(mostRecentData[fieldId].metric_date) < currentDate) {
-        mostRecentData[fieldId] = item;
+        if (!mostRecentData[fieldId] || new Date(mostRecentData[fieldId].metric_date) < currentDate) {
+          mostRecentData[fieldId] = item;
+        }
       }
     });
 
     return Object.values(mostRecentData);
   };
-
 
   const handleFilterClick = (point) => {
     // Check if this point is currently selected
@@ -90,10 +85,12 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
       // If clicking the already selected technology, deselect it
       setSelectedTechnology(null);
       // Show all technologies again
-      const allHistoricalData = radarData.map(d => ({
-        ...d,
-        metric_date: Date.parse(d.metric_date),
-      }));
+      const allHistoricalData = radarData
+        .filter(d => d.subfield_id === null) // Filter for null subfield_id
+        .map(d => ({
+          ...d,
+          metric_date: Date.parse(d.metric_date),
+        }));
       setData(data.map(d => ({
         ...d,
         fillOpacity: 0.7, // Set all to normal opacity when deselecting
@@ -106,9 +103,9 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         ...d,
         fillOpacity: d.field_id === point.field_id ? 0.7 : 0.1,
       })));
-      // Filter historical data for the selected technology
+      // Filter historical data for the selected technology and null subfield_id
       const fieldHistoricalData = radarData
-        .filter(d => d.field_id === point.field_id)
+        .filter(d => d.field_id === point.field_id && d.subfield_id === null) // Filter for null subfield_id
         .map(d => ({
           ...d,
           metric_date: Date.parse(d.metric_date),
@@ -159,7 +156,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     fetchArticles();
   }, []);
 
-
   return (
     <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
       <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
@@ -188,7 +184,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                   if (selectedPoint) {
                     // If a technology is selected, show its timeline
                     const fieldHistoricalData = radarData
-                      .filter(d => d.field_id === selectedPoint.field_id)
+                      .filter(d => d.field_id === selectedPoint.field_id && d.subfield_id === null) // Filter for null subfield_id
                       .map(d => ({
                         ...d,
                         metric_date: Date.parse(d.metric_date),
@@ -197,10 +193,12 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                     setSelectedField('timeline');
                   } else {
                     // If no technology is selected, show all
-                    const allHistoricalData = radarData.map(d => ({
-                      ...d,
-                      metric_date: Date.parse(d.metric_date),
-                    }));
+                    const allHistoricalData = radarData
+                      .filter(d => d.subfield_id === null) // Filter for null subfield_id
+                      .map(d => ({
+                        ...d,
+                        metric_date: Date.parse(d.metric_date),
+                      }));
                     setHistoricalData(allHistoricalData);
                     setSelectedField('timeline');
                   }
@@ -291,7 +289,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                           data={[point]}
                           fill={colors[index % colors.length]}
                           fillOpacity={0.7}
-                          onClick={() => handlePointClick(point)} // Ensure it triggers on click
+                          onClick={() => handleFieldClick(point.field_id)} // Ensure it triggers on click
                           cursor="pointer"
                           shape="circle"
                           size={point.metric_3 * 100}
@@ -483,7 +481,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
           })}
         </div>
       </div>
-
+      {selectedFieldId && <SubfieldChart subfieldData={subfieldData} />}
       {/*Rationale section*/}
       <div style={{
         padding: '15px',

@@ -39,31 +39,38 @@ app.get('/api/data', async (req, res) => {
 
 app.get('/api/radar', async (req, res) => {
   try {
-      const query = `
-          SELECT 
-              f.field_id,
-              f.field_name,
-              f.description,
-              m.metric_1,
-              m.metric_2,
-              m.metric_3,
-              m.rationale,
-              m.metric_date,
-              m.source
-          FROM 
-              public.field f
-          JOIN 
-              public.TIMEDMETRICS m
-          ON 
-              f.field_id = m.field_id
-      `;
+    const query = `
+      SELECT 
+        f.field_id,
+        f.field_name,
+        f.description AS field_description,
+        s.subfield_id,
+        s.subfield_name,
+        s.description AS subfield_description,
+        m.metric_1,
+        m.metric_2,
+        m.metric_3,
+        m.rationale,
+        m.metric_date,
+        m.source
+      FROM 
+        public.field f
+      LEFT JOIN 
+        public.TIMEDMETRICS m
+      ON 
+        f.field_id = m.field_id
+      LEFT JOIN 
+        public.Subfield s
+      ON 
+        m.subfield_id = s.subfield_id
+    `;
 
-      const result = await pool.query(query);
-      console.log('Joined data fetched successfully:', result.rows);
-      res.json(result.rows);
+    const result = await pool.query(query);
+    console.log('Joined data fetched successfully:', result.rows);
+    res.json(result.rows);
   } catch (error) {
-      console.error('Error fetching joined data:', error.message);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error('Error fetching joined data:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -779,6 +786,7 @@ app.post("/generate-insight-trends", async (req, res) => {
 });
 
 app.post("/generate-insight-top", async (req, res) => {
+  console.log('Received fieldId:', fieldId);
   let aiResponse = await generateInsight("top");
   console.log("Raw AI Response:\n", aiResponse);
 
@@ -787,4 +795,48 @@ app.post("/generate-insight-top", async (req, res) => {
   }
 
   res.status(200).json({ top: aiResponse });
+});
+
+app.post('/api/subfields', async (req, res) => {
+  const { fieldId } = req.body;
+
+  if (!fieldId) {
+    return res.status(400).json({ error: 'fieldId is required' });
+  }
+
+  try {
+    // Fetch subfields for the given fieldId
+    const subfields = await pool.query(`
+      SELECT 
+        subfield_id,
+        subfield_name,
+        description AS subfield_description
+      FROM Subfield
+      WHERE field_id = $1
+    `, [fieldId]);
+
+    // Fetch metrics for the subfields
+    const subfieldMetrics = await pool.query(`
+      SELECT 
+        m.timed_metric_id,
+        m.metric_1,
+        m.metric_2,
+        m.metric_3,
+        m.metric_date,
+        m.rationale,
+        m.source,
+        s.subfield_name,
+        s.description AS subfield_description
+      FROM TimedMetrics m
+      JOIN Subfield s ON m.subfield_id = s.subfield_id
+      WHERE s.field_id = $1
+      ORDER BY m.metric_date DESC
+    `, [fieldId]);
+
+    // Send the response
+    res.json({ subfields: subfields.rows, metrics: subfieldMetrics.rows });
+  } catch (error) {
+    console.error('Error fetching subfields:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
