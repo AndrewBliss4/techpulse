@@ -65,7 +65,8 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     const mostRecentData = {};
   
     data.forEach(item => {
-      if (item.subfield_id === null) {  // Only process if subfield_id is null
+      // Exclude entries with field_id: 0
+      if (item.subfield_id === null && item.field_id !== 0) {  // Only process if subfield_id is null and field_id is not 0
         const fieldId = item.field_id;
         const currentDate = new Date(item.metric_date);
   
