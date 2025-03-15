@@ -357,27 +357,66 @@ app.post("/gpt-field", async (req, res) => {
 
 
 //insight generation
-const generateInsight = async (type) => {
+const generateInsight = async (type, fieldId) => {
   try {
-    // Fetch the most recent timed metrics and rationales for each field
-    const metricsQuery = await pool.query(`
-      SELECT 
-        f.field_id,
-        f.field_name,
-        t.metric_1,
-        t.metric_2,
-        t.metric_3,
-        t.rationale,
-        t.metric_date
-      FROM 
-        Field f
-      JOIN 
-        TIMEDMETRICS t 
-      ON 
-        f.field_id = t.field_id
-      WHERE 
-        t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id)
-    `);
+    let metricsQuery;
+    let fieldName = null;
+
+    if (fieldId === 0) {
+      // Fetch metrics for fields only (no subfields)
+      metricsQuery = await pool.query(`
+        SELECT 
+          f.field_id,
+          f.field_name,
+          t.metric_1,
+          t.metric_2,
+          t.metric_3,
+          t.rationale,
+          t.metric_date
+        FROM 
+          Field f
+        JOIN 
+          TIMEDMETRICS t 
+        ON 
+          f.field_id = t.field_id
+        WHERE 
+          t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id)
+          AND t.subfield_id IS NULL -- Ensure we only get field-level metrics
+      `);
+    } else {
+      // Fetch the field_name for the given field_id
+      const fieldQuery = await pool.query(`
+        SELECT field_name FROM Field WHERE field_id = $1
+      `, [fieldId]);
+
+      if (fieldQuery.rowCount === 0) {
+        console.log("Field not found.");
+        return "NO_FIELD";
+      }
+
+      fieldName = fieldQuery.rows[0].field_name;
+
+      // Fetch metrics for subfields belonging to the specified field_id
+      metricsQuery = await pool.query(`
+        SELECT 
+          s.subfield_id,
+          s.subfield_name,
+          t.metric_1,
+          t.metric_2,
+          t.metric_3,
+          t.rationale,
+          t.metric_date
+        FROM 
+          Subfield s
+        JOIN 
+          TIMEDMETRICS t 
+        ON 
+          s.subfield_id = t.subfield_id
+        WHERE 
+          t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE subfield_id = s.subfield_id)
+          AND s.field_id = $1
+      `, [fieldId]);
+    }
 
     if (metricsQuery.rowCount === 0) {
       console.log("No metrics found.");
@@ -413,10 +452,10 @@ const generateInsight = async (type) => {
         break;
       default:
         throw new Error("Invalid insight type");
-    };
+    }
 
     const metricsData = metricsQuery.rows.map(row => `
-      field_name: ${row.field_name}
+      ${row.field_name ? `field_name: ${row.field_name}` : `subfield_name: ${row.subfield_name}`}
       metric_1: ${row.metric_1}
       metric_2: ${row.metric_2}
       metric_3: ${row.metric_3}
@@ -443,7 +482,7 @@ const generateInsight = async (type) => {
       top_p: 1
     });
 
-    const generatedInsight = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
+    let generatedInsight = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
 
     // Log the raw AI response for debugging
     console.log("Raw AI Response:\n", generatedInsight);
@@ -464,9 +503,41 @@ const generateInsight = async (type) => {
       await pool.query(
         `INSERT INTO Insight (field_id, insight_text, confidence_score)
          VALUES ($1, $2, $3)`,
-        [null, generatedInsight, confidenceScore]
+        [fieldId === 0 ? null : fieldId, generatedInsight, confidenceScore]
       );
     }
+
+    // Define the absolute path to the Insights directory
+    const insightsDir = path.join(
+      "C:",
+      "Users",
+      "andre",
+      "OneDrive",
+      "Documents",
+      "GitHub",
+      "Capstone",
+      "techpulse",
+      "techpulse",
+      "client",
+      "techpulse_app",
+      "src",
+      "components",
+      "Insights"
+    );
+
+    // Define the file name based on field_id
+    let fileName;
+    if (fieldId === 0) {
+      fileName = "MostRecentInsight.txt";
+    } else {
+      // Use the field_name to create the file name
+      fileName = `MostRecent${fieldName}Insight.txt`;
+    }
+    const filePath = path.join(insightsDir, fileName);
+
+    // Write the insight to the file
+    await fsPromises.writeFile(filePath, generatedInsight, 'utf8');
+    console.log(`Insight written to ${filePath}`);
 
     return generatedInsight;
 
@@ -474,8 +545,7 @@ const generateInsight = async (type) => {
     console.error("Error:", error);
     return "ERROR: Unable to process request.";
   }
-}
-
+};
 let promptAISubfield = async (fieldName) => {
   try {
     // Fetch current subfields for the given field
@@ -759,7 +829,8 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
   
 
 app.post("/generate-insight", async (req, res) => {
-  let aiResponse = await generateInsight("insight");
+  const { fieldId } = req.body;
+  let aiResponse = await generateInsight("insight", fieldId);
   console.log("Raw AI Response:\n", aiResponse);
 
   if (aiResponse === "NO_METRICS") {
@@ -775,7 +846,8 @@ app.post("/generate-insight", async (req, res) => {
 });
 
 app.post("/generate-insight-trends", async (req, res) => {
-  let aiResponse = await generateInsight("trends");
+  const { fieldId } = req.body;
+  let aiResponse = await generateInsight("trends", fieldId);
   console.log("Raw AI Response:\n", aiResponse);
 
   if (aiResponse === "NO_METRICS") {
@@ -786,8 +858,8 @@ app.post("/generate-insight-trends", async (req, res) => {
 });
 
 app.post("/generate-insight-top", async (req, res) => {
-  console.log('Received fieldId:', fieldId);
-  let aiResponse = await generateInsight("top");
+  const { fieldId } = req.body;
+  let aiResponse = await generateInsight("top", fieldId);
   console.log("Raw AI Response:\n", aiResponse);
 
   if (aiResponse === "NO_METRICS") {

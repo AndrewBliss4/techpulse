@@ -66,7 +66,11 @@ BEGIN
         GRANT ALL PRIVILEGES ON DATABASE techpulse TO admin;
     END IF;
 END $$;
-
+DO $$
+INSERT INTO Field (field_id, field_name, description)  
+VALUES (0, 'the current frontier of banking technology', NULL)  
+ON CONFLICT (field_id) DO NOTHING;
+END $$;
 /*UPDATE TimedMetrics tm
 SET field_id = sf.field_id
 FROM Subfield sf
