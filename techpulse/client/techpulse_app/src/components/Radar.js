@@ -99,6 +99,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         fillOpacity: 0.7, // Set all to normal opacity when deselecting
       })));
       setHistoricalData(allHistoricalData);
+      setSelectedField('radar'); // Reset to Scatter Chart
     } else {
       // If selecting a different technology (or first selection)
       setSelectedTechnology(point.field_name);
@@ -178,40 +179,20 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                   Radar
                 </div>
               </button>
-              <button
-                className={`py-2 px-4 font-medium ${selectedField === 'timeline' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-                onClick={() => {
-                  // Get currently selected technology
-                  const selectedPoint = data.find(d => d.fillOpacity === 0.7);
-
-                  if (selectedPoint) {
-                    // If a technology is selected, show its timeline
-                    const fieldHistoricalData = radarData
-                      .filter(d => d.field_id === selectedPoint.field_id && d.subfield_id === null) // Filter for null subfield_id
-                      .map(d => ({
-                        ...d,
-                        metric_date: Date.parse(d.metric_date),
-                      }));
-                    setHistoricalData(fieldHistoricalData);
+              {/* Conditionally render the Timeline tab */}
+              {selectedTechnology && (
+                <button
+                  className={`py-2 px-4 font-medium ${selectedField === 'timeline' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                  onClick={() => {
                     setSelectedField('timeline');
-                  } else {
-                    // If no technology is selected, show all
-                    const allHistoricalData = radarData
-                      .filter(d => d.subfield_id === null) // Filter for null subfield_id
-                      .map(d => ({
-                        ...d,
-                        metric_date: Date.parse(d.metric_date),
-                      }));
-                    setHistoricalData(allHistoricalData);
-                    setSelectedField('timeline');
-                  }
-                }}
-              >
-                <div className="flex items-center">
-                  <TrendingUp className="h-4 w-4 mr-2" />
-                  Timeline
-                </div>
-              </button>
+                  }}
+                >
+                  <div className="flex items-center">
+                    <TrendingUp className="h-4 w-4 mr-2" />
+                    Timeline
+                  </div>
+                </button>
+              )}
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
@@ -308,12 +289,12 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
             )}
 
             {/*Timeline Tab*/}
-            {selectedField === 'timeline' && (
+            {selectedField === 'timeline' && selectedTechnology && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
                 {/* Timeline Graph */}
                 <div style={{ flex: 1, height: '600px', marginBottom: '20px' }}>
                   <h3 className="font-semibold text-gray-800 mb-3 pt-4 text-center">
-                    Historical Metrics for {selectedTechnology ? selectedTechnology : 'All Technologies'}
+                    Historical Metrics for {selectedTechnology}
                   </h3>
                   <ResponsiveContainer width="100%" height="92%">
                     <LineChart
@@ -542,6 +523,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         <SubfieldChart
           radarData={radarData}
           selectedFieldId={selectedFieldId}
+          fieldName={data.find((field) => field.field_id === selectedFieldId)?.field_name || "Selected Field"}
         />
       )}
     </div>
