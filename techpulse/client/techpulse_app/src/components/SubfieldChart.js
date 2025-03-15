@@ -2,18 +2,26 @@ import React, { useState } from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const SubfieldChart = ({ radarData, selectedFieldId }) => {
-  const [selectedSubfield, setSelectedSubfield] = useState(null); // Track the selected subfield
+  const [selectedSubfield, setSelectedSubfield] = useState(null);
+  const [selectedSubfieldDetails, setSelectedSubfieldDetails] = useState(null);
 
   // Filter radarData to only include subfields for the selected field
   const subfieldData = radarData.filter(
     (point) => point.field_id === selectedFieldId && point.subfield_id !== null
   );
 
-  // Get unique subfields (remove duplicates)
-  const uniqueSubfields = Array.from(new Set(subfieldData.map((point) => point.subfield_id)))
-    .map((subfieldId) => {
-      return subfieldData.find((point) => point.subfield_id === subfieldId);
-    });
+  // Find the most recent metric for each subfield
+  const latestMetricsBySubfield = subfieldData.reduce((acc, point) => {
+    if (
+      !acc[point.subfield_id] || 
+      new Date(point.metric_date) > new Date(acc[point.subfield_id].metric_date)
+    ) {
+      acc[point.subfield_id] = point;
+    }
+    return acc;
+  }, {});
+
+  const filteredData = Object.values(latestMetricsBySubfield); // Convert to array
 
   // Generate distinct colors for subfields
   const generateDistinctColors = (numColors) => {
@@ -30,19 +38,17 @@ const SubfieldChart = ({ radarData, selectedFieldId }) => {
     return colors;
   };
 
-  const colors = generateDistinctColors(uniqueSubfields.length);
+  const colors = generateDistinctColors(filteredData.length);
 
   // Handle subfield filter button click
   const handleSubfieldClick = (subfieldId) => {
-    if (selectedSubfield === subfieldId) {
-      setSelectedSubfield(null); // Deselect if already selected
-    } else {
-      setSelectedSubfield(subfieldId); // Select the subfield
-    }
+    const selected = filteredData.find(point => point.subfield_id === subfieldId);
+    setSelectedSubfield(selectedSubfield === subfieldId ? null : subfieldId);
+    setSelectedSubfieldDetails(selected);
   };
 
   // If no subfield data, show a message
-  if (!uniqueSubfields || uniqueSubfields.length === 0) {
+  if (!filteredData.length) {
     return <div>No subfield data available for the selected field.</div>;
   }
 
@@ -51,14 +57,9 @@ const SubfieldChart = ({ radarData, selectedFieldId }) => {
       <h3>Subfields for Selected Field</h3>
 
       {/* Subfield Filter Buttons */}
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '8px',
-        marginBottom: '20px',
-      }}>
-        {uniqueSubfields.map((point, index) => {
-          const isSelected = selectedSubfield === point.subfield_id; // Check if this button is selected
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
+        {filteredData.map((point, index) => {
+          const isSelected = selectedSubfield === point.subfield_id;
           return (
             <button
               key={point.subfield_id}
@@ -74,7 +75,7 @@ const SubfieldChart = ({ radarData, selectedFieldId }) => {
                 boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
               }}
             >
-              {point.subfield_name} {/* Display subfield name */}
+              {point.subfield_name}
             </button>
           );
         })}
@@ -113,7 +114,7 @@ const SubfieldChart = ({ radarData, selectedFieldId }) => {
                     border: '1px solid #ccc',
                     borderRadius: '5px',
                   }}>
-                    <p><strong>{point.subfield_name}</strong></p> {/* Subfield name in bold */}
+                    <p><strong>{point.subfield_name}</strong></p>
                     <p>Interest: {(point.metric_1).toFixed(2)}</p>
                     <p>Innovation: {(point.metric_2).toFixed(2)}</p>
                     <p>Relevance: {(point.metric_3).toFixed(2)}</p>
@@ -123,9 +124,9 @@ const SubfieldChart = ({ radarData, selectedFieldId }) => {
               return null;
             }}
           />
-          {subfieldData
-            .filter(point => !selectedSubfield || point.subfield_id === selectedSubfield) // Filter based on selected subfield
-            .map((point, index) => (
+          {filteredData.map((point, index) => {
+            const isSelected = !selectedSubfield || point.subfield_id === selectedSubfield;
+            return (
               <Scatter
                 key={point.subfield_id}
                 data={[point]}
@@ -133,10 +134,35 @@ const SubfieldChart = ({ radarData, selectedFieldId }) => {
                 cursor="pointer"
                 shape="circle"
                 size={point.metric_3 * 100}
+                opacity={isSelected ? 1 : 0.2} // Make non-selected points transparent
               />
-            ))}
+            );
+          })}
         </ScatterChart>
       </ResponsiveContainer>
+
+      {/* Rationale, Description, and Sources Section */}
+      {selectedSubfieldDetails && (
+        <div style={{
+          padding: '15px',
+          backgroundColor: '#f8f9fa',
+          border: '1px solid #e1e4e8',
+          borderRadius: '6px',
+          marginTop: '15px',
+          overflowY: 'auto',
+          minHeight: '100px'
+        }}>
+          <p style={{ margin: 0, color: '#666' }}>
+            <strong>Rationale:</strong> {selectedSubfieldDetails.rationale || "No rationale available."}<br />
+            <strong>Subfield Description:</strong> {selectedSubfieldDetails.subfield_description || "No description available."}<br />
+            <strong>Sources:</strong> {selectedSubfieldDetails.source ? (
+              <a href={selectedSubfieldDetails.source} target="_blank" rel="noopener noreferrer" style={{ color: 'blue', textDecoration: 'underline' }}>
+                {selectedSubfieldDetails.source}
+              </a>
+            ) : "No sources available."}
+          </p>
+        </div>
+      )}
     </div>
   );
 };
