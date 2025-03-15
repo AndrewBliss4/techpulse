@@ -63,18 +63,21 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
 
   const filterMostRecentData = (data) => {
     const mostRecentData = {};
-
+  
     data.forEach(item => {
       if (item.subfield_id === null) {  // Only process if subfield_id is null
         const fieldId = item.field_id;
         const currentDate = new Date(item.metric_date);
-
+  
         if (!mostRecentData[fieldId] || new Date(mostRecentData[fieldId].metric_date) < currentDate) {
-          mostRecentData[fieldId] = item;
+          mostRecentData[fieldId] = {
+            ...item,
+            description: item.field_description, // Include the field description
+          };
         }
       }
     });
-
+  
     return Object.values(mostRecentData);
   };
 
@@ -256,6 +259,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                                   <p>Interest: {(selectedPoint.metric_1).toFixed(2)}</p>
                                   <p>Innovation: {(selectedPoint.metric_2).toFixed(2)}</p>
                                   <p>Relevance: {(selectedPoint.metric_3).toFixed(2)} </p>
+                                  <p>Description: {selectedPoint.field_description || "No description available"}</p>
                                 </div>
                               );
                             }
@@ -274,6 +278,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                                   <p>Interest: {(point.metric_1).toFixed(2)}</p>
                                   <p>Innovation: {(point.metric_2).toFixed(2)}</p>
                                   <p>Relevance: {(point.metric_3).toFixed(2)} </p>
+                                  <p>Description: {point.description || "No description available"}</p>
                                 </div>
                               );
                             }
@@ -348,6 +353,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                                 <p>
                                   <strong style={{ color: '#ffd200' }}>Relevance:</strong> <span style={{ color: 'black' }}>{(point.metric_3).toFixed(2) + "/5.00"}</span>
                                 </p>
+                                <p>Description: {point.description || "No description available"}</p>
                               </div>
                             );
                           }
