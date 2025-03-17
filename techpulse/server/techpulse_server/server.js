@@ -4,12 +4,17 @@ const fs = require('fs');
 const path = require('path');
 const { Pool } = require('pg');
 const cors = require('cors');
+const { exec } = require("child_process");
+
 
 dotenv.config();
 
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
+
+// Define the path to your scraper script
+const scraperScriptPath = path.join(__dirname, "scraper.js");
 
 // Connection to postgres
 const pool = new Pool({
@@ -911,4 +916,23 @@ app.post('/api/subfields', async (req, res) => {
     console.error('Error fetching subfields:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
+});
+
+// API route to trigger the scraper
+app.get("/api/run-scraper", (req, res) => {
+  console.log("Scraper API called. Running scraper...");
+
+  exec(`node ${scraperScriptPath}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing scraper: ${error.message}`);
+      return res.status(500).json({ success: false, message: "Scraper failed", error: error.message });
+    }
+    if (stderr) {
+      console.error(`Scraper stderr: ${stderr}`);
+      return res.status(500).json({ success: false, message: "Scraper encountered an issue", error: stderr });
+    }
+
+    console.log("Scraper executed successfully.");
+    return res.json({ success: true, message: "Scraper ran successfully", output: stdout });
+  });
 });
