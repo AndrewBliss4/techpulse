@@ -208,15 +208,20 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                     <ScatterChart margin={{ top: 20, right: 20, bottom: 40, left: 20 }}>
                       <CartesianGrid />
                       <XAxis type="number" dataKey="metric_1" name="Interest"
-                        domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} label={{
+                        domain={[0, 5.5]} ticks={[0, 1, 2, 3, 4, 5]} label={{
                           value: 'Interest, score (0 = lower; 5 = higher)',
                           position: 'bottom', offset: 0, fontWeight: 'bold'
                         }} />
                       <YAxis type="number" dataKey="metric_2" name="Innovation"
-                        domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]}>
+                        domain={[0, 5.5]} ticks={[0, 1, 2, 3, 4, 5]}>
                         <Label value="Innovation, score (0 = lower; 5 = higher)" position="insideLeft" angle={-90} style={{ textAnchor: 'middle', fontWeight: 'bold' }} />
                       </YAxis>
-                      <ZAxis type="number" dataKey="metric_3" range={[100, 5000]} name="Investment" />
+                      <ZAxis 
+                        type="number" 
+                        dataKey="metric_3" 
+                        range={[1000, 5000]} 
+                        name="Investment" 
+                      />
                       <Tooltip
                         cursor={{ strokeDasharray: '3 3' }}
                         content={({ active, payload }) => {
@@ -281,7 +286,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                           onClick={() => handleFieldClick(point.field_id)} // Ensure it triggers on click
                           cursor="pointer"
                           shape="circle"
-                          size={point.metric_3 * 100}
                         />
 
                       ))}

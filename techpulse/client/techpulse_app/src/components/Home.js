@@ -394,7 +394,7 @@ const Home = () => {
             <div className="bg-blue-50 p-6 rounded-xl">
               <Globe className="h-8 w-8 text-blue-600 mb-4" />
               <h3 className="text-2xl font-bold text-gray-900">Robust Reach</h3>
-              <p className="text-gray-600">Coverage across 50+ data sources</p>
+              <p className="text-gray-600">Coverage across 1000+ data sources</p>
             </div>
             <div className="bg-blue-100 p-6 rounded-xl">
               <img src={rbcLogo} alt="rbc-logo" className='h-10 w-18 -ml-[18px] mb-2'></img>

@@ -532,9 +532,9 @@ const generateInsight = async (type, fieldId) => {
     if (type === "insight") {
     await fsPromises.writeFile(filePath, generatedInsight, 'utf8');
     console.log(`Insight written to ${filePath}`);
+    }
 
     return generatedInsight;
-    }
 
   } catch (error) {
     console.error("Error:", error);
