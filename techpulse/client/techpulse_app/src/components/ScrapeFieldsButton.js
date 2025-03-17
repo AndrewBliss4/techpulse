@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const ScrapeFieldsButton = ({ setLoading, setError, setSuccess }) => {
+const ScrapeFieldsButton = ({ setError, setSuccess }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleScraperCall = async () => {
@@ -8,9 +8,7 @@ const ScrapeFieldsButton = ({ setLoading, setError, setSuccess }) => {
       "⚠️ Warning: Are you sure you want to run the scraper? This may take time!"
     );
     if (!isConfirmed) return;
-
-    setIsLoading(true);
-    setLoading(true);
+    
     setError(false);
     setSuccess(false);
 
@@ -30,9 +28,6 @@ const ScrapeFieldsButton = ({ setLoading, setError, setSuccess }) => {
     } catch (error) {
       console.error("Error running scraper:", error);
       setError(true); // Set error to true if there's an issue
-    } finally {
-      setIsLoading(false);
-      setLoading(false);
     }
   };
 

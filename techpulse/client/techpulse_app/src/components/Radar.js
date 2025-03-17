@@ -2,7 +2,7 @@ import React from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { RadarIcon, TrendingUp } from 'lucide-react';
+import { ArrowDown, RadarIcon, TrendingUp } from 'lucide-react';
 import SubfieldChart from './SubfieldChart';
 
 const Radar = ({ radarData, radarSearch, homePage, technology }) => {
@@ -14,7 +14,9 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [articleSources, setArticleSources] = useState({});
   const [useColorMode, setUseColorMode] = useState(false);
   const [subfieldData, setSubfieldData] = useState([]); // State for subfield data
-  const [selectedFieldId, setSelectedFieldId] = useState(null); // Track the selected field ID for subfields
+  const [selectedFieldId, setSelectedFieldId] = useState(null); // Track the selected field ID for 
+
+  const [showAllTechnologies, setShowAllTechnologies] = useState(false);
 
   const handleFieldClick = async (fieldId) => {
     setSelectedFieldId(fieldId);
@@ -260,6 +262,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                                   <p>Interest: {(point.metric_1).toFixed(2)}</p>
                                   <p>Innovation: {(point.metric_2).toFixed(2)}</p>
                                   <p>Relevance: {(point.metric_3).toFixed(2)} </p>
+                                  <p>Description: {point.description || "No description available"}</p>
                                 </div>
                               );
                             }
@@ -435,37 +438,92 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         {/* Technology buttons */}
         <div style={{
           display: 'flex',
-          flexWrap: 'wrap',
-          gap: '8px',
-          alignContent: 'flex-start',
-          overflowY: 'auto',
-          borderTop: '1px solid #e1e4e8',
+          flexDirection: 'column',
           width: '100%',
-          padding: '10px 0',
         }}>
-          {data.map((point, index) => {
-            const backgroundColor = colors[index % colors.length];
-            const isSelected = selectedTechnology === point.field_name;
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '8px',
+            alignContent: 'flex-start',
+            overflowY: data.length > 15 ? 'hidden' : 'auto',
+            borderTop: '1px solid #e1e4e8',
+            width: '100%',
+            padding: '10px 0',
+            maxHeight: data.length > 15 && !showAllTechnologies ? '150px' : 'none',
+            position: 'relative',
+          }}>
+            {data.length > 15 && !showAllTechnologies && (
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: '50px',
+                background: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))',
+                pointerEvents: 'none',
+              }} />
+            )}
+            {data.map((point, index) => {
+              const backgroundColor = colors[index % colors.length];
+              const isSelected = selectedTechnology === point.field_name;
 
-            return (
-              <button
-                key={point.field_id}
-                onClick={() => handleFilterClick(point)}
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: isSelected ? 'white' : backgroundColor,
-                  color: isSelected ? 'black' : 'white',
-                  border: `1px solid ${isSelected ? '#ccc' : backgroundColor}`,
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-                }}
-              >
-                {point.field_name}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={point.field_id}
+                  onClick={() => handleFilterClick(point)}
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: isSelected ? 'white' : backgroundColor,
+                    color: isSelected ? 'black' : 'white',
+                    border: `1px solid ${isSelected ? '#ccc' : backgroundColor}`,
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                  }}
+                >
+                  {point.field_name}
+                </button>
+              );
+            })}
+          </div>
+          {data.length > 15 && (
+            <button
+              onClick={() => setShowAllTechnologies(!showAllTechnologies)}
+              style={{
+                alignSelf: 'center',
+                marginTop: '10px',
+                padding: '8px',
+                backgroundColor: '#2466e0',
+                color: 'white',
+                border: 'none',
+                borderRadius: '50%',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                width: '32px',
+                height: '32px',
+                hover: {
+                  backgroundColor: '#1a4cb8',
+                  transform: 'translateY(-1px)',
+                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                }
+              }}
+              aria-label={showAllTechnologies ? "Show less technologies" : "Show all technologies"}
+            >
+              <ArrowDown
+                size={16} 
+                style={{ 
+                  transform: showAllTechnologies ? 'rotate(180deg)' : 'rotate(0deg)', 
+                  transition: 'transform 0.3s ease' 
+                }} 
+              />
+            </button>
+          )}
         </div>
       </div>
 
