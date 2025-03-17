@@ -247,7 +247,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                                   <p>Interest: {(selectedPoint.metric_1).toFixed(2)}</p>
                                   <p>Innovation: {(selectedPoint.metric_2).toFixed(2)}</p>
                                   <p>Relevance: {(selectedPoint.metric_3).toFixed(2)} </p>
-                                  <p>Description: {selectedPoint.field_description || "No description available"}</p>
+
                                 </div>
                               );
                             }
