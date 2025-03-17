@@ -3,9 +3,8 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const { XMLParser } = require("fast-xml-parser");
-
+const amountScraped=5;
 console.log("Starting script...");
-
 // PostgreSQL Configuration
 const DB_CONFIG = {
   user: "admin",
@@ -47,7 +46,7 @@ async function fetchArxivPapers(field) {
   const categories = ["cs.CR", "q-fin.CP", "q-fin.GN"]; // Example categories
   const categoryQuery = categories.map(cat => `cat:${cat}`).join(" OR ");
   const query = encodeURIComponent(`${field} AND (${categoryQuery})`);
-  const url = `http://export.arxiv.org/api/query?search_query=${query}&max_results=5&sortBy=submittedDate`;
+  const url = `http://export.arxiv.org/api/query?search_query=${query}&max_results=${amountScraped}&sortBy=submittedDate`;
 
   try {
     const response = await axios.get(url);
