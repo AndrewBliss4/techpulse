@@ -146,6 +146,7 @@ const Technology = () => {
     const interest = parseFloat(searchParams.get('interest') || '0'); // Convert to number
     const innovation = parseFloat(searchParams.get('innovation') || '0');
     const investments = parseInt(searchParams.get('investments') || '0', 10);
+    
     // Usestates
     const [trendingTopics, setTrendingTopics] = useState([]);
     const [latestInsights, setLatestInsights] = useState([]);

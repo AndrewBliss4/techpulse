@@ -5,14 +5,13 @@ const path = require('path');
 const { Pool } = require('pg');
 const cors = require('cors');
 const { exec } = require("child_process");
-
-
+const amountScraped = 5; //ensure that this is the same as the one in scraper.js (i cant be asked to remember how to do this tbh) 
 dotenv.config();
-
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 
+const { amountScraped } = require('./scraper');
 // Define the path to your scraper script
 const scraperScriptPath = path.join(__dirname, "scraper.js");
 
@@ -140,9 +139,9 @@ let updateExistingFieldMetrics = async () => {
       SELECT f.field_id, f.field_name, t.metric_1, t.metric_2, t.metric_3, t.rationale 
       FROM Field f 
       JOIN TIMEDMETRICS t ON f.field_id = t.field_id 
-      WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id)
+      WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id) AND t.subfield_id IS NULL
     `);
-
+  
     if (fieldQuery.rowCount === 0) {
       console.log("No fields found.");
       return "NO_FIELDS";
