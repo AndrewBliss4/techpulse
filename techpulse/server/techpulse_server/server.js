@@ -132,6 +132,8 @@ const openai = new OpenAI({
 
 const fsPromises = require("fs").promises;
 
+
+
 let updateExistingFieldMetrics = async () => {
   try {
     // Fetch field data
@@ -157,7 +159,7 @@ let updateExistingFieldMetrics = async () => {
 
     const tempTopPQuery = await pool.query(`SELECT top_p,temperature FROM public.modelparameters ORDER BY parameter_id DESC LIMIT 1`);
     
-    if(tempTopPQuery.rowCount == 0) {
+    if (tempTopPQuery.rowCount === 0) {
       console.log("No TempTopP found.");
       return "NO_TempTopP";
     }
@@ -165,9 +167,29 @@ let updateExistingFieldMetrics = async () => {
     const tempTopPData = tempTopPQuery.rows[0];
     console.log(`update temp:${tempTopPData.temperature} topP:${tempTopPData.top_p}`);
 
+    // Read articles from the JSON file
+    const articlesPath = path.join(__dirname, '../../client/techpulse_app/public/arxiv_papers.json');
+    const articles = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
+
+    // Filter articles for each field and limit to the last {amountScraped} articles
+    const articlesData = fieldQuery.rows.map(row => {
+      const fieldArticles = articles
+        .filter(article => article.field === row.field_name) // Match articles by field name
+        .sort((a, b) => new Date(b.published) - new Date(a.published)) // Sort by published date (newest first)
+        .slice(0, amountScraped); // Limit to the last {amountScraped} articles
+
+      return fieldArticles.map(article => `
+        field_name: ${row.field_name}
+        title: ${article.title}
+        summary: ${article.summary}
+        published: ${article.published}`).join('\n\n');
+    }).join('\n\n');
+
     // Read the prompt template from file
     let promptTemplate = await fsPromises.readFile("./prompts/prompt_update_metrics.txt", "utf8");
-    let dynamicPrompt = promptTemplate.replace("{FIELD_DATA}", fieldData);
+    let dynamicPrompt = promptTemplate
+      .replace("{FIELD_DATA}", fieldData)
+      .replace("{ARTICLES_DATA}", articlesData);
 
     console.log("Generated Prompt:\n", dynamicPrompt);
 

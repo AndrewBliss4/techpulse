@@ -3,8 +3,12 @@ Below are the existing fields, their current metric scores, and rationales:
 
 {FIELD_DATA}
 
-Please update their metric scores based on the absolute frontier of their latest developments and , maintaining the following format strictly:
-CHANGES TO METRICS ARE ENCOURAGED BUT MAGNITUDE OF CHANGES SHOULD TYPICALLY SCALE WITH THE DIFFERENCE IN TIME BETWEEN NOW AND THE DATE THE INITIAL METRIC WAS DETERMINED!
+Please update this field's metric scores based STRICTLY on the absolute frontier of their latest developments as is seen in these articles:
+{ARTICLES_DATA}
+
+
+, maintaining the following format strictly:
+CHANGES TO METRICS ARE ENCOURAGED BE CRITICAL AND DO NOT BE AFRAID TO SCORE LOW!
 
 field_name:(insert field name here)
  metric_1: provide your answer as a float on a scale of 0.00 to 5.00 (0.00: No meaningful developments that could impact banking in the foreseeable future.
