@@ -689,14 +689,7 @@ const Home = () => {
             {/* Align the button on the right */}
             <div className="flex justify-end">
               <ScrapeFieldsButton
-                setTextResult={setTextResult}
-                setTrendingTopics={setTrendingTopics}
-                setLatestInsights={setLatestInsights}
-                setLoading={setLoading}
-                setCurrentLoaderIndex={setCurrentLoaderIndex}
                 setError={setError}
-                setRenderText={setRenderText}
-                setRenderTrends={setRenderTrends}
                 setSuccess={setSuccess}
               />
             </div>
