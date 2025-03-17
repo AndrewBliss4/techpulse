@@ -5,7 +5,6 @@ const path = require('path');
 const { Pool } = require('pg');
 const cors = require('cors');
 const { exec } = require("child_process");
-const amountScraped = 5; //ensure that this is the same as the one in scraper.js (i cant be asked to remember how to do this tbh) 
 dotenv.config();
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -14,6 +13,8 @@ const app = express();
 
 // Define the path to your scraper script
 const scraperScriptPath = path.join(__dirname, "scraper.js");
+// Define the path to your scraper script
+const subfieldScraperScriptPath = path.join(__dirname, "scraper_sf.js");
 
 // Connection to postgres
 const pool = new Pool({
@@ -947,3 +948,28 @@ app.get("/api/run-scraper", (req, res) => {
     return res.json({ success: true, message: "Scraper ran successfully", output: stdout });
   });
 });
+
+// API route to trigger the scraper
+app.get("/api/run-scraper-sf", (req, res) => {
+  console.log("Scraper API called. Running Subfield scraper...");
+
+  exec(`node ${subfieldScraperScriptPath}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing scraper: ${error.message}`);
+      return res.status(500).json({ success: false, message: "Scraper failed", error: error.message });
+    }
+    if (stderr) {
+      console.error(`Scraper stderr: ${stderr}`);
+      return res.status(500).json({ success: false, message: "Scraper encountered an issue", error: stderr });
+    }
+
+    console.log("Scraper executed successfully.");
+    return res.json({ success: true, message: "Scraper ran successfully", output: stdout });
+  });
+});
+
+
+
+
+
+
