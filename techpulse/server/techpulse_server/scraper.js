@@ -3,8 +3,9 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const { XMLParser } = require("fast-xml-parser");
-const amountScraped=5;
+const amountScraped = 5;
 console.log("Starting script...");
+
 // PostgreSQL Configuration
 const DB_CONFIG = {
   user: "admin",

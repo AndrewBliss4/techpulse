@@ -81,36 +81,36 @@ app.get('/api/radar', async (req, res) => {
 
 app.get('/api/latest-id', async (req, res) => {
   try {
-      const result = await pool.query('SELECT insight_id FROM public.insight ORDER BY insight_id DESC LIMIT 1');
-      console.log('Data fetched successfully:', result.rows[0]);
-      res.json({ latestId: result.rows[0]?.insight_id });
+    const result = await pool.query('SELECT insight_id FROM public.insight ORDER BY insight_id DESC LIMIT 1');
+    console.log('Data fetched successfully:', result.rows[0]);
+    res.json({ latestId: result.rows[0]?.insight_id });
   } catch (error) {
-      console.error('Error fetching data:', error.message);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error('Error fetching data:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 // Example API endpoint to insert data into feeback table
 app.post('/api/data1', async (req, res) => {
-    const { insight_id, feedback_text, rating } = req.body;
-    try {
-        await pool.query('INSERT INTO public.feedback (insight_id ,feedback_text, rating) VALUES ($1, $2, $3)', [insight_id, feedback_text, rating]);
-        res.status(201).send('Data inserted');
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error inserting data');
-    }
+  const { insight_id, feedback_text, rating } = req.body;
+  try {
+    await pool.query('INSERT INTO public.feedback (insight_id ,feedback_text, rating) VALUES ($1, $2, $3)', [insight_id, feedback_text, rating]);
+    res.status(201).send('Data inserted');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error inserting data');
+  }
 });
 
 app.post('/api/data2', async (req, res) => {
   const { temperature, top_p, parameter_id } = req.body;
   try {
-      // Correct the SQL query syntax with `SET` and add a condition for which row to update
-      await pool.query('UPDATE public.modelparameters SET temperature = $1, top_p = $2 WHERE parameter_id = $3', [temperature, top_p, parameter_id]);
-      res.status(200).send('Data updated successfully');
+    // Correct the SQL query syntax with `SET` and add a condition for which row to update
+    await pool.query('UPDATE public.modelparameters SET temperature = $1, top_p = $2 WHERE parameter_id = $3', [temperature, top_p, parameter_id]);
+    res.status(200).send('Data updated successfully');
   } catch (err) {
-      console.error(err);
-      res.status(500).send('Error updating data');
+    console.error(err);
+    res.status(500).send('Error updating data');
   }
 });
 
@@ -144,7 +144,7 @@ let updateExistingFieldMetrics = async () => {
       JOIN TIMEDMETRICS t ON f.field_id = t.field_id 
       WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id) AND t.subfield_id IS NULL
     `);
-  
+
     if (fieldQuery.rowCount === 0) {
       console.log("No fields found.");
       return "NO_FIELDS";
@@ -159,7 +159,7 @@ let updateExistingFieldMetrics = async () => {
       metric_date: ${row.metric_date}`).join('\n\n');
 
     const tempTopPQuery = await pool.query(`SELECT top_p,temperature FROM public.modelparameters ORDER BY parameter_id DESC LIMIT 1`);
-    
+
     if (tempTopPQuery.rowCount === 0) {
       console.log("No TempTopP found.");
       return "NO_TempTopP";
@@ -466,7 +466,7 @@ const generateInsight = async (type, fieldId) => {
 
     // Construct the dynamic prompt
     let promptTemplate;
-    
+
     switch (type) {
       case "insight":
         promptTemplate = await fsPromises.readFile("./prompts/insight_prompt_insights.txt", "utf8");
@@ -552,8 +552,8 @@ const generateInsight = async (type, fieldId) => {
 
     // Write the insight to the file
     if (type === "insight") {
-    await fsPromises.writeFile(filePath, generatedInsight, 'utf8');
-    console.log(`Insight written to ${filePath}`);
+      await fsPromises.writeFile(filePath, generatedInsight, 'utf8');
+      console.log(`Insight written to ${filePath}`);
     }
 
     return generatedInsight;
@@ -629,29 +629,29 @@ app.post("/gpt-subfield", async (req, res) => {
 
     for (const entry of subfieldEntries) {
       console.log("Processing Entry:\n", entry);
-    
+
       // Extract values using regex
       const subfieldNameMatch = entry.match(/subfield_name:\s*(.+)/);
       console.log("Subfield Name Match:", subfieldNameMatch);
-    
+
       const descriptionMatch = entry.match(/description:\s*([\s\S]+?)\s*\nmetric_1:/);
       console.log("Description Match:", descriptionMatch);
-    
+
       const maturityMatch = entry.match(/metric_1:\s*([\d.]+)/);
       console.log("Maturity Match:", maturityMatch);
-    
+
       const innovationMatch = entry.match(/metric_2:\s*([\d.]+)/);
       console.log("Innovation Match:", innovationMatch);
-    
+
       const relevanceMatch = entry.match(/metric_3:\s*([\d.]+)/);
       console.log("Relevance Match:", relevanceMatch);
-    
+
       const rationaleMatch = entry.match(/rationale:\s*([\s\S]+?)\s*\nsource:/);
       console.log("Rationale Match:", rationaleMatch);
-    
+
       const sourceMatch = entry.match(/source:\s*"?(\bhttps?:\/\/[^\s"]+)"?/);
       console.log("Source Match:", sourceMatch);
-    
+
       if (!subfieldNameMatch || !descriptionMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourceMatch) {
         console.error("Error: AI response is in an invalid format.");
         console.error("Problematic entry:", entry);
@@ -739,8 +739,8 @@ let updateSubfieldTimedMetrics = async (fieldName) => {
       metric_date: ${row.metric_date}`).join('\n\n');
 
     const tempTopPQuery = await pool.query(`SELECT top_p,temperature FROM public.modelparameters ORDER BY parameter_id DESC LIMIT 1`);
-    
-    if(tempTopPQuery.rowCount == 0) {
+
+    if (tempTopPQuery.rowCount == 0) {
       console.log("No TempTopP found.");
       return "NO_TempTopP";
     }
@@ -802,13 +802,13 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
       const rationaleMatch = entry.match(/rationale:\s*([\s\S]+?)\nsource:/);
       const sourceMatch = entry.match(/source:\s*"?(\bhttps?:\/\/[^\s"]+)"?/);
 
-      
+
 
       if (!subfieldNameMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourcesMatch) {
         console.error("Error: AI response is in an invalid format.", entry);
         continue; // Skip invalid entry but continue processing the rest
       }
- 
+
       const subfieldName = subfieldNameMatch[1].trim();
       const maturity = parseFloat(maturityMatch[1]);
       const innovation = parseFloat(innovationMatch[1]);
@@ -843,7 +843,7 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
   }
 });
 
-  
+
 
 app.post("/generate-insight", async (req, res) => {
   const { fieldId } = req.body;
