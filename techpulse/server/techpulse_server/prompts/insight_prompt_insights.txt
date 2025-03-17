@@ -28,14 +28,12 @@ And the report you provided last time:
 {PREVIOUS_INSIGHT}
 
 Based on the data above and recent knowledge about your competitors, generate a detailed insight that highlights trends, anomalies, or significant changes in the metrics. Provide actionable recommendations if applicable.
-Generate the insights by topic.
+Generate the insights by topic for the TOP 3 most important technologies:
 
-1. The trend and why it matters.
-2. Latest developments.
-3. Adoption developments across the globe.
-4. Real-world examples
-5. Underlying technologies
-6. Key uncertainties 
-7. Big questions about the future.
+1. Recent Developments
+2. Implications for Banking & RBC
+3. Sources
 
-Ensure the output is at least 2000 words. Format this section's topics with <h1 class="text-2xl font-bold text-blue-600 mb-4">technology</h1> <strong class="text-xl font-semibold text-gray-600 mb-2 block">topic</strong> and the text with <p class="text-gray-500 leading-relaxed mb-4">text</p>.
+Ensure the output is at least 2000 words. Format this section's topics with:
+<h1 class="text-2xl font-bold text-blue-600 mb-4">technology</h1> <strong class="text-xl font-semibold text-gray-600 mb-2 block">topic</strong> and the text with <p class="text-gray-500 leading-relaxed mb-4">text</p>.
+DO NOT INCLUDE ANY EXTRA HTML ELEMENTS.
