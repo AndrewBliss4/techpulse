@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import '../styles/globals.css';
 import rbcLogo from '../assets/Royal-Bank-of-Canada-Logo.png';
-import { Bell, Search, TrendingUp, Zap, Globe, BarChart, Lightbulb, Clock, MessageSquareReplyIcon, ChevronDown, ArrowRight, Info, CircleAlert } from 'lucide-react'
+import { Bell, Search, TrendingUp, Zap, Shovel, Globe, BarChart, Lightbulb, Clock, MessageSquareReplyIcon, ChevronDown, ArrowRight, Info, CircleAlert } from 'lucide-react'
 import parse from 'html-react-parser';
 import Radar from './Radar.js';
 import Rating from './Rating.js';
@@ -12,6 +12,7 @@ import { tailChase } from 'ldrs';
 import { quantum } from 'ldrs'
 import { grid } from 'ldrs';
 import { helix } from 'ldrs';
+import ScrapeFieldsButton from './ScrapeFieldsButton.js';
 
 tailChase.register();
 quantum.register();
@@ -46,6 +47,8 @@ const Home = () => {
 
   const [currentLoaderIndex, setCurrentLoaderIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [success, setSuccess] = useState(false); // Make sure this is defined
+
 
   //loader states
 
@@ -264,30 +267,30 @@ const Home = () => {
   };
 
   // Function to handle feedback selection
-const handleFeedbackSelect = (option) => {
-  setFeedbackText(option.text); // Set the selected feedback text
-  
-  // Directly assign the adjusted temperature and top-p values
-  const adjustedTemp = ((temperature + option.tempRange) + temperature) / 2;
-  const adjustedTopP = ((topP + option.topPRange) + topP) / 2;
-  
-  // Set the adjusted temperature and top-p values
-  if(adjustedTemp < 0){
-    setTemperature(0);
-  }
-  else if (adjustedTemp > 2.0){
-    setTemperature(2.0)
-  }
-  else setTemperature(adjustedTemp);
+  const handleFeedbackSelect = (option) => {
+    setFeedbackText(option.text); // Set the selected feedback text
 
-  if(adjustedTopP < 0){
-    setTopP(0);
-  }
-  else if (adjustedTopP > 1.0){
-    setTopP(1.0)
-  }
-  else setTopP(adjustedTopP);
-};
+    // Directly assign the adjusted temperature and top-p values
+    const adjustedTemp = ((temperature + option.tempRange) + temperature) / 2;
+    const adjustedTopP = ((topP + option.topPRange) + topP) / 2;
+
+    // Set the adjusted temperature and top-p values
+    if (adjustedTemp < 0) {
+      setTemperature(0);
+    }
+    else if (adjustedTemp > 2.0) {
+      setTemperature(2.0)
+    }
+    else setTemperature(adjustedTemp);
+
+    if (adjustedTopP < 0) {
+      setTopP(0);
+    }
+    else if (adjustedTopP > 1.0) {
+      setTopP(1.0)
+    }
+    else setTopP(adjustedTopP);
+  };
 
   // ---------- DataBase get and post methods ---------- //
   axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -295,12 +298,12 @@ const handleFeedbackSelect = (option) => {
 
   useEffect(() => {
     axios.get('http://localhost:4000/api/data')
-        .then(response => {
-            console.log('Fetched data:', response.data);
-            setTemperature(response.data[0].temperature);
-            setTopP(response.data[0].top_p);
-        })
-        .catch(error => console.error('Error fetching data:', error));
+      .then(response => {
+        console.log('Fetched data:', response.data);
+        setTemperature(response.data[0].temperature);
+        setTopP(response.data[0].top_p);
+      })
+      .catch(error => console.error('Error fetching data:', error));
   }, []);
 
   useEffect(() => {
@@ -319,7 +322,7 @@ const handleFeedbackSelect = (option) => {
       console.log("Latest ID:", response.data.latestId);
       console.log(`new temp value ${temperature}`);
       console.log(`new topP value ${topP}`);
-  
+
 
       const latestId = response.data.latestId; // Get the latestId directly
 
@@ -336,7 +339,7 @@ const handleFeedbackSelect = (option) => {
           top_p: topP,
           parameter_id: 1
         });
-        
+
         alert('Data added successfully');
       } else {
         console.error("Invalid ID fetched");
@@ -667,6 +670,38 @@ const handleFeedbackSelect = (option) => {
               Submit Feedback
             </button>
           </div>
+        </div>
+
+        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
+          <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
+            <div className="flex-grow space-y-2">
+              <div className='flex items-center space-x-2'>
+                <Shovel className="h-5 w-5 text-blue-600" />
+                <label
+                  htmlFor="search"
+                  className="block text-lg font-medium text-gray-700"
+                >
+                  Scrape Fields
+                </label>
+              </div>
+            </div>
+
+            {/* Align the button on the right */}
+            <div className="flex justify-end">
+              <ScrapeFieldsButton
+                setTextResult={setTextResult}
+                setTrendingTopics={setTrendingTopics}
+                setLatestInsights={setLatestInsights}
+                setLoading={setLoading}
+                setCurrentLoaderIndex={setCurrentLoaderIndex}
+                setError={setError}
+                setRenderText={setRenderText}
+                setRenderTrends={setRenderTrends}
+                setSuccess={setSuccess}
+              />
+            </div>
+          </div>
+          {success && <p>Scraping was successful!</p>}
         </div>
 
       </div>
