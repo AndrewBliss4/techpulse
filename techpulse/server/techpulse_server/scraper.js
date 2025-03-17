@@ -2,6 +2,7 @@ const { Client } = require("pg");
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
+const { XMLParser } = require("fast-xml-parser");
 
 console.log("Starting script...");
 
@@ -40,14 +41,14 @@ async function fetchFieldNames() {
   }
 }
 
-const { XMLParser } = require("fast-xml-parser");
-
+// Function to fetch ArXiv papers for a given field
 async function fetchArxivPapers(field) {
   console.log(`Fetching ArXiv papers for field: ${field}`);
   const categories = ["cs.CR", "q-fin.CP", "q-fin.GN"]; // Example categories
   const categoryQuery = categories.map(cat => `cat:${cat}`).join(" OR ");
   const query = encodeURIComponent(`${field} AND (${categoryQuery})`);
   const url = `http://export.arxiv.org/api/query?search_query=${query}&max_results=5&sortBy=submittedDate`;
+
   try {
     const response = await axios.get(url);
     console.log(`Received response for field: ${field}`);
@@ -69,12 +70,45 @@ async function fetchArxivPapers(field) {
       published: entry.published || "Unknown Date",
       summary: entry.summary ? entry.summary.replace(/\s+/g, " ").trim() : "No Summary Available",
       field: field,
-      link: entry.id || "No Link Available", // Store the hyperlink
+      link: entry.id || "No Link Available",
     }));
   } catch (error) {
     console.error(`Error fetching articles for ${field}:`, error);
     return [];
   }
+}
+
+// Function to load existing JSON data
+function loadExistingArticles(jsonFilePath) {
+  if (fs.existsSync(jsonFilePath)) {
+    try {
+      const data = fs.readFileSync(jsonFilePath, "utf8");
+      return JSON.parse(data);
+    } catch (error) {
+      console.error("Error reading existing JSON file:", error);
+      return [];
+    }
+  }
+  return [];
+}
+
+// Function to merge new and existing articles while preventing duplicates within each field
+function mergeArticles(existingArticles, newArticles) {
+  const articleMap = new Map();
+
+  // Populate map with existing articles
+  for (const article of existingArticles) {
+    const key = `${article.id}-${article.field}`;
+    articleMap.set(key, article);
+  }
+
+  // Add new articles, replacing duplicates within the same field
+  for (const article of newArticles) {
+    const key = `${article.id}-${article.field}`;
+    articleMap.set(key, article); // This ensures that if an article already exists for the same field, it gets updated.
+  }
+
+  return Array.from(articleMap.values());
 }
 
 // Main function to fetch all articles
@@ -89,35 +123,31 @@ async function main() {
 
   console.log("Fields retrieved:", fields);
 
-  let articles = [];
+  const dbFolderPath = path.join(__dirname, "../../client/techpulse_app/public");
 
+  if (!fs.existsSync(dbFolderPath)) {
+    console.log("Creating db folder...");
+    fs.mkdirSync(dbFolderPath, { recursive: true });
+  }
+
+  const jsonFilePath = path.join(dbFolderPath, "arxiv_papers.json");
+
+  console.log("Loading existing articles...");
+  let existingArticles = loadExistingArticles(jsonFilePath);
+
+  let newArticles = [];
   for (const field of fields) {
     console.log(`Processing field: ${field}`);
     const fieldArticles = await fetchArxivPapers(field);
-    articles = articles.concat(fieldArticles);
+    newArticles = newArticles.concat(fieldArticles);
   }
 
-  console.log("Saving dataset to arxiv_papers.json...");
-  // Construct path to the 'client' folder
-  const dbFolderPath = path.join(__dirname, "../../client/techpulse_app/public");
+  console.log("Merging new articles with existing ones...");
+  const updatedArticles = mergeArticles(existingArticles, newArticles);
 
-  // Debugging: Log the path to check if it's correct
-  console.log(`Checking if db folder exists at: ${dbFolderPath}`);
-
-  if (!fs.existsSync(dbFolderPath)) {
-    console.log("db folder not found. Creating it now...");
-    fs.mkdirSync(dbFolderPath, { recursive: true });
-    console.log("db folder created successfully!");
-  } else {
-    console.log("db folder already exists.");
-  }
-
-  // Define JSON file path
-  const jsonFilePath = path.join(dbFolderPath, "arxiv_papers.json");
-
-  // Save the dataset
-  fs.writeFileSync(jsonFilePath, JSON.stringify(articles, null, 4), "utf8");
-  console.log(`Dataset saved successfully at: ${jsonFilePath}`);
+  console.log("Saving updated dataset...");
+  fs.writeFileSync(jsonFilePath, JSON.stringify(updatedArticles, null, 4), "utf8");
+  console.log(`Dataset updated successfully at: ${jsonFilePath}`);
 }
 
 // Run the script
