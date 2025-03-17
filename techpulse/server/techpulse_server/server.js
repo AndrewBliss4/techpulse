@@ -507,22 +507,10 @@ const generateInsight = async (type, fieldId) => {
       );
     }
 
-    // Define the absolute path to the Insights directory
-    const insightsDir = path.join(
-      "C:",
-      "Users",
-      "andre",
-      "OneDrive",
-      "Documents",
-      "GitHub",
-      "Capstone",
-      "techpulse",
-      "techpulse",
-      "client",
-      "techpulse_app",
-      "src",
-      "components",
-      "Insights"
+    // Define the relative path to the Insights directory
+    const insightsDir = path.resolve(
+      process.cwd(),
+      "../../client/techpulse_app/src/components/Insights"
     );
 
     // Define the file name based on field_id
