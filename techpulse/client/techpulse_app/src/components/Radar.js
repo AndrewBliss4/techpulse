@@ -27,7 +27,9 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
       console.error('Error fetching subfields:', error);
     }
   };
-
+  const normalize = (value, min, max, newMin, newMax) => {
+    return ((value - min) / (max - min)) * (newMax - newMin) + newMin;
+  };
   // Function to generate distinct colors using HSL
   const generateDistinctColors = (numColors) => {
     const colors = [];
@@ -76,6 +78,9 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
           mostRecentData[fieldId] = {
             ...item,
             description: item.field_description, // Include the field description
+            metric_3_scaled: Math.pow(item.metric_3, 5
+              
+            ), // Add the cubed value of metric_3
           };
         }
       }
@@ -83,7 +88,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   
     return Object.values(mostRecentData);
   };
-
   const handleFilterClick = (point) => {
     // Check if this point is currently selected
     const isCurrentlySelected = selectedTechnology === point.field_name;
@@ -208,15 +212,15 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                     <ScatterChart margin={{ top: 20, right: 20, bottom: 40, left: 20 }}>
                       <CartesianGrid />
                       <XAxis type="number" dataKey="metric_1" name="Interest"
-                        domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} label={{
+                        domain={[0, 5.5]} ticks={[0, 1, 2, 3, 4, 5]} label={{
                           value: 'Interest, score (0 = lower; 5 = higher)',
                           position: 'bottom', offset: 0, fontWeight: 'bold'
                         }} />
                       <YAxis type="number" dataKey="metric_2" name="Innovation"
-                        domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]}>
+                        domain={[0, 5.5]} ticks={[0, 1, 2, 3, 4, 5]}>
                         <Label value="Innovation, score (0 = lower; 5 = higher)" position="insideLeft" angle={-90} style={{ textAnchor: 'middle', fontWeight: 'bold' }} />
                       </YAxis>
-                      <ZAxis type="number" dataKey="metric_3" range={[100, 5000]} name="Investment" />
+                      <ZAxis type="number" dataKey="metric_3_scaled" range={[100, 5000]} name="Investment Cubed" />
                       <Tooltip
                         cursor={{ strokeDasharray: '3 3' }}
                         content={({ active, payload }) => {
@@ -243,7 +247,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                                   <p>Interest: {(selectedPoint.metric_1).toFixed(2)}</p>
                                   <p>Innovation: {(selectedPoint.metric_2).toFixed(2)}</p>
                                   <p>Relevance: {(selectedPoint.metric_3).toFixed(2)} </p>
-                                  <p>Description: {selectedPoint.field_description || "No description available"}</p>
+
                                 </div>
                               );
                             }
@@ -281,7 +285,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                           onClick={() => handleFieldClick(point.field_id)} // Ensure it triggers on click
                           cursor="pointer"
                           shape="circle"
-                          size={point.metric_3 * 100}
                         />
 
                       ))}

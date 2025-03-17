@@ -7,6 +7,8 @@ import parse from 'html-react-parser';
 import Radar from './Radar.js';
 import Rating from './Rating.js';
 import AIPromptFieldButton from './AIPromptButton.js';
+import recentInsight from './Insights/MostRecentInsight.txt';
+
 //Loaders
 import { tailChase } from 'ldrs';
 import { quantum } from 'ldrs'
@@ -95,6 +97,8 @@ const Home = () => {
     }
   ]
 
+
+
   useEffect(() => {
     // Set up interval to rotate loaders every 3 seconds
     const intervalId = setInterval(() => {
@@ -105,6 +109,21 @@ const Home = () => {
 
     // Clean up interval on component unmount
     return () => clearInterval(intervalId);
+  }, []);
+
+
+  //Make sure the file exists
+  useEffect(() => {
+    fetch(recentInsight)
+      .then((r) => r.text())
+      .then(text  => {
+        if (text.trim() !== '') {
+          setTextResult(text);
+          setRenderText(true);
+        } else {
+          console.log('MostRecentInsight.txt is empty');
+        };
+      });
   }, []);
 
 
@@ -394,7 +413,7 @@ const Home = () => {
             <div className="bg-blue-50 p-6 rounded-xl">
               <Globe className="h-8 w-8 text-blue-600 mb-4" />
               <h3 className="text-2xl font-bold text-gray-900">Robust Reach</h3>
-              <p className="text-gray-600">Coverage across 50+ data sources</p>
+              <p className="text-gray-600">Coverage across 1000+ data sources</p>
             </div>
             <div className="bg-blue-100 p-6 rounded-xl">
               <img src={rbcLogo} alt="rbc-logo" className='h-10 w-18 -ml-[18px] mb-2'></img>
