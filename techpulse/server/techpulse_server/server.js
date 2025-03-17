@@ -39,31 +39,38 @@ app.get('/api/data', async (req, res) => {
 
 app.get('/api/radar', async (req, res) => {
   try {
-      const query = `
-          SELECT 
-              f.field_id,
-              f.field_name,
-              f.description,
-              m.metric_1,
-              m.metric_2,
-              m.metric_3,
-              m.rationale,
-              m.metric_date,
-              m.source
-          FROM 
-              public.field f
-          JOIN 
-              public.TIMEDMETRICS m
-          ON 
-              f.field_id = m.field_id
-      `;
+    const query = `
+      SELECT 
+        f.field_id,
+        f.field_name,
+        f.description AS field_description,
+        s.subfield_id,
+        s.subfield_name,
+        s.description AS subfield_description,
+        m.metric_1,
+        m.metric_2,
+        m.metric_3,
+        m.rationale,
+        m.metric_date,
+        m.source
+      FROM 
+        public.field f
+      LEFT JOIN 
+        public.TIMEDMETRICS m
+      ON 
+        f.field_id = m.field_id
+      LEFT JOIN 
+        public.Subfield s
+      ON 
+        m.subfield_id = s.subfield_id
+    `;
 
-      const result = await pool.query(query);
-      console.log('Joined data fetched successfully:', result.rows);
-      res.json(result.rows);
+    const result = await pool.query(query);
+    console.log('Joined data fetched successfully:', result.rows);
+    res.json(result.rows);
   } catch (error) {
-      console.error('Error fetching joined data:', error.message);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error('Error fetching joined data:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -350,27 +357,66 @@ app.post("/gpt-field", async (req, res) => {
 
 
 //insight generation
-const generateInsight = async (type) => {
+const generateInsight = async (type, fieldId) => {
   try {
-    // Fetch the most recent timed metrics and rationales for each field
-    const metricsQuery = await pool.query(`
-      SELECT 
-        f.field_id,
-        f.field_name,
-        t.metric_1,
-        t.metric_2,
-        t.metric_3,
-        t.rationale,
-        t.metric_date
-      FROM 
-        Field f
-      JOIN 
-        TIMEDMETRICS t 
-      ON 
-        f.field_id = t.field_id
-      WHERE 
-        t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id)
-    `);
+    let metricsQuery;
+    let fieldName = null;
+
+    if (fieldId === 0) {
+      // Fetch metrics for fields only (no subfields)
+      metricsQuery = await pool.query(`
+        SELECT 
+          f.field_id,
+          f.field_name,
+          t.metric_1,
+          t.metric_2,
+          t.metric_3,
+          t.rationale,
+          t.metric_date
+        FROM 
+          Field f
+        JOIN 
+          TIMEDMETRICS t 
+        ON 
+          f.field_id = t.field_id
+        WHERE 
+          t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id)
+          AND t.subfield_id IS NULL -- Ensure we only get field-level metrics
+      `);
+    } else {
+      // Fetch the field_name for the given field_id
+      const fieldQuery = await pool.query(`
+        SELECT field_name FROM Field WHERE field_id = $1
+      `, [fieldId]);
+
+      if (fieldQuery.rowCount === 0) {
+        console.log("Field not found.");
+        return "NO_FIELD";
+      }
+
+      fieldName = fieldQuery.rows[0].field_name;
+
+      // Fetch metrics for subfields belonging to the specified field_id
+      metricsQuery = await pool.query(`
+        SELECT 
+          s.subfield_id,
+          s.subfield_name,
+          t.metric_1,
+          t.metric_2,
+          t.metric_3,
+          t.rationale,
+          t.metric_date
+        FROM 
+          Subfield s
+        JOIN 
+          TIMEDMETRICS t 
+        ON 
+          s.subfield_id = t.subfield_id
+        WHERE 
+          t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE subfield_id = s.subfield_id)
+          AND s.field_id = $1
+      `, [fieldId]);
+    }
 
     if (metricsQuery.rowCount === 0) {
       console.log("No metrics found.");
@@ -406,10 +452,10 @@ const generateInsight = async (type) => {
         break;
       default:
         throw new Error("Invalid insight type");
-    };
+    }
 
     const metricsData = metricsQuery.rows.map(row => `
-      field_name: ${row.field_name}
+      ${row.field_name ? `field_name: ${row.field_name}` : `subfield_name: ${row.subfield_name}`}
       metric_1: ${row.metric_1}
       metric_2: ${row.metric_2}
       metric_3: ${row.metric_3}
@@ -429,14 +475,14 @@ const generateInsight = async (type) => {
 
     // Call OpenAI to generate the insight
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       messages: [{ role: "system", content: dynamicPrompt }],
       temperature: 0,
       max_tokens: 2048,
       top_p: 1
     });
 
-    const generatedInsight = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
+    let generatedInsight = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
 
     // Log the raw AI response for debugging
     console.log("Raw AI Response:\n", generatedInsight);
@@ -457,9 +503,41 @@ const generateInsight = async (type) => {
       await pool.query(
         `INSERT INTO Insight (field_id, insight_text, confidence_score)
          VALUES ($1, $2, $3)`,
-        [null, generatedInsight, confidenceScore]
+        [fieldId === 0 ? null : fieldId, generatedInsight, confidenceScore]
       );
     }
+
+    // Define the absolute path to the Insights directory
+    const insightsDir = path.join(
+      "C:",
+      "Users",
+      "andre",
+      "OneDrive",
+      "Documents",
+      "GitHub",
+      "Capstone",
+      "techpulse",
+      "techpulse",
+      "client",
+      "techpulse_app",
+      "src",
+      "components",
+      "Insights"
+    );
+
+    // Define the file name based on field_id
+    let fileName;
+    if (fieldId === 0) {
+      fileName = "MostRecentInsight.txt";
+    } else {
+      // Use the field_name to create the file name
+      fileName = `MostRecent${fieldName}Insight.txt`;
+    }
+    const filePath = path.join(insightsDir, fileName);
+
+    // Write the insight to the file
+    await fsPromises.writeFile(filePath, generatedInsight, 'utf8');
+    console.log(`Insight written to ${filePath}`);
 
     return generatedInsight;
 
@@ -467,8 +545,7 @@ const generateInsight = async (type) => {
     console.error("Error:", error);
     return "ERROR: Unable to process request.";
   }
-}
-
+};
 let promptAISubfield = async (fieldName) => {
   try {
     // Fetch current subfields for the given field
@@ -479,7 +556,7 @@ let promptAISubfield = async (fieldName) => {
     const subfieldNames = subfieldQuery.rows.map(row => row.subfield_name).join(", ");
 
     // Read and inject into prompt
-    let promptTemplate = await fsPromises.readFile("prompt_subfield.txt", "utf8");
+    let promptTemplate = await fsPromises.readFile("./prompts/prompt_subfield.txt", "utf8");
     let dynamicPrompt = promptTemplate
       .replace("{FIELD_NAME}", fieldName)
       .replace("{SUBFIELDS}", subfieldNames);
@@ -488,7 +565,7 @@ let promptAISubfield = async (fieldName) => {
 
     // Call OpenAI API
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4o-mini",
       messages: [{ role: "system", content: dynamicPrompt }],
       temperature: 0,
       max_tokens: 2048,
@@ -505,7 +582,12 @@ let promptAISubfield = async (fieldName) => {
 
 // New endpoint to handle subfield generation
 app.post("/gpt-subfield", async (req, res) => {
-  const fieldName = "Quantum Computing"; // Hardcoded for now
+  const { fieldName } = req.body; // Get fieldName from the request body
+  console.log("Received fieldName:")
+  if (!fieldName) {
+    return res.status(400).send("Field name is required.");
+  }
+
   let aiResponse = await promptAISubfield(fieldName);
   console.log("Raw AI Response:\n", aiResponse);
 
@@ -606,19 +688,28 @@ app.post("/gpt-subfield", async (req, res) => {
     res.status(500).send("Error processing subfields.");
   }
 });
-
-let updateExistingTimedMetrics = async () => {
+let updateSubfieldTimedMetrics = async (fieldName) => {
   try {
-    // Fetch subfield data
+    // Fetch the fieldId using the provided field_name
+    const fieldIdQuery = await pool.query("SELECT field_id FROM Field WHERE field_name = $1", [fieldName]);
+
+    if (fieldIdQuery.rowCount === 0) {
+      console.log(`Field not found: ${fieldName}`);
+      return "NO_FIELDS";
+    }
+
+    const fieldId = fieldIdQuery.rows[0].field_id;
+
+    // Fetch subfields and their corresponding metrics for the selected field
     const subfieldQuery = await pool.query(`
-      SELECT s.subfield_id, s.subfield_name, t.metric_1, t.metric_2, t.metric_3, t.rationale 
+      SELECT s.subfield_id, s.subfield_name, t.metric_1, t.metric_2, t.metric_3, t.rationale, t.metric_date
       FROM Subfield s 
-      JOIN TIMEDMETRICS t ON s.subfield_id = t.subfield_id 
-      WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE subfield_id = s.subfield_id)
-    `);
+      JOIN TimedMetrics t ON s.subfield_id = t.subfield_id 
+      WHERE s.field_id = $1 AND t.metric_date = (SELECT MAX(metric_date) FROM TimedMetrics WHERE subfield_id = s.subfield_id)
+    `, [fieldId]);
 
     if (subfieldQuery.rowCount === 0) {
-      console.log("No subfields found.");
+      console.log("No subfields found for the selected field.");
       return "NO_SUBFIELDS";
     }
 
@@ -630,19 +721,29 @@ let updateExistingTimedMetrics = async () => {
       rationale: ${row.rationale},
       metric_date: ${row.metric_date}`).join('\n\n');
 
+    const tempTopPQuery = await pool.query(`SELECT top_p,temperature FROM public.modelparameters ORDER BY parameter_id DESC LIMIT 1`);
+    
+    if(tempTopPQuery.rowCount == 0) {
+      console.log("No TempTopP found.");
+      return "NO_TempTopP";
+    }
+
+    const tempTopPData = tempTopPQuery.rows[0];
+    console.log(`update temp:${tempTopPData.temperature} topP:${tempTopPData.top_p}`);
+
     // Read the prompt template from file
-    let promptTemplate = await fsPromises.readFile("prompt_update_metrics.txt", "utf8");
+    let promptTemplate = await fsPromises.readFile("./prompts/prompt_update_metrics.txt", "utf8");
     let dynamicPrompt = promptTemplate.replace("{FIELD_DATA}", subfieldData);
 
     console.log("Generated Prompt:\n", dynamicPrompt);
 
     // Call OpenAI
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       messages: [{ role: "system", content: dynamicPrompt }],
-      temperature: 0,
+      temperature: tempTopPData.temperature,
       max_tokens: 2048,
-      top_p: 1
+      top_p: tempTopPData.top_p
     });
 
     return response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
@@ -652,30 +753,84 @@ let updateExistingTimedMetrics = async () => {
     return "ERROR: Unable to process request.";
   }
 };
-app.post("/gpt-update-timed-metrics", async (req, res) => {
-  const { field_name } = req.body;
 
-  // Fetch subfields for the given field name
-  const subfieldQuery = await pool.query(
-    `SELECT subfield_id FROM Subfield WHERE field_id = (SELECT field_id FROM Field WHERE field_name = $1)`,
-    [field_name]
-  );
 
-  if (subfieldQuery.rowCount === 0) {
-    return res.status(404).send("No subfields found for the given field.");
+app.post("/gpt-update-subfield-metrics", async (req, res) => {
+  const { fieldId } = req.body; // Assuming fieldId is provided in the request body
+  let aiResponse = await updateSubfieldTimedMetrics(fieldId);
+  console.log("Raw AI Response:\n", aiResponse);
+
+  if (aiResponse === "NO_SUBFIELDS") {
+    return res.status(200).send("No subfields available for update.");
   }
 
-  // Call the update function for each subfield
-  for (const row of subfieldQuery.rows) {
-    await updateExistingTimedMetrics(row.subfield_id);
+  if (aiResponse === "NO_VALID_AI_RESPONSE") {
+    console.warn("AI response was invalid, but proceeding with request completion.");
+    return res.status(200).send("AI response was empty or invalid, but request completed.");
   }
 
-  res.status(200).send("Timed metrics updated successfully.");
+  try {
+    const subfieldEntries = aiResponse.split(/\n\s*\n/).filter(entry => entry.trim().startsWith("subfield_name:"));
+
+    if (subfieldEntries.length === 0) {
+      console.error("Error: AI response contains no valid subfields.");
+      return res.status(400).send("Invalid AI response format.");
+    }
+
+    for (const entry of subfieldEntries) {
+      const subfieldNameMatch = entry.match(/subfield_name:\s*(.+)/);
+      const maturityMatch = entry.match(/metric_1:\s*([\d.]+)/);
+      const innovationMatch = entry.match(/metric_2:\s*([\d.]+)/);
+      const relevanceMatch = entry.match(/metric_3:\s*([\d.]+)/);
+      const rationaleMatch = entry.match(/rationale:\s*([\s\S]+?)\nsource:/);
+      const sourceMatch = entry.match(/source:\s*"?(\bhttps?:\/\/[^\s"]+)"?/);
+
+      
+
+      if (!subfieldNameMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourcesMatch) {
+        console.error("Error: AI response is in an invalid format.", entry);
+        continue; // Skip invalid entry but continue processing the rest
+      }
+ 
+      const subfieldName = subfieldNameMatch[1].trim();
+      const maturity = parseFloat(maturityMatch[1]);
+      const innovation = parseFloat(innovationMatch[1]);
+      const relevance = parseFloat(relevanceMatch[1]);
+      const rationale = rationaleMatch[1].trim();
+      const source = sourcesMatch[1].trim();
+
+      console.log(`Updating metrics for subfield: ${subfieldName}`);
+
+      // Fetch subfield ID
+      const subfieldResult = await pool.query("SELECT subfield_id FROM Subfield WHERE subfield_name = $1 AND field_id = $2", [subfieldName, fieldId]);
+      if (subfieldResult.rowCount === 0) {
+        console.error(`Subfield not found: ${subfieldName}`);
+        continue;
+      }
+      const subfieldId = subfieldResult.rows[0].subfield_id;
+
+      // Insert new updated metrics into TIMEDMETRICS
+      await pool.query(
+        `INSERT INTO TimedMetrics (metric_1, metric_2, metric_3, metric_date, subfield_id, rationale, source)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [maturity, innovation, relevance, new Date().toISOString(), subfieldId, rationale, source]
+      );
+
+      console.log(`Updated metrics for subfield '${subfieldName}' successfully.`);
+    }
+
+    res.status(200).send("Subfields updated successfully.");
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).send("Error updating subfields.");
+  }
 });
+
   
 
 app.post("/generate-insight", async (req, res) => {
-  let aiResponse = await generateInsight("insight");
+  const { fieldId } = req.body;
+  let aiResponse = await generateInsight("insight", fieldId);
   console.log("Raw AI Response:\n", aiResponse);
 
   if (aiResponse === "NO_METRICS") {
@@ -691,7 +846,8 @@ app.post("/generate-insight", async (req, res) => {
 });
 
 app.post("/generate-insight-trends", async (req, res) => {
-  let aiResponse = await generateInsight("trends");
+  const { fieldId } = req.body;
+  let aiResponse = await generateInsight("trends", fieldId);
   console.log("Raw AI Response:\n", aiResponse);
 
   if (aiResponse === "NO_METRICS") {
@@ -702,7 +858,8 @@ app.post("/generate-insight-trends", async (req, res) => {
 });
 
 app.post("/generate-insight-top", async (req, res) => {
-  let aiResponse = await generateInsight("top");
+  const { fieldId } = req.body;
+  let aiResponse = await generateInsight("top", fieldId);
   console.log("Raw AI Response:\n", aiResponse);
 
   if (aiResponse === "NO_METRICS") {
@@ -710,4 +867,48 @@ app.post("/generate-insight-top", async (req, res) => {
   }
 
   res.status(200).json({ top: aiResponse });
+});
+
+app.post('/api/subfields', async (req, res) => {
+  const { fieldId } = req.body;
+
+  if (!fieldId) {
+    return res.status(400).json({ error: 'fieldId is required' });
+  }
+
+  try {
+    // Fetch subfields for the given fieldId
+    const subfields = await pool.query(`
+      SELECT 
+        subfield_id,
+        subfield_name,
+        description AS subfield_description
+      FROM Subfield
+      WHERE field_id = $1
+    `, [fieldId]);
+
+    // Fetch metrics for the subfields
+    const subfieldMetrics = await pool.query(`
+      SELECT 
+        m.timed_metric_id,
+        m.metric_1,
+        m.metric_2,
+        m.metric_3,
+        m.metric_date,
+        m.rationale,
+        m.source,
+        s.subfield_name,
+        s.description AS subfield_description
+      FROM TimedMetrics m
+      JOIN Subfield s ON m.subfield_id = s.subfield_id
+      WHERE s.field_id = $1
+      ORDER BY m.metric_date DESC
+    `, [fieldId]);
+
+    // Send the response
+    res.json({ subfields: subfields.rows, metrics: subfieldMetrics.rows });
+  } catch (error) {
+    console.error('Error fetching subfields:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });

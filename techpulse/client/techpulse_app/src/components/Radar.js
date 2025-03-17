@@ -3,6 +3,7 @@ import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Lab
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { RadarIcon, TrendingUp } from 'lucide-react';
+import SubfieldChart from './SubfieldChart';
 
 const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [data, setData] = useState([]);
@@ -11,10 +12,19 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [clickedDataPoint, setClickedDataPoint] = useState(null); // State for clicked data point
   const [selectedTechnology, setSelectedTechnology] = useState(null); // State for selected technology
   const [articleSources, setArticleSources] = useState({});
-
-
-  // State to toggle between colorful and blue-only mode
   const [useColorMode, setUseColorMode] = useState(false);
+  const [subfieldData, setSubfieldData] = useState([]); // State for subfield data
+  const [selectedFieldId, setSelectedFieldId] = useState(null); // Track the selected field ID for subfields
+
+  const handleFieldClick = async (fieldId) => {
+    setSelectedFieldId(fieldId);
+    try {
+      const response = await axios.post('http://localhost:4000/api/subfields', { fieldId });
+      setSubfieldData(response.data.metrics);
+    } catch (error) {
+      console.error('Error fetching subfields:', error);
+    }
+  };
 
   // Function to generate distinct colors using HSL
   const generateDistinctColors = (numColors) => {
@@ -53,33 +63,23 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
 
   const filterMostRecentData = (data) => {
     const mostRecentData = {};
-
+  
     data.forEach(item => {
-      const fieldId = item.field_id;
-      const currentDate = new Date(item.metric_date);
-
-      if (!mostRecentData[fieldId] || new Date(mostRecentData[fieldId].metric_date) < currentDate) {
-        mostRecentData[fieldId] = item;
+      // Exclude entries with field_id: 0
+      if (item.subfield_id === null && item.field_id !== 0) {  // Only process if subfield_id is null and field_id is not 0
+        const fieldId = item.field_id;
+        const currentDate = new Date(item.metric_date);
+  
+        if (!mostRecentData[fieldId] || new Date(mostRecentData[fieldId].metric_date) < currentDate) {
+          mostRecentData[fieldId] = {
+            ...item,
+            description: item.field_description, // Include the field description
+          };
+        }
       }
     });
-
+  
     return Object.values(mostRecentData);
-  };
-
-  const queryInsight = (dataPoint, index) => {
-    if (homePage) {
-      window.open(`/technology?name=${encodeURIComponent(dataPoint.field_name)}
-      &interest=${(dataPoint.metric_1 / 100).toFixed(2)}&innovation=${(dataPoint.metric_2 / 100).toFixed(2)}
-      &investments=${dataPoint.metric_3}`, '_blank');
-    } else {
-      setTimeout(() => {
-        window.scrollTo({
-          top: document.body.scrollHeight,
-          behavior: 'smooth'
-        });
-      }, 100);
-      radarSearch(dataPoint.name);
-    }
   };
 
   const handleFilterClick = (point) => {
@@ -89,15 +89,18 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
       // If clicking the already selected technology, deselect it
       setSelectedTechnology(null);
       // Show all technologies again
-      const allHistoricalData = radarData.map(d => ({
-        ...d,
-        metric_date: Date.parse(d.metric_date),
-      }));
+      const allHistoricalData = radarData
+        .filter(d => d.subfield_id === null) // Filter for null subfield_id
+        .map(d => ({
+          ...d,
+          metric_date: Date.parse(d.metric_date),
+        }));
       setData(data.map(d => ({
         ...d,
         fillOpacity: 0.7, // Set all to normal opacity when deselecting
       })));
       setHistoricalData(allHistoricalData);
+      setSelectedField('radar'); // Reset to Scatter Chart
     } else {
       // If selecting a different technology (or first selection)
       setSelectedTechnology(point.field_name);
@@ -105,9 +108,9 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         ...d,
         fillOpacity: d.field_id === point.field_id ? 0.7 : 0.1,
       })));
-      // Filter historical data for the selected technology
+      // Filter historical data for the selected technology and null subfield_id
       const fieldHistoricalData = radarData
-        .filter(d => d.field_id === point.field_id)
+        .filter(d => d.field_id === point.field_id && d.subfield_id === null) // Filter for null subfield_id
         .map(d => ({
           ...d,
           metric_date: Date.parse(d.metric_date),
@@ -158,7 +161,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     fetchArticles();
   }, []);
 
-
   return (
     <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
       <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
@@ -178,38 +180,20 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                   Radar
                 </div>
               </button>
-              <button
-                className={`py-2 px-4 font-medium ${selectedField === 'timeline' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-                onClick={() => {
-                  // Get currently selected technology
-                  const selectedPoint = data.find(d => d.fillOpacity === 0.7);
-
-                  if (selectedPoint) {
-                    // If a technology is selected, show its timeline
-                    const fieldHistoricalData = radarData
-                      .filter(d => d.field_id === selectedPoint.field_id)
-                      .map(d => ({
-                        ...d,
-                        metric_date: Date.parse(d.metric_date),
-                      }));
-                    setHistoricalData(fieldHistoricalData);
+              {/* Conditionally render the Timeline tab */}
+              {selectedTechnology && (
+                <button
+                  className={`py-2 px-4 font-medium ${selectedField === 'timeline' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                  onClick={() => {
                     setSelectedField('timeline');
-                  } else {
-                    // If no technology is selected, show all
-                    const allHistoricalData = radarData.map(d => ({
-                      ...d,
-                      metric_date: Date.parse(d.metric_date),
-                    }));
-                    setHistoricalData(allHistoricalData);
-                    setSelectedField('timeline');
-                  }
-                }}
-              >
-                <div className="flex items-center">
-                  <TrendingUp className="h-4 w-4 mr-2" />
-                  Timeline
-                </div>
-              </button>
+                  }}
+                >
+                  <div className="flex items-center">
+                    <TrendingUp className="h-4 w-4 mr-2" />
+                    Timeline
+                  </div>
+                </button>
+              )}
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
@@ -257,6 +241,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                                   <p>Interest: {(selectedPoint.metric_1).toFixed(2)}</p>
                                   <p>Innovation: {(selectedPoint.metric_2).toFixed(2)}</p>
                                   <p>Relevance: {(selectedPoint.metric_3).toFixed(2)} </p>
+                                  <p>Description: {selectedPoint.field_description || "No description available"}</p>
                                 </div>
                               );
                             }
@@ -275,6 +260,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                                   <p>Interest: {(point.metric_1).toFixed(2)}</p>
                                   <p>Innovation: {(point.metric_2).toFixed(2)}</p>
                                   <p>Relevance: {(point.metric_3).toFixed(2)} </p>
+                                  <p>Description: {point.description || "No description available"}</p>
                                 </div>
                               );
                             }
@@ -288,13 +274,14 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                           key={point.field_id}
                           name={point.field_name}
                           data={[point]}
-                          fill={colors[index % colors.length]} // Assign distinct color
+                          fill={colors[index % colors.length]}
                           fillOpacity={0.7}
-                          onClick={() => queryInsight(point, index)}
+                          onClick={() => handleFieldClick(point.field_id)} // Ensure it triggers on click
                           cursor="pointer"
                           shape="circle"
-                          size={point.metric_3 * 100} // Scaling by metric_3, adjust the factor as needed
+                          size={point.metric_3 * 100}
                         />
+
                       ))}
                     </ScatterChart>
                   </ResponsiveContainer>
@@ -303,12 +290,12 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
             )}
 
             {/*Timeline Tab*/}
-            {selectedField === 'timeline' && (
+            {selectedField === 'timeline' && selectedTechnology && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
                 {/* Timeline Graph */}
                 <div style={{ flex: 1, height: '600px', marginBottom: '20px' }}>
                   <h3 className="font-semibold text-gray-800 mb-3 pt-4 text-center">
-                    Historical Metrics for {selectedTechnology ? selectedTechnology : 'All Technologies'}
+                    Historical Metrics for {selectedTechnology}
                   </h3>
                   <ResponsiveContainer width="100%" height="92%">
                     <LineChart
@@ -348,6 +335,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                                 <p>
                                   <strong style={{ color: '#ffd200' }}>Relevance:</strong> <span style={{ color: 'black' }}>{(point.metric_3).toFixed(2) + "/5.00"}</span>
                                 </p>
+                                <p>Description: {point.description || "No description available"}</p>
                               </div>
                             );
                           }
@@ -444,6 +432,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
           </div>
         </div>
 
+
         {/* Technology buttons */}
         <div style={{
           display: 'flex',
@@ -501,10 +490,10 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               <strong>Date of Scoring:</strong> {formatDate(clickedDataPoint.metric_date)}<br />
               <strong>Rationale:</strong> {clickedDataPoint.rationale || "No rationale available."}<br />
               <strong>Field Description: </strong>{clickedDataPoint.description || "No description available"}<br />
-              <strong>Sources:</strong> {clickedDataPoint.source ? 
+              <strong>Sources:</strong> {clickedDataPoint.source ?
                 <a href={clickedDataPoint.source} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                   {clickedDataPoint.source}
-                </a> : 
+                </a> :
                 "No sources available."}
             </>
             : (selectedTechnology
@@ -531,6 +520,13 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
           }
         </p>
       </div>
+      {selectedFieldId && (
+        <SubfieldChart
+          radarData={radarData}
+          selectedFieldId={selectedFieldId}
+          fieldName={data.find((field) => field.field_id === selectedFieldId)?.field_name || "Selected Field"}
+        />
+      )}
     </div>
   );
 };

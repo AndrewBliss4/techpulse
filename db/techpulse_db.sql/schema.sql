@@ -20,11 +20,7 @@ CREATE TABLE TimedMetrics (
     field_id INT REFERENCES Field(field_id) ON DELETE CASCADE,
     subfield_id INT REFERENCES Subfield(subfield_id) ON DELETE CASCADE,
     rationale TEXT,
-    source TEXT,
-    CHECK (
-        (field_id IS NOT NULL AND subfield_id IS NULL) OR 
-        (subfield_id IS NOT NULL AND field_id IS NULL)
-    ) -- Ensures a TimedMetric entry belongs to either a Field or Subfield, not both
+    source TEXT
 );
 
 CREATE TABLE Insight (
@@ -57,7 +53,7 @@ BEGIN
         SELECT 1 FROM ModelParameters WHERE modelUse = 'NewFields'
     ) THEN
         INSERT INTO ModelParameters (modelUse, top_p, temperature)
-        VALUES ('NewFields', 1, 0);
+        VALUES ('NewFields', 0.9, 0.7);
     END IF;
 END $$;
 
@@ -70,3 +66,14 @@ BEGIN
         GRANT ALL PRIVILEGES ON DATABASE techpulse TO admin;
     END IF;
 END $$;
+DO $$
+INSERT INTO Field (field_id, field_name, description)  
+VALUES (0, 'the current frontier of banking technology', NULL)  
+ON CONFLICT (field_id) DO NOTHING;
+END $$;
+/*UPDATE TimedMetrics tm
+SET field_id = sf.field_id
+FROM Subfield sf
+WHERE tm.subfield_id IS NOT NULL
+  AND tm.subfield_id = sf.subfield_id
+  AND tm.field_id IS NULL;*/

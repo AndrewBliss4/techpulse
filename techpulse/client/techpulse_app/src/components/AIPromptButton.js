@@ -12,15 +12,15 @@ const AIPromptFieldButton = ({ setTextResult, setTrendingTopics, setLatestInsigh
     setIsLoading(true);
     setGeneratedText(""); // Clear old responses before a new request
 
-    //display loading sign
+    // Display loading sign
     setLoading(true);
-    //Reset loader cycle
+    // Reset loader cycle
     setCurrentLoaderIndex(0);
-    //Reset error state
+    // Reset error state
     setError(false);
-    //reset the old output
+    // Reset the old output
     setRenderText(false);
-    //reset trends
+    // Reset trends
     setRenderTrends(false);
 
     try {
@@ -38,7 +38,7 @@ const AIPromptFieldButton = ({ setTextResult, setTrendingTopics, setLatestInsigh
 
       console.log("Metrics reevaluated successfully. Proceeding to new field generation...");
 
-      //Step 2: Proceed with generating new fields
+      // Step 2: Proceed with generating new fields
       const fieldResponse = await fetch('http://localhost:4000/gpt-field', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -50,10 +50,11 @@ const AIPromptFieldButton = ({ setTextResult, setTrendingTopics, setLatestInsigh
 
       console.log("Fields generated successfully. Proceeding to insight generation...");
 
-      // Step 3: Trigger insight generation
+      // Step 3: Trigger insight generation with field_id = 0
       const insightResponse = await fetch('http://localhost:4000/generate-insight', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fieldId: 0 }), // Pass field_id = 0
       });
 
       if (!insightResponse.ok) {
@@ -67,13 +68,13 @@ const AIPromptFieldButton = ({ setTextResult, setTrendingTopics, setLatestInsigh
 
       setTextResult(insightResult);
 
-      //Step 4: Generate trends
-
+      // Step 4: Generate trends with field_id = 0
       const trendsResponse = await fetch('http://localhost:4000/generate-insight-trends', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fieldId: 0 }), // Pass field_id = 0
       });
-      
+
       if (!trendsResponse.ok) {
         throw new Error(`Trends generation failed: ${trendsResponse.statusText}`);
       }
@@ -83,19 +84,19 @@ const AIPromptFieldButton = ({ setTextResult, setTrendingTopics, setLatestInsigh
 
       let trendsResult = trendsData.trends;
 
-      //Handle trends
+      // Handle trends
       let tempTrendingTopics = [];
       for (const entry of trendsResult.split("/")) {
         tempTrendingTopics.push(JSON.parse(entry));
-      };
+      }
 
       setTrendingTopics(tempTrendingTopics);
 
-      //Step 5: Generate top insights
-
+      // Step 5: Generate top insights with field_id = 0
       const topResponse = await fetch('http://localhost:4000/generate-insight-top', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fieldId: 0 }), // Pass field_id = 0
       });
 
       if (!topResponse.ok) {
@@ -107,26 +108,22 @@ const AIPromptFieldButton = ({ setTextResult, setTrendingTopics, setLatestInsigh
 
       let topResult = topData.top;
 
-      //Handle Top Insights
+      // Handle Top Insights
       let tempInsights = [];
       for (const entry of topResult.split("/")) {
         tempInsights.push(JSON.parse(entry));
-      };
+      }
 
       setLatestInsights(tempInsights);
 
     } catch (error) {
-
       console.error('Error:', error);
       setGeneratedText(`Error: ${error.message}`);
-
     } finally {
-
       setRenderText(true);
       setRenderTrends(true);
       setIsLoading(false);
       setLoading(false);
-
     }
   };
 
