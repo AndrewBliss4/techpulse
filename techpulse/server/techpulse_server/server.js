@@ -11,7 +11,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 
-const { amountScraped } = require('./scraper');
+
 // Define the path to your scraper script
 const scraperScriptPath = path.join(__dirname, "scraper.js");
 
