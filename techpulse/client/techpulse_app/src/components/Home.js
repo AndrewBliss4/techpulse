@@ -7,6 +7,8 @@ import parse from 'html-react-parser';
 import Radar from './Radar.js';
 import Rating from './Rating.js';
 import AIPromptFieldButton from './AIPromptButton.js';
+import recentInsight from './Insights/MostRecentInsight.txt';
+
 //Loaders
 import { tailChase } from 'ldrs';
 import { quantum } from 'ldrs'
@@ -95,6 +97,8 @@ const Home = () => {
     }
   ]
 
+
+
   useEffect(() => {
     // Set up interval to rotate loaders every 3 seconds
     const intervalId = setInterval(() => {
@@ -105,6 +109,21 @@ const Home = () => {
 
     // Clean up interval on component unmount
     return () => clearInterval(intervalId);
+  }, []);
+
+
+  //Make sure the file exists
+  useEffect(() => {
+    fetch(recentInsight)
+      .then((r) => r.text())
+      .then(text  => {
+        if (text.trim() !== '') {
+          setTextResult(text);
+          setRenderText(true);
+        } else {
+          console.log('MostRecentInsight.txt is empty');
+        };
+      });
   }, []);
 
 
