@@ -18,6 +18,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
   const [historicalData, setHistoricalData] = useState([]); // State for historical data
   const [selectedTab, setSelectedTab] = useState('scatter'); // State for selected tab ('scatter' or 'timeline')
   const [clickedTimelinePoint, setClickedTimelinePoint] = useState(null); // State for clicked timeline data point
+  const [insight, setInsight] = useState(null); // State for storing the generated insight
 
   // Filter radarData to only include subfields for the selected field
   const subfieldData = radarData.filter(
@@ -86,6 +87,29 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   };
 
+  // Function to generate insight
+  const handleGenerateInsight = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/generate-insight', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ fieldId: selectedFieldId }), // Use the selectedFieldId from props
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate insight');
+      }
+
+      const data = await response.json();
+      setInsight(data.insight);
+    } catch (error) {
+      console.error('Error generating insight:', error);
+      setInsight('Failed to generate insight. Please try again.');
+    }
+  };
+
   // If no subfield data, show a message
   if (!filteredData.length) {
     return <div>No subfield data available for the selected field.</div>;
@@ -95,6 +119,37 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
     <div style={{ marginTop: '20px' }}>
       {/* Dynamic Heading with Field Name */}
       <h3>Subfields for {fieldName}</h3>
+
+      {/* Insight Generation Button */}
+      <button
+        onClick={handleGenerateInsight}
+        style={{
+          padding: '8px 16px',
+          backgroundColor: '#2466e0',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          marginBottom: '20px',
+        }}
+      >
+        Generate Insight
+      </button>
+
+      {/* Display Insight */}
+      {insight && (
+        <div style={{
+          padding: '15px',
+          backgroundColor: '#f8f9fa',
+          border: '1px solid #e1e4e8',
+          borderRadius: '6px',
+          marginBottom: '20px',
+        }}>
+          <p style={{ margin: 0, color: '#666' }}>
+            <strong>Insight:</strong> {insight}
+          </p>
+        </div>
+      )}
 
       {/* Subfield Filter Buttons */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
@@ -149,7 +204,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
               borderBottom: selectedTab === 'timeline' ? '2px solid #2466e0' : 'none',
               cursor: 'pointer',
             }}
-          >
+            >
             Timeline
           </button>
         )}
