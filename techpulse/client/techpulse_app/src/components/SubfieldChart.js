@@ -90,22 +90,87 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
   // Function to generate insight
   const handleGenerateInsight = async () => {
     try {
-      const response = await fetch('http://localhost:4000/generate-insight', {
+      // Step 1: Fetch all subfields for the selected field
+      const subfieldsResponse = await fetch(`http://localhost:4000/api/subfields`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ fieldId: selectedFieldId }), // Use the selectedFieldId from props
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fieldId: selectedFieldId }), // Pass the selected field ID
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate insight');
+  
+      if (!subfieldsResponse.ok) {
+        throw new Error('Failed to fetch subfields.');
       }
-
-      const data = await response.json();
-      setInsight(data.insight);
+  
+      const subfieldsData = await subfieldsResponse.json();
+      const subfields = subfieldsData.subfields; // Array of subfields
+  
+      if (subfields.length === 0) {
+        throw new Error('No subfields found for the selected field.');
+      }
+  
+      // Step 2: Update metrics for each subfield individually
+      let successfulUpdates = 0;
+      let failedUpdates = 0;
+  
+      for (const subfield of subfields) {
+        try {
+          const updateMetricsResponse = await fetch('http://localhost:4000/gpt-update-subfield-metrics', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              subfield_id: subfield.subfield_id, // Pass subfield_id
+              field_id: selectedFieldId, // Pass field_id from the parent component
+            }),
+          });
+  
+          if (!updateMetricsResponse.ok) {
+            throw new Error(`Failed to update metrics for subfield: ${subfield.subfield_name}`);
+          }
+  
+          const updateMetricsData = await updateMetricsResponse.json();
+          console.log(`Metrics updated successfully for subfield: ${subfield.subfield_name}`, updateMetricsData);
+          successfulUpdates++;
+        } catch (error) {
+          console.error(`Error updating metrics for subfield: ${subfield.subfield_name}`, error);
+          failedUpdates++;
+        }
+      }
+  
+      console.log(`Subfields updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
+  
+      // Step 3: Generate a new subfield (if applicable)
+      const newSubfieldResponse = await fetch('http://localhost:4000/gpt-subfield', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fieldId: selectedFieldId }), // Pass the selected field ID
+      });
+  
+      if (!newSubfieldResponse.ok) {
+        throw new Error('Failed to generate a new subfield.');
+      }
+  
+      const newSubfieldData = await newSubfieldResponse.json();
+      console.log('New subfield generated successfully:', newSubfieldData);
+  
+      // Step 4: Generate insights for the selected field
+      const insightResponse = await fetch('http://localhost:4000/generate-insight', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fieldId: selectedFieldId }), // Pass the selected field ID
+      });
+  
+      if (!insightResponse.ok) {
+        throw new Error('Failed to generate insights.');
+      }
+  
+      const insightData = await insightResponse.json();
+      console.log('Insight generated successfully:', insightData.insight);
+  
+      // Set the generated insight in the state
+      setInsight(insightData.insight);
+  
     } catch (error) {
-      console.error('Error generating insight:', error);
+      console.error('Error:', error);
       setInsight('Failed to generate insight. Please try again.');
     }
   };

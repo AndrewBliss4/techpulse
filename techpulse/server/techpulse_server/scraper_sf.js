@@ -3,7 +3,7 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const { XMLParser } = require("fast-xml-parser");
-const amountScraped = 1;
+const amountScrapedsf = 1;
 console.log("Starting script...");
 
 // PostgreSQL Configuration
@@ -53,7 +53,7 @@ async function fetchArxivPapersForSubfield(field, subfield) {
   const categories = ["cs.CR", "q-fin.CP", "q-fin.GN"]; // Example categories
   const categoryQuery = categories.map(cat => `cat:${cat}`).join(" OR ");
   const query = encodeURIComponent(`${field.field_name} AND ${subfield.subfield_name} AND (${categoryQuery})`);
-  const url = `http://export.arxiv.org/api/query?search_query=${query}&max_results=${amountScraped}&sortBy=submittedDate`;
+  const url = `http://export.arxiv.org/api/query?search_query=${query}&max_results=${amountScrapedsf}&sortBy=submittedDate`;
 
   try {
     const response = await axios.get(url);
