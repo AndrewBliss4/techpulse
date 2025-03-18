@@ -8,7 +8,7 @@ Please update this field's metric scores based STRICTLY on the absolute frontier
 
 
 , maintaining the following format strictly:
-CHANGES TO METRICS ARE ENCOURAGED BE CRITICAL AND DO NOT BE AFRAID TO SCORE LOW!
+CHANGES TO METRICS ARE ENCOURAGED BE CRITICAL AND DO NOT BE AFRAID TO SCORE LOW, ALSO ENSURE SCORES ARE ALWAYS ROUNDED TO 2 DECIMAL PLACES, AVOID 5s AND 0s IN DECIMAL PLACES IF POSSIBLE (SMALL NOISE CAN BE GOOD)!
 
 field_name:(insert field name here)
  metric_1: provide your answer as a float on a scale of 0.00 to 5.00 (0.00: No meaningful developments that could impact banking in the foreseeable future.
@@ -32,7 +32,7 @@ field_name:(insert field name here)
       4.00: High relevance; expected to impact several areas of banking, with the potential for significant changes.
       5.00: Critical relevance; projected to revolutionize the banking industry and become essential in the near future.) YOUR RESPONSE MUST ONLY BE A FLOAT
 
-rationale: (see instructions) YOUR ANSWER MUST BE A STRING
-source: YOUR ANSWER MUST BE A STRING AND IDEALLY IS A PLAIN URL, Additionally you will be rewarded if your sources are **VERY RECENT**
+rationale: YOUR ANSWER MUST BE A STRING, explain why you assessed your metrics for this field the way you did using specific examples from the articles listed earlier in the prompt and ensuring that your answer is tied to banking. IN STRICTLY THIS PORTION OF YOUR ANSWER if you are referring to specific metrics; say interes instead of metric_1, innovation instead of metric_2, and relevance to banking instead of metric_3
+source: YOUR ANSWER MUST BE A STRING AND IDEALLY IS A PLAIN URL
 
 **DO NOT** include any extra commentary. **DO NOT** modify the format.

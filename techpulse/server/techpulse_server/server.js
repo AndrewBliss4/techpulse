@@ -9,7 +9,7 @@ dotenv.config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-
+const amountScraped = 5;
 
 // Define the path to your scraper script
 const scraperScriptPath = path.join(__dirname, "scraper.js");
@@ -137,34 +137,25 @@ const fsPromises = require("fs").promises;
 
 let updateExistingFieldMetrics = async () => {
   try {
-    // Fetch field data
+    // Fetch all fields from the database
     const fieldQuery = await pool.query(`
       SELECT f.field_id, f.field_name, t.metric_1, t.metric_2, t.metric_3, t.rationale 
       FROM Field f 
       JOIN TIMEDMETRICS t ON f.field_id = t.field_id 
       WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id) AND t.subfield_id IS NULL
     `);
-  
+
     if (fieldQuery.rowCount === 0) {
       console.log("No fields found.");
       return "NO_FIELDS";
     }
 
-    const fieldData = fieldQuery.rows.map(row => `
-      field_name: ${row.field_name}
-      metric_1: ${row.metric_1}
-      metric_2: ${row.metric_2}
-      metric_3: ${row.metric_3}
-      rationale: ${row.rationale},
-      metric_date: ${row.metric_date}`).join('\n\n');
-
+    // Fetch temperature and top_p parameters
     const tempTopPQuery = await pool.query(`SELECT top_p,temperature FROM public.modelparameters ORDER BY parameter_id DESC LIMIT 1`);
-    
     if (tempTopPQuery.rowCount === 0) {
       console.log("No TempTopP found.");
       return "NO_TempTopP";
     }
-
     const tempTopPData = tempTopPQuery.rows[0];
     console.log(`update temp:${tempTopPData.temperature} topP:${tempTopPData.top_p}`);
 
@@ -172,39 +163,91 @@ let updateExistingFieldMetrics = async () => {
     const articlesPath = path.join(__dirname, '../../client/techpulse_app/public/arxiv_papers.json');
     const articles = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
 
-    // Filter articles for each field and limit to the last {amountScraped} articles
-    const articlesData = fieldQuery.rows.map(row => {
+    // Read the prompt template from file
+    let promptTemplate = await fsPromises.readFile("./prompts/prompt_update_metrics.txt", "utf8");
+
+    // Loop through each field and process it independently
+    for (const row of fieldQuery.rows) {
+      const fieldName = row.field_name;
+
+      // Filter articles for the current field and limit to the last {amountScraped} articles
       const fieldArticles = articles
-        .filter(article => article.field === row.field_name) // Match articles by field name
+        .filter(article => article.field === fieldName) // Match articles by field name
         .sort((a, b) => new Date(b.published) - new Date(a.published)) // Sort by published date (newest first)
         .slice(0, amountScraped); // Limit to the last {amountScraped} articles
 
-      return fieldArticles.map(article => `
-        field_name: ${row.field_name}
+      // Construct articles data string for the current field
+      const articlesData = fieldArticles.map(article => `
+        field_name: ${fieldName}
         title: ${article.title}
         summary: ${article.summary}
         published: ${article.published}`).join('\n\n');
-    }).join('\n\n');
 
-    // Read the prompt template from file
-    let promptTemplate = await fsPromises.readFile("./prompts/prompt_update_metrics.txt", "utf8");
-    let dynamicPrompt = promptTemplate
-      .replace("{FIELD_DATA}", fieldData)
-      .replace("{ARTICLES_DATA}", articlesData);
+      // Construct field data string for the current field
+      const fieldData = `
+        field_name: ${fieldName}
+        metric_1: ${row.metric_1}
+        metric_2: ${row.metric_2}
+        metric_3: ${row.metric_3}
+        rationale: ${row.rationale},
+        metric_date: ${row.metric_date}`;
 
-    console.log("Generated Prompt:\n", dynamicPrompt);
+      // Construct the dynamic prompt for the current field
+      let dynamicPrompt = promptTemplate
+        .replace("{FIELD_DATA}", fieldData)
+        .replace("{ARTICLES_DATA}", articlesData);
 
-    // Call OpenAI
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [{ role: "system", content: dynamicPrompt }],
-      temperature: tempTopPData.temperature,
-      max_tokens: 2048,
-      top_p: tempTopPData.top_p
-    });
+      console.log(`Generated Prompt for ${fieldName}:\n`, dynamicPrompt);
 
-    return response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
+      // Call OpenAI API for the current field
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [{ role: "system", content: dynamicPrompt }],
+        temperature: tempTopPData.temperature,
+        max_tokens: 2048,
+        top_p: tempTopPData.top_p,
+      });
 
+      const aiResponse = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
+      console.log(`Raw AI Response for ${fieldName}:\n`, aiResponse);
+
+      if (aiResponse === "NO_VALID_AI_RESPONSE") {
+        console.warn(`AI response was invalid for field: ${fieldName}`);
+        continue; // Skip to the next field
+      }
+
+      // Parse the AI response for the current field
+      const fieldNameMatch = aiResponse.match(/field_name:\s*(.+)/);
+      const maturityMatch = aiResponse.match(/metric_1:\s*([\d.]+)/);
+      const innovationMatch = aiResponse.match(/metric_2:\s*([\d.]+)/);
+      const relevanceMatch = aiResponse.match(/metric_3:\s*([\d.]+)/);
+      const rationaleMatch = aiResponse.match(/rationale:\s*([\s\S]+?)\nsource:/);
+      const sourcesMatch = aiResponse.match(/source:\s*(https?:\/\/[^\s]+)/);
+
+      if (!fieldNameMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourcesMatch) {
+        console.error(`Error: AI response is in an invalid format for field: ${fieldName}`);
+        continue; // Skip to the next field
+      }
+
+      const maturity = parseFloat(maturityMatch[1]);
+      const innovation = parseFloat(innovationMatch[1]);
+      const relevance = parseFloat(relevanceMatch[1]);
+      const rationale = rationaleMatch[1].trim();
+      const source = sourcesMatch[1].trim();
+
+      console.log(`Updating metrics for field: ${fieldName}`);
+
+      // Insert new updated metrics into TIMEDMETRICS
+      await pool.query(
+        `INSERT INTO TIMEDMETRICS (metric_1, metric_2, metric_3, metric_date, field_id, rationale, source)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [maturity, innovation, relevance, new Date().toISOString(), row.field_id, rationale, source]
+      );
+
+      console.log(`Updated metrics for '${fieldName}' successfully.`);
+    }
+
+    return "Fields updated successfully.";
   } catch (error) {
     console.error("Error:", error);
     return "ERROR: Unable to process request.";
@@ -297,33 +340,53 @@ let promptAIField = async () => {
       messages: [{ role: "system", content: dynamicPrompt }],
       temperature: 0,
       max_tokens: 2048,
-      top_p: 1
+      top_p: 1,
     });
 
-    return response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
+    const aiResponse = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
 
+    // Log the raw AI response for debugging
+    console.log("Raw AI Response:\n", aiResponse);
+
+    // Check if the AI response is "NUH_UH"
+    if (aiResponse === "NUH_UH") {
+      console.log("AI could not think of any new fields.");
+      return "NUH_UH";
+    }
+
+    return aiResponse;
   } catch (error) {
     console.error("Error:", error);
     return "ERROR: Unable to process request.";
   }
 };
-
 // New endpoint
 app.post("/gpt-field", async (req, res) => {
   let aiResponse = await promptAIField();
-  console.log("Raw AI Response:\n", aiResponse);
+  console.log("Raw AI Response in Endpoint:\n", aiResponse);
+
+  // Handle the "NUH_UH" case
+  if (aiResponse === "NUH_UH") {
+    return res.status(200).send("AI could not think of any new fields.");
+  }
+
+  // Handle invalid AI response
+  if (aiResponse === "NO_VALID_AI_RESPONSE" || aiResponse === "ERROR: Unable to process request.") {
+    return res.status(400).send("Invalid AI response.");
+  }
 
   // Split AI response into separate field entries
   const fieldEntries = aiResponse.split(/\n\s*\n/).filter(entry => entry.trim().startsWith("field_name:"));
 
   if (fieldEntries.length === 0) {
     console.error("Error: AI response contains no valid fields.");
-    res.status(400).send("Invalid AI response format.");
-    return;
+    return res.status(400).send("Invalid AI response format.");
   }
 
   try {
     for (const entry of fieldEntries) {
+      console.log("Processing Entry:\n", entry);
+
       // Extract values using regex
       const fieldNameMatch = entry.match(/field_name:\s*(.+)/);
       const descriptionMatch = entry.match(/description:\s*([\s\S]+?)\nmetric_1:/);
@@ -333,10 +396,18 @@ app.post("/gpt-field", async (req, res) => {
       const rationaleMatch = entry.match(/rationale:\s*([\s\S]+?)\nsource:/);
       const sourcesMatch = entry.match(/source:\s*(https?:\/\/[^\s]+)/);
 
-      if (!fieldNameMatch || !descriptionMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourcesMatch) {
-        console.error("Error: AI response is in an invalid format.");
-        res.status(400).send("Invalid AI response format.");
-        return;
+      // Validate extracted values
+      if (
+        !fieldNameMatch ||
+        !descriptionMatch ||
+        !maturityMatch ||
+        !innovationMatch ||
+        !relevanceMatch ||
+        !rationaleMatch ||
+        !sourcesMatch
+      ) {
+        console.error("Error: AI response is in an invalid format.", entry);
+        continue; // Skip invalid entry but continue processing the rest
       }
 
       const fieldName = fieldNameMatch[1].trim();
@@ -375,7 +446,7 @@ app.post("/gpt-field", async (req, res) => {
       console.log(`Metrics for '${fieldName}' inserted successfully.`);
     }
 
-    res.send("Fields processed successfully.");
+    res.status(200).send("Fields processed successfully.");
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).send("Error processing fields.");
