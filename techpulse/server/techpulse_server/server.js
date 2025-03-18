@@ -275,47 +275,62 @@ app.post("/gpt-update-metrics", async (req, res) => {
       return res.status(400).send("Invalid AI response format.");
     }
 
+    let successfulUpdates = 0;
+    let failedUpdates = 0;
+
     for (const entry of fieldEntries) {
-      const fieldNameMatch = entry.match(/field_name:\s*(.+)/);
-      const maturityMatch = entry.match(/metric_1:\s*([\d.]+)/);
-      const innovationMatch = entry.match(/metric_2:\s*([\d.]+)/);
-      const relevanceMatch = entry.match(/metric_3:\s*([\d.]+)/);
-      const rationaleMatch = entry.match(/rationale:\s*([\s\S]+?)\nsource:/);
-      const sourcesMatch = entry.match(/source:\s*(https?:\/\/[^\s]+)/);
+      try {
+        const fieldNameMatch = entry.match(/field_name:\s*(.+)/);
+        const maturityMatch = entry.match(/metric_1:\s*([\d.]+)/);
+        const innovationMatch = entry.match(/metric_2:\s*([\d.]+)/);
+        const relevanceMatch = entry.match(/metric_3:\s*([\d.]+)/);
+        const rationaleMatch = entry.match(/rationale:\s*([\s\S]+?)\nsource:/);
+        const sourcesMatch = entry.match(/source:\s*(https?:\/\/[^\s]+)/);
 
-      if (!fieldNameMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourcesMatch) {
-        console.error("Error: AI response is in an invalid format.", entry);
-        continue; // Skip invalid entry but continue processing the rest
+        if (!fieldNameMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourcesMatch) {
+          console.error("Error: AI response is in an invalid format.", entry);
+          failedUpdates++;
+          continue; // Skip invalid entry but continue processing the rest
+        }
+
+        const fieldName = fieldNameMatch[1].trim();
+        const maturity = parseFloat(maturityMatch[1]);
+        const innovation = parseFloat(innovationMatch[1]);
+        const relevance = parseFloat(relevanceMatch[1]);
+        const rationale = rationaleMatch[1].trim();
+        const source = sourcesMatch[1].trim();
+
+        console.log(`Updating metrics for field: ${fieldName}`);
+
+        // Fetch field ID
+        const fieldResult = await pool.query("SELECT field_id FROM Field WHERE field_name = $1", [fieldName]);
+        if (fieldResult.rowCount === 0) {
+          console.error(`Field not found: ${fieldName}`);
+          failedUpdates++;
+          continue;
+        }
+        const fieldId = fieldResult.rows[0].field_id;
+
+        // Insert new updated metrics into TIMEDMETRICS
+        await pool.query(
+          `INSERT INTO TIMEDMETRICS (metric_1, metric_2, metric_3, metric_date, field_id, rationale, source)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [maturity, innovation, relevance, new Date().toISOString(), fieldId, rationale, source]
+        );
+
+        console.log(`Updated metrics for '${fieldName}' successfully.`);
+        successfulUpdates++;
+      } catch (err) {
+        console.error("Error processing entry:", err);
+        failedUpdates++;
       }
-
-      const fieldName = fieldNameMatch[1].trim();
-      const maturity = parseFloat(maturityMatch[1]);
-      const innovation = parseFloat(innovationMatch[1]);
-      const relevance = parseFloat(relevanceMatch[1]);
-      const rationale = rationaleMatch[1].trim();
-      const source = sourcesMatch[1].trim();
-
-      console.log(`Updating metrics for field: ${fieldName}`);
-
-      // Fetch field ID
-      const fieldResult = await pool.query("SELECT field_id FROM Field WHERE field_name = $1", [fieldName]);
-      if (fieldResult.rowCount === 0) {
-        console.error(`Field not found: ${fieldName}`);
-        continue;
-      }
-      const fieldId = fieldResult.rows[0].field_id;
-
-      // Insert new updated metrics into TIMEDMETRICS
-      await pool.query(
-        `INSERT INTO TIMEDMETRICS (metric_1, metric_2, metric_3, metric_date, field_id, rationale, source)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [maturity, innovation, relevance, new Date().toISOString(), fieldId, rationale, source]
-      );
-
-      console.log(`Updated metrics for '${fieldName}' successfully.`);
     }
 
-    res.status(200).send("Fields updated successfully.");
+    if (successfulUpdates > 0) {
+      res.status(200).send(`Fields updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
+    } else {
+      res.status(400).send("No fields were updated successfully.");
+    }
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).send("Error updating fields.");
