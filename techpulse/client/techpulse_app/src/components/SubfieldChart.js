@@ -142,7 +142,10 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
       const newSubfieldResponse = await fetch('http://localhost:4000/gpt-subfield', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fieldId: selectedFieldId }), // Pass the selected field ID
+        body: JSON.stringify({ 
+          fieldId: selectedFieldId,
+          fieldName: fieldName // Pass the fieldName here
+        }),
       });
   
       if (!newSubfieldResponse.ok) {

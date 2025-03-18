@@ -451,7 +451,7 @@ const generateInsight = async (type, fieldId) => {
 
       if (fieldQuery.rowCount === 0) {
         console.log("Field not found.");
-        return "NO_FIELD";
+        return { insight: "NO_FIELD", confidenceScore: 0 };
       }
 
       fieldName = fieldQuery.rows[0].field_name;
@@ -480,7 +480,7 @@ const generateInsight = async (type, fieldId) => {
 
     if (metricsQuery.rowCount === 0) {
       console.log("No metrics found.");
-      return "NO_METRICS";
+      return { insight: "NO_METRICS", confidenceScore: 0 };
     }
 
     // Fetch the previous insight, if it exists
@@ -585,15 +585,16 @@ const generateInsight = async (type, fieldId) => {
 
     // Write the insight to the file
     if (type === "insight") {
-    await fsPromises.writeFile(filePath, generatedInsight, 'utf8');
-    console.log(`Insight written to ${filePath}`);
+      await fsPromises.writeFile(filePath, generatedInsight, 'utf8');
+      console.log(`Insight written to ${filePath}`);
     }
 
-    return generatedInsight;
+    // Return both the generated insight and the confidence score
+    return { insight: generatedInsight, confidenceScore };
 
   } catch (error) {
     console.error("Error:", error);
-    return "ERROR: Unable to process request.";
+    return { insight: "ERROR: Unable to process request.", confidenceScore: 0 };
   }
 };
 let promptAISubfield = async (fieldName) => {
@@ -632,10 +633,10 @@ let promptAISubfield = async (fieldName) => {
 
 // New endpoint to handle subfield generation
 app.post("/gpt-subfield", async (req, res) => {
-  const { fieldName } = req.body; // Get fieldName from the request body
-  console.log("Received fieldName:")
-  if (!fieldName) {
-    return res.status(400).send("Field name is required.");
+  const { fieldName, fieldId } = req.body; // Get fieldName and fieldId from the request body
+  console.log("Received fieldName:", fieldName);
+  if (!fieldName || !fieldId) {
+    return res.status(400).send("Field name and field ID are required.");
   }
 
   let aiResponse = await promptAISubfield(fieldName);
@@ -646,8 +647,7 @@ app.post("/gpt-subfield", async (req, res) => {
 
   if (subfieldEntries.length === 0) {
     console.error("Error: AI response contains no valid subfields.");
-    res.status(400).send("Invalid AI response format.");
-    return;
+    return res.status(400).send("Invalid AI response format.");
   }
 
   try {
@@ -655,8 +655,7 @@ app.post("/gpt-subfield", async (req, res) => {
     const fieldResult = await pool.query('SELECT field_id FROM Field WHERE field_name = $1', [fieldName]);
     if (fieldResult.rowCount === 0) {
       console.error("Error: Field not found.");
-      res.status(404).send("Field not found.");
-      return;
+      return res.status(404).send("Field not found.");
     }
     const fieldId = fieldResult.rows[0].field_id;
 
@@ -688,10 +687,8 @@ app.post("/gpt-subfield", async (req, res) => {
       if (!subfieldNameMatch || !descriptionMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourceMatch) {
         console.error("Error: AI response is in an invalid format.");
         console.error("Problematic entry:", entry);
-        res.status(400).send("Invalid AI response format.");
-        return;
+        return res.status(400).send("Invalid AI response format.");
       }
-
 
       const subfieldName = subfieldNameMatch[1].trim();
       const description = descriptionMatch[1].trim();
@@ -703,7 +700,7 @@ app.post("/gpt-subfield", async (req, res) => {
 
       console.log(`Processing subfield: ${subfieldName}`);
 
-      // Check if the subfiReld exists
+      // Check if the subfield exists
       let subfieldId;
       const existingSubfield = await pool.query(
         'SELECT subfield_id FROM Subfield WHERE subfield_name = $1 AND field_id = $2',
@@ -732,7 +729,26 @@ app.post("/gpt-subfield", async (req, res) => {
       console.log(`Metrics for '${subfieldName}' inserted successfully.`);
     }
 
-    res.send("Subfields processed successfully.");
+    // After processing subfields, proceed to generate insights
+    const insightResponse = await fetch('http://localhost:4000/generate-insight', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fieldId: fieldId }), // Pass the fieldId to generate insights
+    });
+
+    if (!insightResponse.ok) {
+      throw new Error('Failed to generate insights.');
+    }
+
+    const insightData = await insightResponse.json();
+    console.log('Insight generated successfully:', insightData.insight);
+
+    // Return the result of the insight generation
+    res.status(200).json({ 
+      message: "Subfields processed successfully.",
+      insight: insightData.insight,
+    });
+
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).send("Error processing subfields.");
@@ -865,20 +881,37 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
   
 
 app.post("/generate-insight", async (req, res) => {
-  const { fieldId } = req.body;
-  let aiResponse = await generateInsight("insight", fieldId);
-  console.log("Raw AI Response:\n", aiResponse);
+  const { fieldId } = req.body; // Get fieldId from the request body
 
-  if (aiResponse === "NO_METRICS") {
-    return res.status(200).send("No metrics available for insight generation.");
+  if (!fieldId) {
+    return res.status(400).send("Field ID is required.");
   }
 
-  if (aiResponse === "NO_VALID_AI_RESPONSE") {
-    console.warn("AI response was invalid, but proceeding with request completion.");
-    return res.status(200).send("AI response was empty or invalid, but request completed.");
-  }
+  try {
+    // Fetch field details from the database
+    const fieldResult = await pool.query('SELECT * FROM Field WHERE field_id = $1', [fieldId]);
+    if (fieldResult.rowCount === 0) {
+      return res.status(404).send("Field not found.");
+    }
 
-  res.status(200).json({ insight: aiResponse });
+    const fieldName = fieldResult.rows[0].field_name;
+
+    // Call the AI to generate insight
+    const { insight, confidenceScore } = await generateInsight("insight", fieldId);
+
+    // Save the generated insight to the database (optional)
+    await pool.query(
+      `INSERT INTO Insight (field_id, insight_text, confidence_score)
+       VALUES ($1, $2, $3)`,
+      [fieldId, insight, confidenceScore]
+    );
+
+    // Return the generated insight
+    res.json({ insight });
+  } catch (err) {
+    console.error("Error generating insight:", err);
+    res.status(500).send("Error generating insight.");
+  }
 });
 
 app.post("/generate-insight-trends", async (req, res) => {
