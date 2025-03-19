@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ArrowDown, RadarIcon, TrendingUp } from 'lucide-react';
 import SubfieldChart from './SubfieldChart';
+import { tailChase } from 'ldrs';
 
-const Radar = ({ radarData, radarSearch, homePage, technology }) => {
+const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData }) => {
   const [data, setData] = useState([]);
   const [historicalData, setHistoricalData] = useState([]); // State for historical data
   const [selectedField, setSelectedField] = useState('radar'); // Track the selected field
@@ -14,10 +15,15 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [articleSources, setArticleSources] = useState({});
   const [useColorMode, setUseColorMode] = useState(false);
   const [subfieldData, setSubfieldData] = useState([]); // State for subfield data
-  const [selectedFieldId, setSelectedFieldId] = useState(null); // Track the selected field ID for 
+  const [selectedFieldId, setSelectedFieldId] = useState(null); // Track the selected field ID for
+  const [isLoading, setIsLoading] = useState(false);
 
   const [showAllTechnologies, setShowAllTechnologies] = useState(false);
+
+  tailChase.register();
+
   const handleGenerateSubfields = async (fieldName) => {
+    setIsLoading(true);
     try {
       const field = data.find(d => d.field_name === fieldName);
       if (!field) {
@@ -31,17 +37,22 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
       });
 
       if (response.status === 200) {
-        alert("Subfields generated successfully!");
         // Optionally, you can refresh the subfield data here
         const subfieldResponse = await axios.post('http://localhost:4000/api/subfields', { fieldId: field.field_id });
         setSubfieldData(subfieldResponse.data.metrics);
       } else {
         alert("Failed to generate subfields.");
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error generating subfields:", error);
       alert("Error generating subfields.");
+      setIsLoading(false);
+    } finally {
+      fetchRadarData();
+      setIsLoading(false);
     }
+
   };
   const handleFieldClick = async (fieldId) => {
     setSelectedFieldId(fieldId);
@@ -113,7 +124,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
 
     return Object.values(mostRecentData);
   };
-  
+
   const handleFilterClick = (point) => {
     // Check if this point is currently selected
     const isCurrentlySelected = selectedTechnology === point.field_name;
@@ -614,7 +625,14 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                     boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
                   }}
                 >
-                  Generate Subfields
+                  {isLoading ? "Generating..." : "Generate Subfields"}
+                  {isLoading && <l-tail-chase
+                    size="20"
+                    stroke="3"
+                    bg-opacity="0"
+                    speed="2"
+                    color="white"
+                  ></l-tail-chase>}
                 </button>
               </>
               : "Click a technology to show its description and rationale."
