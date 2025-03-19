@@ -229,7 +229,7 @@ app.post("/gpt-update-metrics", async (req, res) => {
       .replace("{FIELD_DATA}", fieldData)
       .replace("{ARTICLES_DATA}", articlesData);
 
-    console.log(`Generated Prompt for ${fieldName}:\n`, dynamicPrompt);
+    //console.log(`Generated Prompt for ${fieldName}:\n`, dynamicPrompt);
 
     // Call OpenAI API for the current field
     const response = await openai.chat.completions.create({
@@ -241,7 +241,7 @@ app.post("/gpt-update-metrics", async (req, res) => {
     });
 
     const aiResponse = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
-    console.log(`Raw AI Response for ${fieldName}:\n`, aiResponse);
+    //console.log(`Raw AI Response for ${fieldName}:\n`, aiResponse);
 
     if (aiResponse === "NO_VALID_AI_RESPONSE") {
       console.warn(`AI response was invalid for field: ${fieldName}`);
@@ -295,7 +295,7 @@ let promptAIField = async () => {
     let promptTemplate = await fsPromises.readFile("./prompts/prompt_new_fields.txt", "utf8");
     let dynamicPrompt = promptTemplate.replace("{CURRENT_FIELDS}", fieldNames);
 
-    console.log("Generated Prompt:\n", dynamicPrompt);
+    //console.log("Generated Prompt:\n", dynamicPrompt);
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -308,7 +308,7 @@ let promptAIField = async () => {
     const aiResponse = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
 
     // Log the raw AI response for debugging
-    console.log("Raw AI Response:\n", aiResponse);
+    //console.log("Raw AI Response:\n", aiResponse);
 
     // Check if the AI response is "NUH_UH"
     if (aiResponse === "NUH_UH") {
@@ -325,7 +325,7 @@ let promptAIField = async () => {
 // New endpoint
 app.post("/gpt-field", async (req, res) => {
   let aiResponse = await promptAIField();
-  console.log("Raw AI Response in Endpoint:\n", aiResponse);
+  //console.log("Raw AI Response in Endpoint:\n", aiResponse);
 
   // Handle the "NUH_UH" case
   if (aiResponse === "NUH_UH") {
@@ -531,7 +531,7 @@ const generateInsight = async (type, fieldId) => {
       .replace("{METRICS_DATA}", metricsData)
       .replace("{PREVIOUS_INSIGHT}", previousInsightText);
 
-    console.log("Generated Prompt:\n", dynamicPrompt);
+    //console.log("Generated Prompt:\n", dynamicPrompt);
 
     // Call OpenAI to generate the insight
     const response = await openai.chat.completions.create({
@@ -545,7 +545,7 @@ const generateInsight = async (type, fieldId) => {
     let generatedInsight = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
 
     // Log the raw AI response for debugging
-    console.log("Raw AI Response:\n", generatedInsight);
+    //console.log("Raw AI Response:\n", generatedInsight);
 
     // Extract the confidence score from the generated insight
     let confidenceScore = 0.9; // Default value if extraction fails
@@ -612,7 +612,7 @@ let promptAISubfield = async (fieldName) => {
       .replace("{FIELD_NAME}", fieldName)
       .replace("{SUBFIELDS}", subfieldNames);
 
-    console.log("Generated Prompt:\n", dynamicPrompt);
+    //console.log("Generated Prompt:\n", dynamicPrompt);
 
     // Call OpenAI API
     const response = await openai.chat.completions.create({
@@ -640,7 +640,7 @@ app.post("/gpt-subfield", async (req, res) => {
   }
 
   let aiResponse = await promptAISubfield(fieldName);
-  console.log("Raw AI Response:\n", aiResponse);
+  //console.log("Raw AI Response:\n", aiResponse);
 
   // Split AI response into separate subfield entries
   const subfieldEntries = aiResponse.split(/\n\s*\n/).filter(entry => entry.trim().startsWith("subfield_name:"));
@@ -809,7 +809,7 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
       .replace("{FIELD_DATA}", subfieldData)
       .replace("{ARTICLES_DATA}", articlesData);
 
-    console.log(`Generated Prompt for ${subfieldName}:\n`, dynamicPrompt);
+    //console.log(`Generated Prompt for ${subfieldName}:\n`, dynamicPrompt);
 
     // Call OpenAI API for the current subfield
     const response = await openai.chat.completions.create({
@@ -821,7 +821,7 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
     });
 
     const aiResponse = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
-    console.log(`Raw AI Response for ${subfieldName}:\n`, aiResponse);
+    //console.log(`Raw AI Response for ${subfieldName}:\n`, aiResponse);
 
     if (aiResponse === "NO_VALID_AI_RESPONSE") {
       console.warn(`AI response was invalid for subfield: ${subfieldName}`);
@@ -872,37 +872,38 @@ app.post("/generate-insight", async (req, res) => {
     return res.status(400).send("Field ID is required.");
   }
 
-  try {
-    // Fetch field details from the database
-    const fieldResult = await pool.query('SELECT * FROM Field WHERE field_id = $1', [fieldId]);
-    if (fieldResult.rowCount === 0) {
-      return res.status(404).send("Field not found.");
+    try {
+      // Fetch field details from the database
+      const fieldResult = await pool.query('SELECT * FROM Field WHERE field_id = $1', [fieldId]);
+      if (fieldResult.rowCount === 0) {
+        return res.status(404).send("Field not found.");
+      }
+
+      //what is this line
+      const fieldName = fieldResult.rows[0].field_name;
+
+      // Call the AI to generate insight
+      const { insight, confidenceScore } = await generateInsight("insight", fieldId);
+
+      // Save the generated insight to the database (optional)
+      await pool.query(
+        `INSERT INTO Insight (field_id, insight_text, confidence_score)
+        VALUES ($1, $2, $3)`,
+        [fieldId, insight, confidenceScore]
+      );
+
+      // Return the generated insight
+      res.json({ insight });
+    } catch (err) {
+      console.error("Error generating insight:", err);
+      res.status(500).send("Error generating insight.");
     }
-
-    const fieldName = fieldResult.rows[0].field_name;
-
-    // Call the AI to generate insight
-    const { insight, confidenceScore } = await generateInsight("insight", fieldId);
-
-    // Save the generated insight to the database (optional)
-    await pool.query(
-      `INSERT INTO Insight (field_id, insight_text, confidence_score)
-       VALUES ($1, $2, $3)`,
-      [fieldId, insight, confidenceScore]
-    );
-
-    // Return the generated insight
-    res.json({ insight });
-  } catch (err) {
-    console.error("Error generating insight:", err);
-    res.status(500).send("Error generating insight.");
-  }
 });
 
 app.post("/generate-insight-trends", async (req, res) => {
   const { fieldId } = req.body;
   let aiResponse = await generateInsight("trends", fieldId);
-  console.log("Raw AI Response:\n", aiResponse);
+  //console.log("Raw AI Response:\n", aiResponse);
 
   if (aiResponse === "NO_METRICS") {
     return res.status(200).send("No metrics available for insight generation.");
@@ -914,7 +915,7 @@ app.post("/generate-insight-trends", async (req, res) => {
 app.post("/generate-insight-top", async (req, res) => {
   const { fieldId } = req.body;
   let aiResponse = await generateInsight("top", fieldId);
-  console.log("Raw AI Response:\n", aiResponse);
+  //console.log("Raw AI Response:\n", aiResponse);
 
   if (aiResponse === "NO_METRICS") {
     return res.status(200).send("No metrics available for insight generation.");
