@@ -31,6 +31,27 @@ const AIPromptFieldButton = ({
     }
   };
 
+  // Function to trigger the scraper
+  const runScraper = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/api/run-scraper', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Scraper failed: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('Scraper executed successfully:', data.message);
+      return true; // Indicate success
+    } catch (error) {
+      console.error('Error running scraper:', error);
+      throw error; // Propagate the error
+    }
+  };
+
   const handleButtonClick = async () => {
     const isConfirmed = window.confirm(
       "Are you sure you want to generate insights?"
@@ -48,7 +69,15 @@ const AIPromptFieldButton = ({
     setRenderTrends(false);
 
     try {
-      console.log("Triggering metric reevaluation...");
+      console.log("Triggering scraper...");
+
+      // Step 0: Run the scraper
+      const scraperSuccess = await runScraper();
+      if (!scraperSuccess) {
+        throw new Error("Scraper failed to run.");
+      }
+
+      console.log("Scraper executed successfully. Proceeding to metric reevaluation...");
 
       // Step 1: Fetch all field IDs
       const fieldIds = await fetchAllFieldIds();
