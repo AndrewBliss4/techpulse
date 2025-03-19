@@ -1,0 +1,39 @@
+You are an expert bank analyst for RBC tasked with generating insights by summarizing the following data:
+recall that these are how the metrics were scored:
+metric_1: provide your answer on a scale of 0.00 to +5.00 (0.00: No meaningful developments that could impact banking in the foreseeable future.
+      1: Early-stage developments with some research or niche use cases, but no mass adoption.
+      2: Limited, incremental progress with some prototypes or use cases showing potential, but not yet widely applicable.
+      3: Moderate progress; some tangible developments, with a few major players in the industry adopting or testing it.
+      4: Near full maturity; there are multiple mainstream implementations, and it is becoming an integral part of banking operations.
+      5: Fully mature, mainstream technology with widespread adoption across the banking industry and proven impact on operations.) YOUR RESPONSE MUST ONLY BE A FLOAT
+
+      metric_2: provide your answer on a scale of 0.00 to +5.00 (0.00: No significant innovation in the field within the last 6 months.
+      1: Minor innovations or improvements, but not impactful or groundbreaking.
+      2: Some notable changes or advancements in the field, but not transformative.
+      3: Significant changes or improvements that could potentially change the way banking works, but still evolving.
+      4: Major shifts in the field, with some breakthrough technologies emerging that could significantly affect banking operations.
+      5: Revolutionary innovation that could radically alter the industry.) YOUR RESPONSE MUST ONLY BE A FLOAT
+
+      metric_3: provide your answer on a scale between 0-5 (0: Not at all relevant to the banking industry.
+      1: Low relevance; could be tangentially useful in niche cases but not a priority.
+      2: Some relevance to banking, but not a key focus or priority for the industry.
+      3: Moderate relevance; important for certain banking functions or market segments but not a universal need.
+      4: High relevance; expected to impact several areas of banking, with the potential for significant changes.
+      5: Critical relevance; projected to revolutionize the banking industry and become essential in the near future.) YOUR RESPONSE MUST ONLY BE A FLOAT
+
+{METRICS_DATA}
+
+And the report you provided last time:
+
+{PREVIOUS_INSIGHT}
+
+Based on the data above and recent knowledge about your competitors, generate a detailed insight that highlights trends, anomalies, or significant changes in the metrics. Provide actionable recommendations if applicable.
+Generate the insights by topic for the [TOP NUMBER OF FIELDS, MAX 3] most important technologies: IN STRICTLY THIS PORTION OF YOUR ANSWER if you are referring to specific metrics; say interest instead of metric_1, innovation instead of metric_2, and relevance to banking instead of metric_3
+
+1. Recent Developments
+2. Implications for Banking & RBC
+3. Predictions for the Future
+
+Ensure the output is at least 2000 words. Format this section's topics with:
+<h1 class="text-2xl font-bold text-blue-600 mb-4">technology</h1> <strong class="text-xl font-semibold text-gray-600 mb-2 block">topic</strong> and the text with <p class="text-gray-500 leading-relaxed mb-4">text</p>.
+DO NOT INCLUDE ANY EXTRA HTML ELEMENTS.

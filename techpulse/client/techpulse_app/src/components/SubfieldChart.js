@@ -32,6 +32,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
   const [articleSFSources, setArticleSFSources] = useState({});
   const [loading, setLoading] = useState(false);
   const [currentLoaderIndex, setCurrentLoaderIndex] = useState(0);
+
   // Dynamically import the most recent insight file based on fieldName
   useEffect(() => {
     const fetchMostRecentInsight = async () => {
@@ -51,26 +52,26 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
   }, [fieldName]);
 
   // Fetch the most recent insight on component mount
-  useEffect(() => {
-    const fetchMostRecentInsight = async () => {
-      try {
-        const response = await fetch(`/Insights/MostRecent${fieldName}Insight.txt`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch the most recent insight.');
-        }
-        const text = await response.text();
-        if (text.trim() !== '') {
-          setInsight(text);
-        } else {
-          console.log('MostRecentInsight.txt is empty');
-        }
-      } catch (error) {
-        console.error('Error fetching the most recent insight:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchMostRecentInsight = async () => {
+  //     try {
+  //       const response = await fetch(`/Insights/MostRecent${fieldName}Insight.txt`);
+  //       if (!response.ok) {
+  //         throw new Error('Failed to fetch the most recent insight.');
+  //       }
+  //       const text = await response.text();
+  //       if (text.trim() !== '') {
+  //         setInsight(text);
+  //       } else {
+  //         console.log('MostRecentInsight.txt is empty');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching the most recent insight:', error);
+  //     }
+  //   };
 
-    fetchMostRecentInsight();
-  }, [fieldName]);
+  //   fetchMostRecentInsight();
+  // }, [fieldName]);
 
   // Filter radarData to only include subfields for the selected field
   const subfieldData = radarData.filter(
@@ -222,27 +223,29 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
       let successfulUpdates = 0;
       let failedUpdates = 0;
 
-      for (const subfield of subfields) {
-        try {
-          const updateMetricsResponse = await fetch('http://localhost:4000/gpt-update-subfield-metrics', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              subfield_id: subfield.subfield_id, // Pass subfield_id
-              field_id: selectedFieldId, // Pass field_id from the parent component
-            }),
-          });
+      if(insight !== "Failed to load insight. Please try again."){
+        for (const subfield of subfields) {
+          try {
+            const updateMetricsResponse = await fetch('http://localhost:4000/gpt-update-subfield-metrics', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                subfield_id: subfield.subfield_id, // Pass subfield_id
+                field_id: selectedFieldId, // Pass field_id from the parent component
+              }),
+            });
 
-          if (!updateMetricsResponse.ok) {
-            throw new Error(`Failed to update metrics for subfield: ${subfield.subfield_name}`);
+            if (!updateMetricsResponse.ok) {
+              throw new Error(`Failed to update metrics for subfield: ${subfield.subfield_name}`);
+            }
+
+            const updateMetricsData = await updateMetricsResponse.json();
+            console.log(`Metrics updated successfully for subfield: ${subfield.subfield_name}`, updateMetricsData);
+            successfulUpdates++;
+          } catch (error) {
+            console.error(`Error updating metrics for subfield: ${subfield.subfield_name}`, error);
+            failedUpdates++;
           }
-
-          const updateMetricsData = await updateMetricsResponse.json();
-          console.log(`Metrics updated successfully for subfield: ${subfield.subfield_name}`, updateMetricsData);
-          successfulUpdates++;
-        } catch (error) {
-          console.error(`Error updating metrics for subfield: ${subfield.subfield_name}`, error);
-          failedUpdates++;
         }
       }
 
