@@ -408,233 +408,233 @@ const Home = () => {
               Real-time analytics and insights from articles, industry reports, and competitors
             </p>
           </div>
-        {/* Insight Generation Container */}
-        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
-          <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
-            <div className="flex-grow space-y-2">
+          {/* Insight Generation Container */}
+          <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
+              <div className="flex-grow space-y-2">
+                <div className='flex items-center space-x-2'>
+                  <Zap className="h-5 w-5 text-blue-600" />
+                  <label
+                    htmlFor="search"
+                    className="block text-lg font-medium text-gray-700"
+                  >
+                    Generate Insights
+                  </label>
+                </div>
+                <div className="flex justify-center">
+                  <AIPromptFieldButton setTextResult={setTextResult}
+                    setTrendingTopics={setTrendingTopics} setLatestInsights={setLatestInsights}
+                    setLoading={setLoading} setCurrentLoaderIndex={setCurrentLoaderIndex} setError={setError}
+                    setRenderText={setRenderText} setRenderTrends={setRenderTrends} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Loading */}
+          {loading && <div className="flex justify-center items-center gap-2 h-[150px]">
+            {currentLoader}
+            <label
+              htmlFor="loading"
+              className="block text-lg font-medium text-blue-700"
+            >
+              {currentLoaderText}
+            </label>
+          </div>}
+
+          {error && <div className="flex justify-center items-center gap-2 h-[150px]">
+            <CircleAlert className="h-8 w-8 text-blue-600" />
+            <label
+              htmlFor="loading"
+              className="block text-lg font-medium text-blue-700"
+            >
+              Invalid Input! Please try a different prompt.
+            </label>
+          </div>}
+
+          {/* GPT Output */}
+          {renderText && <div className="mb-8 p-6 bg-blue-100 rounded-xl shadow-lg">
+            <div>
               <div className='flex items-center space-x-2'>
-                <Zap className="h-5 w-5 text-blue-600" />
+                <Lightbulb className="h-5 w-5 text-blue-600" />
                 <label
                   htmlFor="search"
                   className="block text-lg font-medium text-gray-700"
                 >
-                  Generate Insights
+                  Insights
                 </label>
               </div>
-              <div className="flex justify-center">
-                <AIPromptFieldButton setTextResult={setTextResult}
-                  setTrendingTopics={setTrendingTopics} setLatestInsights={setLatestInsights}
-                  setLoading={setLoading} setCurrentLoaderIndex={setCurrentLoaderIndex} setError={setError}
-                  setRenderText={setRenderText} setRenderTrends={setRenderTrends} />
+              <div className="mt-4 p-4 bg-white/80 rounded-lg shadow-sm border border-blue-200 max-h-[800px] overflow-y-auto">
+                {parse(textResult)}
               </div>
             </div>
+          </div>}
+
+          {/* Trending Topics and Latest Insights */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {renderTrends && <div className="lg:col-span-2 h-full">
+              <div className="bg-white p-6 rounded-xl shadow-sm h-full flex flex-col">
+                <div className="flex items-center space-x-2 mb-6">
+                  <TrendingUp className="h-5 w-5 text-blue-500" />
+                  <h2 className="text-xl font-bold text-gray-900">Trending Topics</h2>
+                </div>
+                <div className="space-y-4 flex-grow">
+                  {trendingTopics.map((topic, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <span className="font-medium">{topic.title}</span>
+                      <div className="flex items-center space-x-4">
+                        <span className="text-gray-600">Sources: {topic.sources}</span>
+                        <span className="text-green-600">{topic.trend}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>}
+
+            {renderTrends && <div className="h-full">
+              <div className="bg-white p-6 rounded-xl shadow-sm h-full flex flex-col">
+                <h2 className="text-xl font-bold text-gray-900 mb-6">Latest Insights</h2>
+                <div className="space-y-4 flex-grow">
+                  {latestInsights.map((insight, index) => (
+                    <div key={index} className="border-b pb-4 last:border-b-0">
+                      <h3 className="font-medium text-gray-900 mb-1">{insight.title}</h3>
+                      <div className="flex items-center text-sm text-gray-600">
+                        <span className="bg-gray-100 px-2 py-1 rounded">{insight.category}</span>
+                        <span className="ml-2">{insight.date}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>}
           </div>
-        </div>
 
-        {/* Loading */}
-        {loading && <div className="flex justify-center items-center gap-2 h-[150px]">
-          {currentLoader}
-          <label
-            htmlFor="loading"
-            className="block text-lg font-medium text-blue-700"
-          >
-            {currentLoaderText}
-          </label>
-        </div>}
+          {/* Feedback Section */}
+          <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
+              <div className="flex-grow space-y-2">
+                <div className="flex items-center space-x-2">
+                  <MessageSquareReplyIcon className="h-5 w-5 text-blue-600" />
+                  <label htmlFor="search" className="block text-lg font-medium text-gray-700">
+                    Provide Feedback
+                  </label>
+                  <Rating onRatingSelect={handleRatingSelect} />
+                </div>
 
-        {error && <div className="flex justify-center items-center gap-2 h-[150px]">
-          <CircleAlert className="h-8 w-8 text-blue-600" />
-          <label
-            htmlFor="loading"
-            className="block text-lg font-medium text-blue-700"
-          >
-            Invalid Input! Please try a different prompt.
-          </label>
-        </div>}
-
-        {/* GPT Output */}
-        {renderText && <div className="mb-8 p-6 bg-blue-100 rounded-xl shadow-lg">
-          <div>
-            <div className='flex items-center space-x-2'>
-              <Lightbulb className="h-5 w-5 text-blue-600" />
-              <label
-                htmlFor="search"
-                className="block text-lg font-medium text-gray-700"
+                {finalRating !== 0 && (
+                  <div className="mt-4">
+                    <p className="text-gray-700">Please select a feedback prompt:</p>
+                    <div className="space-y-2 space-x-4">
+                      {finalRating === 1 ? (
+                        feedbackOptions.positive.map((option, index) => (
+                          <button
+                            key={index}
+                            className="w-full sm:w-auto px-6 py-2 bg-gray-100 text-black font-medium rounded-lg shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors duration-200"
+                            onClick={() => handleFeedbackSelect(option)}
+                          >
+                            {option.text}
+                          </button>
+                        ))
+                      ) : finalRating === -1 ? (
+                        feedbackOptions.negative.map((option, index) => (
+                          <button
+                            key={index}
+                            className="w-full sm:w-auto px-6 py-2 bg-gray-100 text-black font-medium rounded-lg shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors duration-200"
+                            onClick={() => handleFeedbackSelect(option)}
+                          >
+                            {option.text}
+                          </button>
+                        ))
+                      ) : null}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <button
+                className="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 disabled:bg-blue-400 disabled:text-gray-200 disabled:cursor-not-allowed"
+                onClick={addData}
+                disabled={feedbackText === ""} // Disable if feedback text is empty
               >
-                Insights
-              </label>
-            </div>
-            <div className="mt-4 p-4 bg-white/80 rounded-lg shadow-sm border border-blue-200 max-h-[800px] overflow-y-auto">
-              {parse(textResult)}
+                Submit Feedback
+              </button>
             </div>
           </div>
-        </div>}
 
-        {/* Trending Topics and Latest Insights */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {renderTrends && <div className="lg:col-span-2 h-full">
-            <div className="bg-white p-6 rounded-xl shadow-sm h-full flex flex-col">
-              <div className="flex items-center space-x-2 mb-6">
-                <TrendingUp className="h-5 w-5 text-blue-500" />
-                <h2 className="text-xl font-bold text-gray-900">Trending Topics</h2>
-              </div>
-              <div className="space-y-4 flex-grow">
-                {trendingTopics.map((topic, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <span className="font-medium">{topic.title}</span>
-                    <div className="flex items-center space-x-4">
-                      <span className="text-gray-600">Sources: {topic.sources}</span>
-                      <span className="text-green-600">{topic.trend}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>}
 
-          {renderTrends && <div className="h-full">
-            <div className="bg-white p-6 rounded-xl shadow-sm h-full flex flex-col">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Latest Insights</h2>
-              <div className="space-y-4 flex-grow">
-                {latestInsights.map((insight, index) => (
-                  <div key={index} className="border-b pb-4 last:border-b-0">
-                    <h3 className="font-medium text-gray-900 mb-1">{insight.title}</h3>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <span className="bg-gray-100 px-2 py-1 rounded">{insight.category}</span>
-                      <span className="ml-2">{insight.date}</span>
-                    </div>
-                  </div>
-                ))}
+          {/* Content Section */}
+          <div className="max-w-7xl mx-auto px-4 py-12">
+
+            {/* Last Updated */}
+            <div className="mb-8 p-6 bg-white rounded-xl shadow-lg inline-block">
+              <div className='flex items-center space-x-2'>
+                <Clock className="h-5 w-5 text-blue-600" />
+                <span className="text-lg font-medium text-gray-700">
+                  Last Updated: <span className="text-blue-600">{(() => {
+                    const today = new Date();
+                    const lastSunday = new Date(today);
+                    lastSunday.setDate(today.getDate() - today.getDay());
+                    return lastSunday.toLocaleDateString('en-US', {
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric'
+                    });
+                  })()}</span>
+                </span>
               </div>
             </div>
-          </div>}
-        </div>
 
-        {/* Feedback Section */}
-        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
-          <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
-            <div className="flex-grow space-y-2">
-              <div className="flex items-center space-x-2">
-                <MessageSquareReplyIcon className="h-5 w-5 text-blue-600" />
-                <label htmlFor="search" className="block text-lg font-medium text-gray-700">
-                  Provide Feedback
-                </label>
-                <Rating onRatingSelect={handleRatingSelect} />
+            {/* Industry Radar */}
+            <Radar radarData={radarData} radarSearch={radarSearch} homePage={true}></Radar>
+
+            {/* Understanding the Radar */}
+            <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
+              <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+                <div className="flex items-center space-x-2">
+                  <Info className="h-5 w-5 text-blue-600" />
+                  <span className="text-lg font-medium text-gray-700">Understanding the Radar</span>
+                </div>
+                <ChevronDown className={`h-5 w-5 text-blue-600 transform transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
               </div>
 
-              {finalRating !== 0 && (
-                <div className="mt-4">
-                  <p className="text-gray-700">Please select a feedback prompt:</p>
-                  <div className="space-y-2 space-x-4">
-                    {finalRating === 1 ? (
-                      feedbackOptions.positive.map((option, index) => (
-                        <button
-                          key={index}
-                          className="w-full sm:w-auto px-6 py-2 bg-gray-100 text-black font-medium rounded-lg shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors duration-200"
-                          onClick={() => handleFeedbackSelect(option)}
-                        >
-                          {option.text}
-                        </button>
-                      ))
-                    ) : finalRating === -1 ? (
-                      feedbackOptions.negative.map((option, index) => (
-                        <button
-                          key={index}
-                          className="w-full sm:w-auto px-6 py-2 bg-gray-100 text-black font-medium rounded-lg shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors duration-200"
-                          onClick={() => handleFeedbackSelect(option)}
-                        >
-                          {option.text}
-                        </button>
-                      ))
-                    ) : null}
-                  </div>
+              {isExpanded && (
+                <div className="mt-4 text-gray-600 space-y-3 animate-fadeIn">
+                  <p>
+                    The Industry Radar visualization plots emerging technologies across three key dimensions:
+                  </p>
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li><span className="font-medium">Maturity (X-axis):</span> Measures from 0-5 how developed and ready for implementation the technology is in banking.</li>
+                    <li><span className="font-medium">Innovation Rate (Y-axis):</span> Indicates from 0-5 the pace of breakthrough developments in the last 6 months.</li>
+                    <li><span className="font-medium">Industry Relevance (Bubble Size):</span> Represents from 0-5 how critical the technology is expected to be for banking operations.</li>
+                  </ul>
+                  <p>
+                    Larger bubbles positioned in the upper-right quadrant represent technologies that are both mature and rapidly innovating, suggesting high strategic importance.
+                  </p>
                 </div>
               )}
             </div>
-            <button
-              className="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 disabled:bg-blue-400 disabled:text-gray-200 disabled:cursor-not-allowed"
-              onClick={addData}
-              disabled={feedbackText === ""} // Disable if feedback text is empty
-            >
-              Submit Feedback
-            </button>
-          </div>
-        </div>
-          
-
-      {/* Content Section */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
-
-        {/* Last Updated */}
-        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg inline-block">
-          <div className='flex items-center space-x-2'>
-            <Clock className="h-5 w-5 text-blue-600" />
-            <span className="text-lg font-medium text-gray-700">
-              Last Updated: <span className="text-blue-600">{(() => {
-                const today = new Date();
-                const lastSunday = new Date(today);
-                lastSunday.setDate(today.getDate() - today.getDay());
-                return lastSunday.toLocaleDateString('en-US', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric'
-                });
-              })()}</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Industry Radar */}
-        <Radar radarData={radarData} radarSearch={radarSearch} homePage={true}></Radar>
-
-        {/* Understanding the Radar */}
-        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
-          <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
-            <div className="flex items-center space-x-2">
-              <Info className="h-5 w-5 text-blue-600" />
-              <span className="text-lg font-medium text-gray-700">Understanding the Radar</span>
-            </div>
-            <ChevronDown className={`h-5 w-5 text-blue-600 transform transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
-          </div>
-
-          {isExpanded && (
-            <div className="mt-4 text-gray-600 space-y-3 animate-fadeIn">
-              <p>
-                The Industry Radar visualization plots emerging technologies across three key dimensions:
-              </p>
-              <ul className="list-disc pl-5 space-y-2">
-                <li><span className="font-medium">Maturity (X-axis):</span> Measures from 0-5 how developed and ready for implementation the technology is in banking.</li>
-                <li><span className="font-medium">Innovation Rate (Y-axis):</span> Indicates from 0-5 the pace of breakthrough developments in the last 6 months.</li>
-                <li><span className="font-medium">Industry Relevance (Bubble Size):</span> Represents from 0-5 how critical the technology is expected to be for banking operations.</li>
-              </ul>
-              <p>
-                Larger bubbles positioned in the upper-right quadrant represent technologies that are both mature and rapidly innovating, suggesting high strategic importance.
-              </p>
-            </div>
-          )}
-        </div>
 
 
-{/* Stats Cards */}
-<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <div className="bg-blue-50 p-6 rounded-xl">
-              <Globe className="h-8 w-8 text-blue-600 mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900">Robust Reach</h3>
-              <p className="text-gray-600">Coverage across 1000+ data sources</p>
-            </div>
-            <div className="bg-blue-100 p-6 rounded-xl">
-              <img src={rbcLogo} alt="rbc-logo" className='h-10 w-18 -ml-[18px] mb-2'></img>
-              <h3 className="text-2xl font-bold text-gray-900">Built for Banking</h3>
-              <p className="text-gray-600">Designed for RBC analysts</p>
-            </div>
-            <div className="bg-blue-200 p-6 rounded-xl">
-              <BarChart className="h-8 w-8 text-blue-600 mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900">Weekly Updates</h3>
-              <p className="text-gray-600">Insights updated every week</p>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+              <div className="bg-blue-50 p-6 rounded-xl">
+                <Globe className="h-8 w-8 text-blue-600 mb-4" />
+                <h3 className="text-2xl font-bold text-gray-900">Robust Reach</h3>
+                <p className="text-gray-600">Coverage across 1000+ data sources</p>
+              </div>
+              <div className="bg-blue-100 p-6 rounded-xl">
+                <img src={rbcLogo} alt="rbc-logo" className='h-10 w-18 -ml-[18px] mb-2'></img>
+                <h3 className="text-2xl font-bold text-gray-900">Built for Banking</h3>
+                <p className="text-gray-600">Designed for RBC analysts</p>
+              </div>
+              <div className="bg-blue-200 p-6 rounded-xl">
+                <BarChart className="h-8 w-8 text-blue-600 mb-4" />
+                <h3 className="text-2xl font-bold text-gray-900">Weekly Updates</h3>
+                <p className="text-gray-600">Insights updated every week</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
         {/* Scrape Fields Section */}
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">

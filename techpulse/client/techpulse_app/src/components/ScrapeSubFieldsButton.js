@@ -8,7 +8,7 @@ const ScrapeSubFieldsButton = ({ setError, setSuccess }) => {
       "⚠️ Warning: Are you sure you want to run the scraper? This may take time!"
     );
     if (!isConfirmed) return;
-    
+
     setError(false);
     setSuccess(false);
 

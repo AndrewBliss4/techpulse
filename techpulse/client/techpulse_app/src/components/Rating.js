@@ -41,18 +41,16 @@ const Rating = ({ onRatingSelect }) => {
     <div className="flex space-x-2">
       <ThumbsUp
         size={20}
-        className={`cursor-pointer transition-colors duration-200 ${
-          rating === 1 || hoverUp ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
-        }`}
+        className={`cursor-pointer transition-colors duration-200 ${rating === 1 || hoverUp ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+          }`}
         onClick={() => handleClick(1)}
         onMouseEnter={handleMouseEnterUp}
         onMouseLeave={handleMouseLeaveUp}
       />
       <ThumbsDown
         size={20}
-        className={`cursor-pointer transition-colors duration-200 ${
-          rating === -1 || hoverDown ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
-        }`}
+        className={`cursor-pointer transition-colors duration-200 ${rating === -1 || hoverDown ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+          }`}
         onClick={() => handleClick(-1)}
         onMouseEnter={handleMouseEnterDown}
         onMouseLeave={handleMouseLeaveDown}
