@@ -23,12 +23,12 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         console.error("Field not found.");
         return;
       }
-  
+
       const response = await axios.post('http://localhost:4000/gpt-subfield', {
         fieldName: field.field_name,
         fieldId: field.field_id
       });
-  
+
       if (response.status === 200) {
         alert("Subfields generated successfully!");
         // Optionally, you can refresh the subfield data here
@@ -118,6 +118,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     if (isCurrentlySelected) {
       // If clicking the already selected technology, deselect it
       setSelectedTechnology(null);
+      setSelectedFieldId(null); // Clear the selected field ID
       // Show all technologies again
       const allHistoricalData = radarData
         .filter(d => d.subfield_id === null) // Filter for null subfield_id
@@ -134,6 +135,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     } else {
       // If selecting a different technology (or first selection)
       setSelectedTechnology(point.field_name);
+      setSelectedFieldId(point.field_id); // Set the selected field ID
       setData(data.map(d => ({
         ...d,
         fillOpacity: d.field_id === point.field_id ? 0.7 : 0.1,
@@ -306,11 +308,10 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                           data={[point]}
                           fill={colors[index % colors.length]}
                           fillOpacity={0.7}
-                          onClick={() => handleFieldClick(point.field_id)} // Ensure it triggers on click
+                          onClick={() => handleFilterClick(point)} // Call handleFilterClick instead of handleFieldClick
                           cursor="pointer"
                           shape="circle"
                         />
-
                       ))}
                     </ScatterChart>
                   </ResponsiveContainer>
