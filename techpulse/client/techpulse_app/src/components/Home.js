@@ -15,6 +15,7 @@ import { quantum } from 'ldrs'
 import { grid } from 'ldrs';
 import { helix } from 'ldrs';
 import ScrapeFieldsButton from './ScrapeFieldsButton.js';
+import ScrapeSubFieldsButton from './ScrapeSubFieldsButton.js';
 
 tailChase.register();
 quantum.register();
@@ -116,7 +117,7 @@ const Home = () => {
   useEffect(() => {
     fetch(recentInsight)
       .then((r) => r.text())
-      .then(text  => {
+      .then(text => {
         if (text.trim() !== '') {
           setTextResult(text);
           setRenderText(true);
@@ -708,6 +709,31 @@ const Home = () => {
             {/* Align the button on the right */}
             <div className="flex justify-end">
               <ScrapeFieldsButton
+                setError={setError}
+                setSuccess={setSuccess}
+              />
+            </div>
+          </div>
+          {success && <p>Scraping was successful!</p>}
+        </div>
+
+        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
+          <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
+            <div className="flex-grow space-y-2">
+              <div className='flex items-center space-x-2'>
+                <Shovel className="h-5 w-5 text-blue-600" />
+                <label
+                  htmlFor="search"
+                  className="block text-lg font-medium text-gray-700"
+                >
+                  Scrape Sub Fields
+                </label>
+              </div>
+            </div>
+
+            {/* Align the button on the right */}
+            <div className="flex justify-end">
+              <ScrapeSubFieldsButton
                 setError={setError}
                 setSuccess={setSuccess}
               />
