@@ -142,52 +142,52 @@ const AIPromptFieldButton = ({
       setTextResult(insightResult);
 
       // Step 5: Generate trends with field_id = 0
-      const trendsResponse = await fetch('http://localhost:4000/generate-insight-trends', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      // const trendsResponse = await fetch('http://localhost:4000/generate-insight-trends', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
         //body: JSON.stringify({ fieldId: 0 }), // Pass field_id = 0
-      });
+      //});
 
-      if (!trendsResponse.ok) {
-        throw new Error(`Trends generation failed: ${trendsResponse.statusText}`);
-      }
+      // if (!trendsResponse.ok) {
+      //   throw new Error(`Trends generation failed: ${trendsResponse.statusText}`);
+      // }
 
-      const trendsData = await trendsResponse.json();
-      console.log("Trends generated successfully:", trendsData.trends);
+      // const trendsData = await trendsResponse.json();
+      // console.log("Trends generated successfully:", trendsData.trends);
 
-      let trendsResult = trendsData.trends;
+      // let trendsResult = trendsData.trends;
 
       // Handle trends
-      let tempTrendingTopics = [];
-      for (const entry of trendsResult.split("/")) {
-        tempTrendingTopics.push(JSON.parse(entry));
-      }
+      // let tempTrendingTopics = [];
+      // for (const entry of trendsResult.split("/")) {
+      //   tempTrendingTopics.push(JSON.parse(entry));
+      // }
 
-      setTrendingTopics(tempTrendingTopics);
+      // setTrendingTopics(tempTrendingTopics);
 
       // Step 6: Generate top insights with field_id = 0
-      const topResponse = await fetch('http://localhost:4000/generate-insight-top', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      // const topResponse = await fetch('http://localhost:4000/generate-insight-top', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
         //body: JSON.stringify({ fieldId: 0 }), // Pass field_id = 0
-      });
+      // });
 
-      if (!topResponse.ok) {
-        throw new Error(`Top insights generation failed: ${topResponse.statusText}`);
-      }
+      // if (!topResponse.ok) {
+      //   throw new Error(`Top insights generation failed: ${topResponse.statusText}`);
+      // }
 
-      const topData = await topResponse.json();
-      console.log("Top insights generated successfully:", topData.top);
+      // const topData = await topResponse.json();
+      // console.log("Top insights generated successfully:", topData.top);
 
-      let topResult = topData.top;
+      // let topResult = topData.top;
 
       // Handle Top Insights
-      let tempInsights = [];
-      for (const entry of topResult.split("/")) {
-        tempInsights.push(JSON.parse(entry));
-      }
+      // let tempInsights = [];
+      // for (const entry of topResult.split("/")) {
+      //   tempInsights.push(JSON.parse(entry));
+      // }
 
-      setLatestInsights(tempInsights);
+      // setLatestInsights(tempInsights);
 
       // Final success message
       setGeneratedText(`Fields updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
@@ -196,7 +196,7 @@ const AIPromptFieldButton = ({
       setGeneratedText(`Error: ${error.message}`);
     } finally {
       setRenderText(true);
-      setRenderTrends(true);
+      // setRenderTrends(true);
       setIsLoading(false);
       setLoading(false);
     }
