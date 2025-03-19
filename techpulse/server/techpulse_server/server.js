@@ -729,24 +729,9 @@ app.post("/gpt-subfield", async (req, res) => {
       console.log(`Metrics for '${subfieldName}' inserted successfully.`);
     }
 
-    // After processing subfields, proceed to generate insights
-    const insightResponse = await fetch('http://localhost:4000/generate-insight', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fieldId: fieldId }), // Pass the fieldId to generate insights
-    });
-
-    if (!insightResponse.ok) {
-      throw new Error('Failed to generate insights.');
-    }
-
-    const insightData = await insightResponse.json();
-    console.log('Insight generated successfully:', insightData.insight);
-
-    // Return the result of the insight generation
+    // Return success response after processing subfields
     res.status(200).json({ 
       message: "Subfields processed successfully.",
-      insight: insightData.insight,
     });
 
   } catch (err) {
