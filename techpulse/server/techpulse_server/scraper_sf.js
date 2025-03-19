@@ -132,7 +132,7 @@ async function main() {
 
   console.log("Fields and subfields retrieved:", fields);
 
-  const dbFolderPath = path.join(__dirname, "../../client/techpulse_app/public");
+  const dbFolderPath = path.join(__dirname, "/scrape_db");
 
   if (!fs.existsSync(dbFolderPath)) {
     console.log("Creating db folder...");

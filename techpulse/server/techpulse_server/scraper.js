@@ -3,7 +3,7 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const { XMLParser } = require("fast-xml-parser");
-const amountScraped=5;
+const amountScraped = 5;
 console.log("Starting script...");
 // PostgreSQL Configuration
 const DB_CONFIG = {
@@ -117,12 +117,12 @@ async function main() {
 
   if (fields.length === 0) {
     console.error("No fields found in the database. Exiting.");
-    return;
+    process.exit(1); // Exit with an error code
   }
 
   console.log("Fields retrieved:", fields);
 
-  const dbFolderPath = path.join(__dirname, "../../client/techpulse_app/public");
+  const dbFolderPath = path.join(__dirname, "/scrape_db");
 
   if (!fs.existsSync(dbFolderPath)) {
     console.log("Creating db folder...");
@@ -146,7 +146,8 @@ async function main() {
 
   console.log("Saving updated dataset...");
   fs.writeFileSync(jsonFilePath, JSON.stringify(updatedArticles, null, 4), "utf8");
-  console.log(`Dataset updated successfully at: ${jsonFilePath}`);
+  console.log("Dataset updated successfully.");
+
 }
 
 // Run the script
