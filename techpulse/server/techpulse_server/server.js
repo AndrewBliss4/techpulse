@@ -322,6 +322,7 @@ let promptAIField = async () => {
     return "ERROR: Unable to process request.";
   }
 };
+
 // New endpoint
 app.post("/gpt-field", async (req, res) => {
   let aiResponse = await promptAIField();
@@ -551,6 +552,8 @@ const generateInsight = async (type) => {
   } catch (error) {
     console.error("Error:", error);
     return "ERROR: Unable to process request.";
+  } finally {
+    console.log("Insight generation completed.");
   }
 }
 
@@ -1053,29 +1056,29 @@ app.post("/generate-sub-insight", async (req, res) => {
     }
 });
 
-app.post("/generate-insight-trends", async (req, res) => {
-  const { fieldId } = req.body;
-  let aiResponse = await generateInsight("trends", fieldId);
-  //console.log("Raw AI Response:\n", aiResponse);
+// app.post("/generate-insight-trends", async (req, res) => {
+//   const { fieldId } = req.body;
+//   let aiResponse = await generateInsight("trends", fieldId);
+//   //console.log("Raw AI Response:\n", aiResponse);
 
-  if (aiResponse === "NO_METRICS") {
-    return res.status(200).send("No metrics available for insight generation.");
-  }
+//   if (aiResponse === "NO_METRICS") {
+//     return res.status(200).send("No metrics available for insight generation.");
+//   }
 
-  res.status(200).json({ trends: aiResponse });
-});
+//   res.status(200).json({ trends: aiResponse });
+// });
 
-app.post("/generate-insight-top", async (req, res) => {
-  const { fieldId } = req.body;
-  let aiResponse = await generateInsight("top", fieldId);
-  //console.log("Raw AI Response:\n", aiResponse);
+// app.post("/generate-insight-top", async (req, res) => {
+//   const { fieldId } = req.body;
+//   let aiResponse = await generateInsight("top", fieldId);
+//   //console.log("Raw AI Response:\n", aiResponse);
 
-  if (aiResponse === "NO_METRICS") {
-    return res.status(200).send("No metrics available for insight generation.");
-  }
+//   if (aiResponse === "NO_METRICS") {
+//     return res.status(200).send("No metrics available for insight generation.");
+//   }
 
-  res.status(200).json({ top: aiResponse });
-});
+//   res.status(200).json({ top: aiResponse });
+// });
 
 app.post('/api/subfields', async (req, res) => {
   const { fieldId } = req.body;

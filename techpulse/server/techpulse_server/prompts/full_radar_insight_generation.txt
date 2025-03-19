@@ -48,7 +48,9 @@ Format the report with clear, consistent headings, and focus on professionalism 
 Topic 1: Recent Developments
 Topic 2: Implications for Banking & RBC
 Topic 3: Predictions for the Future
+
 For each of the TOP 3 most important technologies, present the insight in the following format:
+
 <h1 class="text-2xl font-bold text-blue-600 mb-4">[Technology Name]</h1>
 <strong class="text-xl font-semibold text-gray-600 mb-2 block">Recent Developments</strong>
 <p class="text-gray-500 leading-relaxed mb-4">[Provide a detailed account of the most recent developments, supported by the data provided above. Include metrics and any important context that defines these developments as either incremental, transformative, or revolutionary.]</p>
