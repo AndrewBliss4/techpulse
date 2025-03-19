@@ -2,7 +2,7 @@ import React from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { ArrowDown, RadarIcon, TrendingUp } from 'lucide-react';
+import { ArrowDown, Link, RadarIcon, TrendingUp, link } from 'lucide-react';
 import SubfieldChart from './SubfieldChart';
 import { tailChase } from 'ldrs';
 
@@ -611,9 +611,19 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
                 {articleSources[selectedTechnology] && articleSources[selectedTechnology].length > 0 ? (
                   articleSources[selectedTechnology].map((article, index) => (
                     <div key={index} style={{ marginBottom: "5px" }}>
-                      🔗 <a href={article.link} target="_blank" rel="noopener noreferrer" style={{ color: "blue", textDecoration: "underline" }}>
-                        {article.title}
-                      </a>
+                      <span style={{ display: "inline-flex", alignItems: "center" }}> 
+                        <Link color="#1E90FF" // Nicer blue (DodgerBlue)
+                          strokeWidth={2} // Slightly thicker for visibility
+                        /> 
+                        <a 
+                          href={article.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          style={{ color: "blue", textDecoration: "underline", marginLeft: "5px", display: "inline" }}
+                        >
+                          {article.title}
+                        </a>
+                      </span>
                     </div>
                   ))
                 ) : (
