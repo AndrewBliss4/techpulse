@@ -51,28 +51,26 @@ Please ensure the following:
 Focus primarily on fields that are relevant to banking and highlight the best scoring fields, fields with large velocities, and fields with large potential for the future of banking. Make direct references to the rationale of your fields of note.
 Your insights should be presented clearly and professionally.
 For each metric (Interest, Innovation, Relevance), provide a brief description of its current status based on the most recent metric and its velocity.
-Your response should provide a float value representing the calculated velocity and its impact on the trend.
 
-Key Considerations:
-Interest (metric_1):
-Velocity calculation: Compare the current value of metric_1 with the previous value to determine the rate of increase or decrease.
-Innovation (metric_2):
-Velocity calculation: Compare the current value of metric_2 with the previous value to assess how much innovation is accelerating or slowing down.
-Relevance to Banking (metric_3):
-Velocity calculation: Evaluate the change in metric_3 and its implications for the banking sector's focus on this metric.
-present the insight in the following format:
+Key Focuses:
+Executive Summary: Trends and Implications in Banking Innovations
+-Interest Analysis
+-Innovation Analysis
+-Relevance to Banking Analysis
+Key Fields of Interest and Their Implications
+Conclusion and Recommendations:
+-Strategic Focus Areas
+-Monitoring Emerging Trends
+
+
+YOUR RESPONSE MUST NOT USE MARKUP. instead, present your response in the following HTML:
 <h1 class="text-2xl font-bold text-blue-600 mb-4"></h1> 
-<strong class="text-xl font-semibold text-gray-600 mb-2 block"></strong>
-<p class="text-gray-500 leading-relaxed mb-4"></p> 
-
-<strong class="text-xl font-semibold text-gray-600 mb-2 block"></strong>
-<p class="text-gray-500 leading-relaxed mb-4"></p> 
-
 <strong class="text-xl font-semibold text-gray-600 mb-2 block"></strong>
 <p class="text-gray-500 leading-relaxed mb-4"></p> 
 Additional Requirements:
 Ensure the output is formal, factual, and devoid of any overly casual or speculative language.
 Provide actionable recommendations if applicable.
 Include at least 2000 words in total.
+YOU ARE NOT ALLOWED TO say metric_1, metric_2, or metric_3 in your response.
 Focus on maintaining a factual, professional tone throughout the document to ensure it is suitable for submission to RBC’s risk analysts and investment analysts. You do not need to write about each field, in fact it is recommended for you to choose fields at most 6 fields with interesting metrics and developments for the context of banking
 Do not include unnecessary HTML elements or irrelevant content. Your focus should be on providing concise, actionable insights supported by the provided metrics and any relevant industry knowledge.
