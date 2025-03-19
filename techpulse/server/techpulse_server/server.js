@@ -958,10 +958,14 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
       SELECT s.subfield_id, s.subfield_name, t.metric_1, t.metric_2, t.metric_3, t.rationale 
       FROM Subfield s 
       JOIN TIMEDMETRICS t ON s.subfield_id = t.subfield_id 
-      WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE subfield_id = s.subfield_id) 
-        AND s.subfield_id = $1
-        AND s.field_id = $2
-        AND t.subfield_id NOT = NULL
+      WHERE t.metric_date = (
+          SELECT MAX(metric_date) 
+          FROM TIMEDMETRICS 
+          WHERE subfield_id = s.subfield_id
+      ) 
+      AND s.subfield_id = $1
+      AND s.field_id = $2
+      AND t.subfield_id IS NOT NULL;
     `, [subfield_id, field_id]);
 
     if (subfieldQuery.rowCount === 0) {
@@ -1015,7 +1019,7 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
       .replace("{FIELD_DATA}", subfieldData)
       .replace("{ARTICLES_DATA}", articlesData);
 
-    //console.log(`Generated Prompt for ${subfieldName}:\n`, dynamicPrompt);
+    console.log(`Generated Prompt for ${subfieldName}:\n`, dynamicPrompt);
 
     // Call OpenAI API for the current subfield
     const response = await openai.chat.completions.create({
@@ -1027,7 +1031,7 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
     });
 
     const aiResponse = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
-    console.log(`Raw AI Response for ${subfieldName}:\n`, aiResponse);
+    //console.log(`Raw AI Response for ${subfieldName}:\n`, aiResponse);
 
     if (aiResponse === "NO_VALID_AI_RESPONSE") {
       console.warn(`AI response was invalid for subfield: ${subfieldName}`);
