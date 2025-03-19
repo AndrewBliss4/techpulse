@@ -408,88 +408,7 @@ const Home = () => {
               Real-time analytics and insights from articles, industry reports, and competitors
             </p>
           </div>
-
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <div className="bg-blue-50 p-6 rounded-xl">
-              <Globe className="h-8 w-8 text-blue-600 mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900">Robust Reach</h3>
-              <p className="text-gray-600">Coverage across 1000+ data sources</p>
-            </div>
-            <div className="bg-blue-100 p-6 rounded-xl">
-              <img src={rbcLogo} alt="rbc-logo" className='h-10 w-18 -ml-[18px] mb-2'></img>
-              <h3 className="text-2xl font-bold text-gray-900">Built for Banking</h3>
-              <p className="text-gray-600">Designed for RBC analysts</p>
-            </div>
-            <div className="bg-blue-200 p-6 rounded-xl">
-              <BarChart className="h-8 w-8 text-blue-600 mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900">Weekly Updates</h3>
-              <p className="text-gray-600">Insights updated every week</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-
-      {/* Content Section */}
-
-      <div className="max-w-7xl mx-auto px-4 py-12">
-
-        {/* Last Updated */}
-
-        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg inline-block">
-          <div className='flex items-center space-x-2'>
-            <Clock className="h-5 w-5 text-blue-600" />
-            <span className="text-lg font-medium text-gray-700">
-              Last Updated: <span className="text-blue-600">{(() => {
-                const today = new Date();
-                const lastSunday = new Date(today);
-                lastSunday.setDate(today.getDate() - today.getDay());
-                return lastSunday.toLocaleDateString('en-US', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric'
-                });
-              })()}</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Industry Radar */}
-
-
-        <Radar radarData={radarData} radarSearch={radarSearch} homePage={true}></Radar>
-
-
-        {/* Understanding the Radar */}
-
-        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
-          <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
-            <div className="flex items-center space-x-2">
-              <Info className="h-5 w-5 text-blue-600" />
-              <span className="text-lg font-medium text-gray-700">Understanding the Radar</span>
-            </div>
-            <ChevronDown className={`h-5 w-5 text-blue-600 transform transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
-          </div>
-
-          {isExpanded && (
-            <div className="mt-4 text-gray-600 space-y-3 animate-fadeIn">
-              <p>
-                The Industry Radar visualization plots emerging technologies across three key dimensions:
-              </p>
-              <ul className="list-disc pl-5 space-y-2">
-                <li><span className="font-medium">Maturity (X-axis):</span> Measures from 0-5 how developed and ready for implementation the technology is in banking.</li>
-                <li><span className="font-medium">Innovation Rate (Y-axis):</span> Indicates from 0-5 the pace of breakthrough developments in the last 6 months.</li>
-                <li><span className="font-medium">Industry Relevance (Bubble Size):</span> Represents from 0-5 how critical the technology is expected to be for banking operations.</li>
-              </ul>
-              <p>
-                Larger bubbles positioned in the upper-right quadrant represent technologies that are both mature and rapidly innovating, suggesting high strategic importance.
-              </p>
-            </div>
-          )}
-        </div>
-
+        {/* Insight Generation Container */}
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
             <div className="flex-grow space-y-2">
@@ -502,33 +421,6 @@ const Home = () => {
                   Generate Insights
                 </label>
               </div>
-              {/* <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="search"
-                  type="text"
-                  placeholder="Enter keywords to generate..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg 
-                          shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                          text-sm placeholder:text-gray-400"
-                />
-              </div>
-            </div>
-            <button
-              type="submit"
-              className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-medium 
-                     rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 
-                     focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200
-                     disabled:bg-blue-400 disabled:text-gray-200 disabled:cursor-not-allowed"
-              onClick={handleSubmit}
-              disabled={loading}
-            >
-              View Insights
-            </button> */}
               <div className="flex justify-center">
                 <AIPromptFieldButton setTextResult={setTextResult}
                   setTrendingTopics={setTrendingTopics} setLatestInsights={setLatestInsights}
@@ -540,7 +432,6 @@ const Home = () => {
         </div>
 
         {/* Loading */}
-
         {loading && <div className="flex justify-center items-center gap-2 h-[150px]">
           {currentLoader}
           <label
@@ -561,8 +452,7 @@ const Home = () => {
           </label>
         </div>}
 
-        {/*GPT Output*/}
-
+        {/* GPT Output */}
         {renderText && <div className="mb-8 p-6 bg-blue-100 rounded-xl shadow-lg">
           <div>
             <div className='flex items-center space-x-2'>
@@ -575,16 +465,13 @@ const Home = () => {
               </label>
             </div>
             <div className="mt-4 p-4 bg-white/80 rounded-lg shadow-sm border border-blue-200 max-h-[800px] overflow-y-auto">
-              {/* <p className="text-gray-700 leading-relaxed"> */}
               {parse(textResult)}
-              {/* </p> */}
             </div>
           </div>
-        </div>
-        }
+        </div>}
 
+        {/* Trending Topics and Latest Insights */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Trending Topics */}
           {renderTrends && <div className="lg:col-span-2 h-full">
             <div className="bg-white p-6 rounded-xl shadow-sm h-full flex flex-col">
               <div className="flex items-center space-x-2 mb-6">
@@ -605,7 +492,6 @@ const Home = () => {
             </div>
           </div>}
 
-          {/* Latest Insights */}
           {renderTrends && <div className="h-full">
             <div className="bg-white p-6 rounded-xl shadow-sm h-full flex flex-col">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Latest Insights</h2>
@@ -624,24 +510,7 @@ const Home = () => {
           </div>}
         </div>
 
-
-        {/*
-        <div className='databaseTest'>
-          <h1>Data from PostgreSQL</h1>
-          <ul>
-              {data.map(item => (
-                <li key={item.id}>{item.field_id} - {item.field_name}</li>
-              ))}
-          </ul>
-          <button onClick={addData}>Add Data</button>
-          
-        </div>
-        */}
-
-        <br></br>
-
-        {/*FeedBack Section*/}
-
+        {/* Feedback Section */}
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
             <div className="flex-grow space-y-2">
@@ -691,7 +560,82 @@ const Home = () => {
             </button>
           </div>
         </div>
+          
 
+      {/* Content Section */}
+      <div className="max-w-7xl mx-auto px-4 py-12">
+
+        {/* Last Updated */}
+        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg inline-block">
+          <div className='flex items-center space-x-2'>
+            <Clock className="h-5 w-5 text-blue-600" />
+            <span className="text-lg font-medium text-gray-700">
+              Last Updated: <span className="text-blue-600">{(() => {
+                const today = new Date();
+                const lastSunday = new Date(today);
+                lastSunday.setDate(today.getDate() - today.getDay());
+                return lastSunday.toLocaleDateString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric'
+                });
+              })()}</span>
+            </span>
+          </div>
+        </div>
+
+        {/* Industry Radar */}
+        <Radar radarData={radarData} radarSearch={radarSearch} homePage={true}></Radar>
+
+        {/* Understanding the Radar */}
+        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
+          <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+            <div className="flex items-center space-x-2">
+              <Info className="h-5 w-5 text-blue-600" />
+              <span className="text-lg font-medium text-gray-700">Understanding the Radar</span>
+            </div>
+            <ChevronDown className={`h-5 w-5 text-blue-600 transform transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+          </div>
+
+          {isExpanded && (
+            <div className="mt-4 text-gray-600 space-y-3 animate-fadeIn">
+              <p>
+                The Industry Radar visualization plots emerging technologies across three key dimensions:
+              </p>
+              <ul className="list-disc pl-5 space-y-2">
+                <li><span className="font-medium">Maturity (X-axis):</span> Measures from 0-5 how developed and ready for implementation the technology is in banking.</li>
+                <li><span className="font-medium">Innovation Rate (Y-axis):</span> Indicates from 0-5 the pace of breakthrough developments in the last 6 months.</li>
+                <li><span className="font-medium">Industry Relevance (Bubble Size):</span> Represents from 0-5 how critical the technology is expected to be for banking operations.</li>
+              </ul>
+              <p>
+                Larger bubbles positioned in the upper-right quadrant represent technologies that are both mature and rapidly innovating, suggesting high strategic importance.
+              </p>
+            </div>
+          )}
+        </div>
+
+
+{/* Stats Cards */}
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <div className="bg-blue-50 p-6 rounded-xl">
+              <Globe className="h-8 w-8 text-blue-600 mb-4" />
+              <h3 className="text-2xl font-bold text-gray-900">Robust Reach</h3>
+              <p className="text-gray-600">Coverage across 1000+ data sources</p>
+            </div>
+            <div className="bg-blue-100 p-6 rounded-xl">
+              <img src={rbcLogo} alt="rbc-logo" className='h-10 w-18 -ml-[18px] mb-2'></img>
+              <h3 className="text-2xl font-bold text-gray-900">Built for Banking</h3>
+              <p className="text-gray-600">Designed for RBC analysts</p>
+            </div>
+            <div className="bg-blue-200 p-6 rounded-xl">
+              <BarChart className="h-8 w-8 text-blue-600 mb-4" />
+              <h3 className="text-2xl font-bold text-gray-900">Weekly Updates</h3>
+              <p className="text-gray-600">Insights updated every week</p>
+            </div>
+          </div>
+        </div>
+      </div>
+        {/* Scrape Fields Section */}
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
             <div className="flex-grow space-y-2">
@@ -717,6 +661,7 @@ const Home = () => {
           {success && <p>Scraping was successful!</p>}
         </div>
 
+        {/* Scrape Sub Fields Section */}
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
           <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
             <div className="flex-grow space-y-2">
@@ -741,11 +686,9 @@ const Home = () => {
           </div>
           {success && <p>Scraping was successful!</p>}
         </div>
-
       </div>
     </div>
-
   );
 }
 
-export default Home
+export default Home;
