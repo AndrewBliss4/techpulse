@@ -52,6 +52,7 @@ const Home = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [success, setSuccess] = useState(false); // Make sure this is defined
 
+  const [isScrapeExpanded, setIsScrapeExpanded] = useState(false);
 
   //loader states
 
@@ -633,59 +634,65 @@ const Home = () => {
               <p className="text-gray-600">Insights updated every week</p>
             </div>
           </div>
+          <br></br>
+                  {/* Scraping Tools Section */}
+        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
+          <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsScrapeExpanded(!isScrapeExpanded)}>
+            <div className="flex items-center space-x-2">
+              <Shovel className="h-5 w-5 text-blue-600" />
+              <span className="text-lg font-medium text-gray-700">Manual Scraping</span>
+            </div>
+            <ChevronDown className={`h-5 w-5 text-blue-600 transform transition-transform duration-200 ${isScrapeExpanded ? 'rotate-180' : ''}`} />
+          </div>
+
+          {isScrapeExpanded && (
+            <div className="mt-4 space-y-6 animate-fadeIn">
+              {/* Scrape Fields Section */}
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
+                  <div className="flex-grow space-y-2">
+                    <div className='flex items-center space-x-2'>
+                      <label className="block text-lg font-medium text-gray-700 flex items-center">
+                        Scrape Fields
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <ScrapeFieldsButton
+                      setError={setError}
+                      setSuccess={setSuccess}
+                    />
+                  </div>
+                </div>
+                {success && <p className="mt-2 text-green-600">Scraping was successful!</p>}
+              </div>
+
+              {/* Scrape Sub Fields Section */}
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
+                  <div className="flex-grow space-y-2">
+                    <div className='flex items-center space-x-2'>
+                      <label className="block text-lg font-medium text-gray-700">
+                        Scrape Sub Fields
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <ScrapeSubFieldsButton
+                      setError={setError}
+                      setSuccess={setSuccess}
+                    />
+                  </div>
+                </div>
+                {success && <p className="mt-2 text-green-600">Scraping was successful!</p>}
+              </div>
+            </div>
+          )}
+        </div>
         </div>
       </div>
-        {/* Scrape Fields Section */}
-        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
-          <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
-            <div className="flex-grow space-y-2">
-              <div className='flex items-center space-x-2'>
-                <Shovel className="h-5 w-5 text-blue-600" />
-                <label
-                  htmlFor="search"
-                  className="block text-lg font-medium text-gray-700"
-                >
-                  Scrape Fields
-                </label>
-              </div>
-            </div>
-
-            {/* Align the button on the right */}
-            <div className="flex justify-end">
-              <ScrapeFieldsButton
-                setError={setError}
-                setSuccess={setSuccess}
-              />
-            </div>
-          </div>
-          {success && <p>Scraping was successful!</p>}
-        </div>
-
-        {/* Scrape Sub Fields Section */}
-        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
-          <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
-            <div className="flex-grow space-y-2">
-              <div className='flex items-center space-x-2'>
-                <Shovel className="h-5 w-5 text-blue-600" />
-                <label
-                  htmlFor="search"
-                  className="block text-lg font-medium text-gray-700"
-                >
-                  Scrape Sub Fields
-                </label>
-              </div>
-            </div>
-
-            {/* Align the button on the right */}
-            <div className="flex justify-end">
-              <ScrapeSubFieldsButton
-                setError={setError}
-                setSuccess={setSuccess}
-              />
-            </div>
-          </div>
-          {success && <p>Scraping was successful!</p>}
-        </div>
       </div>
     </div>
   );
