@@ -566,7 +566,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         overflowY: 'auto',
         minHeight: '100px'
       }}>
-        <p style={{
+        <div style={{
           margin: 0,
           color: '#666',
         }}>
@@ -578,7 +578,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               <strong>Sources:</strong> {clickedDataPoint.source ?
                 <a href={clickedDataPoint.source} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                   {clickedDataPoint.source}
-                </a> :
+                </a > : 
                 "No sources available."}
             </>
             : (selectedTechnology
@@ -595,8 +595,9 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                     </div>
                   ))
                 ) : (
-                  "No sources available."
+                  " No sources available. "
                 )}
+                <br></br>
                 <button
                   onClick={() => handleGenerateSubfields(selectedTechnology)}
                   style={{
@@ -617,7 +618,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               : "Click a technology to show its description and rationale."
             )
           }
-        </p>
+        </div>
       </div>
       {selectedFieldId && (
         <SubfieldChart

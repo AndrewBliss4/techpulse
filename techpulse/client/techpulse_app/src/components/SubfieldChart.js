@@ -13,6 +13,7 @@ import {
 } from 'recharts';
 import parse from 'html-react-parser'; // Import the html-react-parser library
 import axios from 'axios';
+import { ChartScatter } from 'lucide-react';
 import { tailChase, quantum, grid, helix } from 'ldrs';
 
 // Register the loaders
@@ -291,7 +292,23 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
 
   // If no subfield data, show a message
   if (!filteredData.length) {
-    return <div>No subfield data available for the selected field.</div>;
+    return <div>
+      <div style={{
+        padding: '20px',
+        backgroundColor: '#f8f9fa',
+        border: '1px solid #e1e4e8',
+        borderRadius: '6px',
+        textAlign: 'center'
+      }}>
+        <p style={{
+          fontSize: '16px',
+          color: '#666',
+          margin: 0
+        }}>
+          No subfield data is currently available for the selected field.
+        </p>
+      </div>
+      </div>;
   }
 
   const loaders = [
@@ -316,7 +333,10 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
   return (
     <div style={{ marginTop: '20px' }}>
       {/* Dynamic Heading with Field Name */}
-      <h3>Subfields for {fieldName}</h3>
+      <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b pb-2 flex items-center">
+        <ChartScatter className="w-6 h-6 text-blue-600 mr-2" />
+        Subfields for <span className="text-blue-600 ml-1">{fieldName}</span>
+      </h2>
 
       {/* Insight Generation Button */}
       <button
