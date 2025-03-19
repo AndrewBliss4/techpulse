@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScatterChart,
   Scatter,
@@ -11,47 +11,103 @@ import {
   LineChart,
   Line,
 } from 'recharts';
+import parse from 'html-react-parser'; // Import the html-react-parser library
 
-const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
+const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) => {
   const [selectedSubfield, setSelectedSubfield] = useState(null);
   const [selectedSubfieldDetails, setSelectedSubfieldDetails] = useState(null);
-  const [historicalData, setHistoricalData] = useState([]); // State for historical data
-  const [selectedTab, setSelectedTab] = useState('scatter'); // State for selected tab ('scatter' or 'timeline')
-  const [clickedTimelinePoint, setClickedTimelinePoint] = useState(null); // State for clicked timeline data point
+  const [historicalData, setHistoricalData] = useState([]);
+  const [selectedTab, setSelectedTab] = useState('scatter');
+  const [clickedTimelinePoint, setClickedTimelinePoint] = useState(null);
+  const [insight, setInsight] = useState(null);
+
+  // Dynamically import the most recent insight file based on fieldName
+  useEffect(() => {
+    const fetchMostRecentInsight = async () => {
+      try {
+        // Dynamically import the file
+        const module = await import(`./Insights/MostRecent${fieldName}Insight.txt`);
+        const response = await fetch(module.default);
+        const text = await response.text();
+        setInsight(text);
+      } catch (error) {
+        console.error('Error fetching the most recent insight:', error);
+        setInsight('Failed to load insight. Please try again.');
+      }
+    };
+
+    fetchMostRecentInsight();
+  }, [fieldName]);
+
+  // Fetch the most recent insight on component mount
+  useEffect(() => {
+    const fetchMostRecentInsight = async () => {
+      try {
+        const response = await fetch(`/Insights/MostRecent${fieldName}Insight.txt`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch the most recent insight.');
+        }
+        const text = await response.text();
+        if (text.trim() !== '') {
+          setInsight(text);
+        } else {
+          console.log('MostRecentInsight.txt is empty');
+        }
+      } catch (error) {
+        console.error('Error fetching the most recent insight:', error);
+      }
+    };
+
+    fetchMostRecentInsight();
+  }, [fieldName]);
 
   // Filter radarData to only include subfields for the selected field
   const subfieldData = radarData.filter(
     (point) => point.field_id === selectedFieldId && point.subfield_id !== null
   );
 
-  // Find the most recent metric for each subfield
+  // Find the most recent metric for each subfield and calculate metric_3_scaled
   const latestMetricsBySubfield = subfieldData.reduce((acc, point) => {
     if (
       !acc[point.subfield_id] || 
       new Date(point.metric_date) > new Date(acc[point.subfield_id].metric_date)
     ) {
-      acc[point.subfield_id] = point;
+      acc[point.subfield_id] = {
+        ...point,
+        metric_3_scaled: Math.pow(point.metric_3, 5), // Calculate metric_3_scaled
+      };
     }
     return acc;
   }, {});
 
   const filteredData = Object.values(latestMetricsBySubfield); // Convert to array
 
-  // Generate distinct colors for subfields
+  // Function to generate distinct colors using HSL
   const generateDistinctColors = (numColors) => {
     const colors = [];
-    const hueStep = 360 / numColors;
-    const saturation = 70;
-    const lightness = 50;
+    const hueStep = 360 / numColors; // Use 360 degrees for full hue spectrum
+    const saturation = 70; // 70% saturation
+    const lightness = 50; // 50% lightness
 
+    // If color mode is off, return array of blue colors
+    if (!useColorMode) {
+      for (let i = 0; i < numColors; i++) {
+        colors.push('#2466e0'); // Use the same blue color for all points
+      }
+      return colors;
+    }
+
+    // Generate distinct colors when color mode is on
     for (let i = 0; i < numColors; i++) {
-      const hue = (i * hueStep * 5) % 360;
+      // Multiply by a larger step to spread colors more evenly around the color wheel
+      const hue = (i * hueStep * 5) % 360; // Use modulo 360 to keep within valid hue range
       colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
     }
 
     return colors;
   };
 
+  // Generate colors for the data points
   const colors = generateDistinctColors(filteredData.length);
 
   // Handle subfield filter button click
@@ -76,6 +132,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
           .map((point) => ({
             ...point,
             metric_date: new Date(point.metric_date).getTime(), // Convert date to timestamp
+            metric_3_scaled: Math.pow(point.metric_3, 5), // Calculate metric_3_scaled for historical data
           }));
     setHistoricalData(subfieldHistoricalData);
   };
@@ -84,6 +141,97 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  };
+
+  // Function to generate insight
+  const handleGenerateInsight = async () => {
+    try {
+      // Step 1: Fetch all subfields for the selected field
+      const subfieldsResponse = await fetch(`http://localhost:4000/api/subfields`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fieldId: selectedFieldId }), // Pass the selected field ID
+      });
+  
+      if (!subfieldsResponse.ok) {
+        throw new Error('Failed to fetch subfields.');
+      }
+  
+      const subfieldsData = await subfieldsResponse.json();
+      const subfields = subfieldsData.subfields; // Array of subfields
+  
+      if (subfields.length === 0) {
+        throw new Error('No subfields found for the selected field.');
+      }
+  
+      // Step 2: Update metrics for each subfield individually
+      let successfulUpdates = 0;
+      let failedUpdates = 0;
+  
+      for (const subfield of subfields) {
+        try {
+          const updateMetricsResponse = await fetch('http://localhost:4000/gpt-update-subfield-metrics', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              subfield_id: subfield.subfield_id, // Pass subfield_id
+              field_id: selectedFieldId, // Pass field_id from the parent component
+            }),
+          });
+  
+          if (!updateMetricsResponse.ok) {
+            throw new Error(`Failed to update metrics for subfield: ${subfield.subfield_name}`);
+          }
+  
+          const updateMetricsData = await updateMetricsResponse.json();
+          console.log(`Metrics updated successfully for subfield: ${subfield.subfield_name}`, updateMetricsData);
+          successfulUpdates++;
+        } catch (error) {
+          console.error(`Error updating metrics for subfield: ${subfield.subfield_name}`, error);
+          failedUpdates++;
+        }
+      }
+  
+      console.log(`Subfields updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
+  
+      // Step 3: Generate a new subfield (if applicable)
+      const newSubfieldResponse = await fetch('http://localhost:4000/gpt-subfield', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          fieldId: selectedFieldId,
+          fieldName: fieldName // Pass the fieldName here
+        }),
+      });
+  
+      if (!newSubfieldResponse.ok) {
+        throw new Error('Failed to generate a new subfield.');
+      }
+  
+      const newSubfieldData = await newSubfieldResponse.json();
+      console.log('New subfield generated successfully:', newSubfieldData);
+  
+      // Step 4: Generate insights for the selected field
+      const insightResponse = await fetch('http://localhost:4000/generate-insight', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fieldId: selectedFieldId }), // Pass the selected field ID
+      });
+  
+      if (!insightResponse.ok) {
+        throw new Error('Failed to generate insights.');
+      }
+  
+      const insightData = await insightResponse.json();
+      console.log('Insight generated successfully:', insightData.insight);
+  
+      // Set the generated insight in the state
+      setInsight(insightData.insight);
+  
+    } catch (error) {
+      console.error('Error:', error);
+      setInsight('Failed to generate insight. Please try again.');
+    }
   };
 
   // If no subfield data, show a message
@@ -95,6 +243,37 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
     <div style={{ marginTop: '20px' }}>
       {/* Dynamic Heading with Field Name */}
       <h3>Subfields for {fieldName}</h3>
+
+      {/* Insight Generation Button */}
+      <button
+        onClick={handleGenerateInsight}
+        style={{
+          padding: '8px 16px',
+          backgroundColor: '#2466e0',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          marginBottom: '20px',
+        }}
+      >
+        Generate Insight
+      </button>
+
+      {/* Display Insight */}
+      {insight && (
+        <div style={{
+          padding: '15px',
+          backgroundColor: '#f8f9fa',
+          border: '1px solid #e1e4e8',
+          borderRadius: '6px',
+          marginBottom: '20px',
+        }}>
+          <div style={{ margin: 0, color: '#666' }}>
+            <strong>Insight:</strong> {parse(insight)}
+          </div>
+        </div>
+      )}
 
       {/* Subfield Filter Buttons */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
@@ -149,7 +328,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
               borderBottom: selectedTab === 'timeline' ? '2px solid #2466e0' : 'none',
               cursor: 'pointer',
             }}
-          >
+            >
             Timeline
           </button>
         )}
@@ -176,7 +355,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
               ticks={[0, 1, 2, 3, 4, 5]}
               label={{ value: 'Innovation, score (0 = lower; 5 = higher)', position: 'insideLeft', angle: -90, style: { textAnchor: 'middle', fontWeight: 'bold' } }}
             />
-            <ZAxis type="number" dataKey="metric_3" range={[100, 5000]} name="Investment" />
+            <ZAxis type="number" dataKey="metric_3_scaled" range={[100, 5000]} name="Investment Scaled" />
             <Tooltip
               cursor={{ strokeDasharray: '3 3' }}
               content={({ active, payload }) => {
@@ -193,6 +372,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
                       <p>Interest: {(point.metric_1).toFixed(2)}</p>
                       <p>Innovation: {(point.metric_2).toFixed(2)}</p>
                       <p>Relevance: {(point.metric_3).toFixed(2)}</p>
+                      <p>Relevance Scaled: {(point.metric_3_scaled).toFixed(2)}</p>
                     </div>
                   );
                 }
@@ -206,9 +386,10 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
                   key={point.subfield_id}
                   data={[point]}
                   fill={colors[index % colors.length]}
+                  fillOpacity={0.7} // Default opacity
                   cursor="pointer"
                   shape="circle"
-                  size={point.metric_3 * 100}
+                  size={point.metric_3_scaled * 100} // Use metric_3_scaled for size
                   opacity={isSelected ? 1 : 0.2} // Make non-selected points transparent
                 />
               );
@@ -257,6 +438,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName }) => {
                       <p>Interest: {(point.metric_1).toFixed(2)}</p>
                       <p>Innovation: {(point.metric_2).toFixed(2)}</p>
                       <p>Relevance: {(point.metric_3).toFixed(2)}</p>
+                      <p>Relevance Scaled: {(point.metric_3_scaled).toFixed(2)}</p>
                     </div>
                   );
                 }

@@ -1,9 +1,9 @@
 You are an RBC analyst tracking new technology developments that are relevant to banking. Current relevant fields: {CURRENT_FIELDS}.
-You are heavily encouraged to add any new fields to this list that are relevant to the future of banking.
+You are heavily encouraged to add any new fields to this list that are relevant to the future of banking BUT THERE SHOULD BE IDEALLY NO OVERLAP between the new fields and your candidate new one as another role looks into subfields.
 
 Provide these new fields using this **STRICT FORMAT**:
 
-field_name: (MUST BE A STRING(try to keep the name of the field broad! we have a separate system in place for generating subfields!))
+field_name: (MUST BE A STRING(try to keep the name of the field broad! we have a separate system in place for generating subfields! i.e. ))
 description: (MUST BE A STRING) describe the field
  metric_1: provide your answer as a float on a scale of 0.00 to 5.00 (0.00: No meaningful developments that could impact banking in the foreseeable future.
       1.00: Early-stage developments with some research or niche use cases, but no mass adoption.
@@ -29,4 +29,7 @@ description: (MUST BE A STRING) describe the field
 rationale: (see instructions) YOUR ANSWER MUST BE A STRING, you can really get into specifics for how this will affect banking.
 source: YOUR ANSWER MUST BE A STRING AND IDEALLY IS A PLAIN URL, Additionally you will be rewarded if your sources are **VERY RECENT**
 
+source: (string preferably a url)
 **DO NOT** include any extra commentary. **DO NOT** modify the format.
+
+IF AND ONLY IF you are genuinely incapable of formulating any new fields, output: NUH_UH

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ArrowDown, RadarIcon, TrendingUp } from 'lucide-react';
 import SubfieldChart from './SubfieldChart';
-
 const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [data, setData] = useState([]);
   const [historicalData, setHistoricalData] = useState([]); // State for historical data
@@ -17,7 +16,32 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [selectedFieldId, setSelectedFieldId] = useState(null); // Track the selected field ID for 
 
   const [showAllTechnologies, setShowAllTechnologies] = useState(false);
-
+  const handleGenerateSubfields = async (fieldName) => {
+    try {
+      const field = data.find(d => d.field_name === fieldName);
+      if (!field) {
+        console.error("Field not found.");
+        return;
+      }
+  
+      const response = await axios.post('http://localhost:4000/gpt-subfield', {
+        fieldName: field.field_name,
+        fieldId: field.field_id
+      });
+  
+      if (response.status === 200) {
+        alert("Subfields generated successfully!");
+        // Optionally, you can refresh the subfield data here
+        const subfieldResponse = await axios.post('http://localhost:4000/api/subfields', { fieldId: field.field_id });
+        setSubfieldData(subfieldResponse.data.metrics);
+      } else {
+        alert("Failed to generate subfields.");
+      }
+    } catch (error) {
+      console.error("Error generating subfields:", error);
+      alert("Error generating subfields.");
+    }
+  };
   const handleFieldClick = async (fieldId) => {
     setSelectedFieldId(fieldId);
     try {
@@ -67,25 +91,25 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
 
   const filterMostRecentData = (data) => {
     const mostRecentData = {};
-  
+
     data.forEach(item => {
       // Exclude entries with field_id: 0
       if (item.subfield_id === null && item.field_id !== 0) {  // Only process if subfield_id is null and field_id is not 0
         const fieldId = item.field_id;
         const currentDate = new Date(item.metric_date);
-  
+
         if (!mostRecentData[fieldId] || new Date(mostRecentData[fieldId].metric_date) < currentDate) {
           mostRecentData[fieldId] = {
             ...item,
             description: item.field_description, // Include the field description
             metric_3_scaled: Math.pow(item.metric_3, 5
-              
+
             ), // Add the cubed value of metric_3
           };
         }
       }
     });
-  
+
     return Object.values(mostRecentData);
   };
   const handleFilterClick = (point) => {
@@ -519,11 +543,11 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               aria-label={showAllTechnologies ? "Show less technologies" : "Show all technologies"}
             >
               <ArrowDown
-                size={16} 
-                style={{ 
-                  transform: showAllTechnologies ? 'rotate(180deg)' : 'rotate(0deg)', 
-                  transition: 'transform 0.3s ease' 
-                }} 
+                size={16}
+                style={{
+                  transform: showAllTechnologies ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.3s ease'
+                }}
               />
             </button>
           )}
@@ -546,7 +570,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         }}>
           {clickedDataPoint
             ? <>
-
               <strong>Date of Scoring:</strong> {formatDate(clickedDataPoint.metric_date)}<br />
               <strong>Rationale:</strong> {clickedDataPoint.rationale || "No rationale available."}<br />
               <strong>Field Description: </strong>{clickedDataPoint.description || "No description available"}<br />
@@ -572,8 +595,22 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                 ) : (
                   "No sources available."
                 )}
-
-
+                <button
+                  onClick={() => handleGenerateSubfields(selectedTechnology)}
+                  style={{
+                    marginTop: '10px',
+                    padding: '8px 16px',
+                    backgroundColor: '#2466e0',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                  }}
+                >
+                  Generate Subfields
+                </button>
               </>
               : "Click a technology to show its description and rationale."
             )
@@ -585,6 +622,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
           radarData={radarData}
           selectedFieldId={selectedFieldId}
           fieldName={data.find((field) => field.field_id === selectedFieldId)?.field_name || "Selected Field"}
+          useColorMode={useColorMode} // Pass the useColorMode state as a prop
         />
       )}
     </div>
