@@ -419,30 +419,93 @@ app.post("/gpt-field", async (req, res) => {
 //insight generation
 const generateInsight = async (type) => {
   try {
-    // Fetch the most recent timed metrics and rationales for each field
+    // Fetch the two most recent timed metrics for each field
     const metricsQuery = await pool.query(`
-      SELECT 
-        f.field_id,
-        f.field_name,
-        t.metric_1,
-        t.metric_2,
-        t.metric_3,
-        t.rationale,
-        t.metric_date
+      WITH recent_metrics AS (
+        SELECT
+          f.field_id,
+          f.field_name,
+          t.metric_1,
+          t.metric_2,
+          t.metric_3,
+          t.rationale,
+          t.metric_date,
+          ROW_NUMBER() OVER (PARTITION BY f.field_id ORDER BY t.metric_date DESC) AS rn
+        FROM 
+          Field f
+        JOIN 
+          TIMEDMETRICS t 
+        ON 
+          f.field_id = t.field_id
+        WHERE 
+          t.subfield_id IS NULL  -- Ensure no subfield_id is present
+      )
+      SELECT
+        field_id,
+        field_name,
+        metric_1,
+        metric_2,
+        metric_3,
+        rationale,
+        metric_date
       FROM 
-        Field f
-      JOIN 
-        TIMEDMETRICS t 
-      ON 
-        f.field_id = t.field_id
+        recent_metrics
       WHERE 
-        t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id)
+        rn <= 2
+      ORDER BY 
+        field_id, metric_date DESC;
     `);
 
     if (metricsQuery.rowCount === 0) {
       console.log("No metrics found.");
       return "NO_METRICS";
     }
+
+    // Group metrics by field_id to calculate the velocity for each metric
+    const fields = {};
+    metricsQuery.rows.forEach(row => {
+      if (!fields[row.field_id]) {
+        fields[row.field_id] = [];
+      }
+      fields[row.field_id].push(row);
+    });
+
+    // Calculate velocities for each field (metric_1, metric_2, and metric_3)
+    const velocityData = Object.keys(fields).map(field_id => {
+      const fieldMetrics = fields[field_id];
+
+      // If only one metric is available, the velocities are 0
+      if (fieldMetrics.length === 1) {
+        return {
+          field_id,
+          field_name: fieldMetrics[0].field_name,
+          most_recent_metric_1: fieldMetrics[0].metric_1,
+          most_recent_metric_2: fieldMetrics[0].metric_2,
+          most_recent_metric_3: fieldMetrics[0].metric_3,
+          rationale: fieldMetrics[0].rationale,
+          velocity_metric_1: 0,
+          velocity_metric_2: 0,
+          velocity_metric_3: 0
+        };
+      }
+
+      // Calculate velocity for metric_1, metric_2, and metric_3
+      const velocity_metric_1 = parseFloat((fieldMetrics[0].metric_1 - fieldMetrics[1].metric_1).toFixed(2));
+      const velocity_metric_2 = parseFloat((fieldMetrics[0].metric_2 - fieldMetrics[1].metric_2).toFixed(2));
+      const velocity_metric_3 = parseFloat((fieldMetrics[0].metric_3 - fieldMetrics[1].metric_3).toFixed(2));
+
+      return {
+        field_id,
+        field_name: fieldMetrics[0].field_name,
+        most_recent_metric_1: fieldMetrics[0].metric_1,
+        most_recent_metric_2: fieldMetrics[0].metric_2,
+        most_recent_metric_3: fieldMetrics[0].metric_3,
+        rationale: fieldMetrics[0].rationale,
+        velocity_metric_1,
+        velocity_metric_2,
+        velocity_metric_3
+      };
+    });
 
     // Fetch the previous insight, if it exists
     const previousInsightQuery = await pool.query(`
@@ -459,41 +522,37 @@ const generateInsight = async (type) => {
     const previousInsight = previousInsightQuery.rowCount > 0 ? previousInsightQuery.rows[0] : null;
 
     // Construct the dynamic prompt
-    let promptTemplate;
+    let promptTemplate= await fsPromises.readFile("./prompts/full_radar_insight_generation.txt", "utf8");
 
-    switch (type) {
-      case "insight":
-        promptTemplate = await fsPromises.readFile("./prompts/insight_prompt_insights.txt", "utf8");
-        //promptTemplate = await fsPromises.readFile("./prompts/prompt_update_metrics.txt", "utf8");
-        break;
-      case "trends":
-        promptTemplate = await fsPromises.readFile("./prompts/insight_prompt_trends.txt", "utf8");
-        break;
-      case "top":
-        promptTemplate = await fsPromises.readFile("./prompts/insight_prompt_top.txt", "utf8");
-        break;
-      default:
-        throw new Error("Invalid insight type");
-    };
+    // Format the velocity data to include both the most recent metrics and velocities
+    const velocityDataFormatted = velocityData.map(item => `
+      Field Name: ${item.field_name}
+      
+      Most Recent Metrics:
+        Interest (metric_1): ${item.most_recent_metric_1} (Velocity: ${item.velocity_metric_1})
+        Innovation (metric_2): ${item.most_recent_metric_2} (Velocity: ${item.velocity_metric_2})
+        Relevance to Banking (metric_3): ${item.most_recent_metric_3} (Velocity: ${item.velocity_metric_3})
+      
+      Rationale: ${item.rationale}
+    `).join('\n\n');
 
-    const metricsData = metricsQuery.rows.map(row => `
-      field_name: ${row.field_name}
-      metric_1: ${row.metric_1}
-      metric_2: ${row.metric_2}
-      metric_3: ${row.metric_3}
-      rationale: ${row.rationale}
-      metric_date: ${row.metric_date}`).join('\n\n');
+    const previousInsightText = previousInsight ? `Previous Insight:\n${previousInsight.insight_text}\nGenerated At: ${previousInsight.generated_at}` : "No previous insight available.";
 
-    const previousInsightText = previousInsight ? `
-      Previous Insight:
-      ${previousInsight.insight_text}
-      Generated At: ${previousInsight.generated_at}` : "No previous insight available.";
-
+    // Replace {METRICS_DATA} with the formatted velocity data
     const dynamicPrompt = promptTemplate
-      .replace("{METRICS_DATA}", metricsData)
+      .replace("{METRICS_DATA}", velocityDataFormatted)
       .replace("{PREVIOUS_INSIGHT}", previousInsightText);
 
     console.log("Generated Prompt:\n", dynamicPrompt);
+
+    // Save the dynamic prompt to the /prompts folder as WRONG.txt
+    const promptsDir = path.resolve(process.cwd(), "prompts");
+    if (!fs.existsSync(promptsDir)) {
+      fs.mkdirSync(promptsDir, { recursive: true });
+    }
+    const wrongFilePath = path.join(promptsDir, "WRONG.txt");
+    await fsPromises.writeFile(wrongFilePath, dynamicPrompt, 'utf8');
+    console.log(`Dynamic prompt saved to ${wrongFilePath}`);
 
     // Call OpenAI to generate the insight
     const response = await openai.chat.completions.create({
@@ -535,8 +594,8 @@ const generateInsight = async (type) => {
       );
 
       // Define the file name based on field_id
-      let fileName = "MostRecentInsight.txt"
-
+      let fileName = "MostRecentInsight.txt";
+      
       const filePath = path.join(insightsDir, fileName);
 
       // Write the insight to the file
@@ -544,7 +603,6 @@ const generateInsight = async (type) => {
         await fsPromises.writeFile(filePath, generatedInsight, 'utf8');
         console.log(`Insight written to ${filePath}`);
       }
-
     }
 
     return generatedInsight;
@@ -552,10 +610,10 @@ const generateInsight = async (type) => {
   } catch (error) {
     console.error("Error:", error);
     return "ERROR: Unable to process request.";
-  } finally {
-    console.log("Insight generation completed.");
   }
 }
+
+
 
 //sub insight generation
 const generateSubInsight = async (type, fieldId) => {
@@ -643,7 +701,7 @@ const generateSubInsight = async (type, fieldId) => {
 
     switch (type) {
       case "insight":
-        promptTemplate = await fsPromises.readFile("./prompts/insight_prompt_insights.txt", "utf8");
+        promptTemplate = await fsPromises.readFile("./prompts/full_radar_insight_generation.txt.txt", "utf8");
         break;
       case "trends":
         promptTemplate = await fsPromises.readFile("./prompts/insight_prompt_trends.txt", "utf8");
@@ -676,7 +734,7 @@ const generateSubInsight = async (type, fieldId) => {
 
     // Call OpenAI to generate the insight
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
       messages: [{ role: "system", content: dynamicPrompt }],
       temperature: 0,
       max_tokens: 2048,
@@ -1056,29 +1114,6 @@ app.post("/generate-sub-insight", async (req, res) => {
   }
 });
 
-// app.post("/generate-insight-trends", async (req, res) => {
-//   const { fieldId } = req.body;
-//   let aiResponse = await generateInsight("trends", fieldId);
-//   //console.log("Raw AI Response:\n", aiResponse);
-
-//   if (aiResponse === "NO_METRICS") {
-//     return res.status(200).send("No metrics available for insight generation.");
-//   }
-
-//   res.status(200).json({ trends: aiResponse });
-// });
-
-// app.post("/generate-insight-top", async (req, res) => {
-//   const { fieldId } = req.body;
-//   let aiResponse = await generateInsight("top", fieldId);
-//   //console.log("Raw AI Response:\n", aiResponse);
-
-//   if (aiResponse === "NO_METRICS") {
-//     return res.status(200).send("No metrics available for insight generation.");
-//   }
-
-//   res.status(200).json({ top: aiResponse });
-// });
 
 app.post('/api/subfields', async (req, res) => {
   const { fieldId } = req.body;

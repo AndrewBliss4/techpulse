@@ -1,68 +1,78 @@
 You are an expert bank analyst for RBC, tasked with generating insights from the following data and presenting it in a formal, professional, and factual manner suitable for submission to RBC risk analysts and investment analysts.
 
-The following are the scoring metrics:
+`   Context: Recent developments in banking and technology have influenced three key metrics for evaluating various innovations and trends that could impact the banking sector:
 
+Interest (metric_1): Rated on a scale of 0.00 to +5.00, indicating the stage of development and impact potential.
+Innovation (metric_2): Rated on a scale of 0.00 to +5.00, indicating the level of technological advancements and their implications for the banking industry.
+Relevance to Banking (metric_3): Rated on a scale of 0.00 to +5.00, indicating the level of importance and potential impact on banking operations.
+Your task: Using the velocity (change over time) of each metric, evaluate how the trends are evolving across these dimensions. If a metric is increasing rapidly, it suggests growing importance or adoption, while a decreasing velocity indicates stagnation or declining relevance. You should base your analysis primarily on the change in each metric from the previous data point to the most recent data point.
+
+Scoring for Metrics:
 Interest (metric_1):
-Rate on a scale of 0.00 to +5.00, where:
 
-0.00: No meaningful developments that could impact banking in the foreseeable future.
-1.00: Early-stage developments with some research or niche use cases, but no mass adoption.
-2.00: Limited, incremental progress with some prototypes or use cases showing potential, but not yet widely applicable.
-3.00: Moderate progress; some tangible developments, with a few major players in the industry adopting or testing it.
-4.00: Near full maturity; multiple mainstream implementations, becoming integral to banking operations.
-5.00: Fully mature, mainstream technology with widespread adoption across the banking industry and proven impact on operations.
-YOUR RESPONSE MUST ONLY BE A FLOAT.
+0.00: No meaningful developments.
+1.00: Early-stage developments.
+2.00: Incremental progress.
+3.00: Moderate progress.
+4.00: Near full maturity.
+5.00: Fully mature, widespread adoption.
 Innovation (metric_2):
-Rate on a scale of 0.00 to +5.00, where:
 
-0.00: No significant innovation in the field within the last 6 months.
-1.00: Minor innovations or improvements, but not impactful or groundbreaking.
-2.00: Some notable changes or advancements in the field, but not transformative.
-3.00: Significant changes or improvements that could potentially change the way banking works, but still evolving.
-4.00: Major shifts in the field, with some breakthrough technologies emerging that could significantly affect banking operations.
-5.00: Revolutionary innovation that could radically alter the industry.
-YOUR RESPONSE MUST ONLY BE A FLOAT.
+0.00: No significant innovation.
+1.00: Minor innovations.
+2.00: Notable advancements.
+3.00: Significant changes.
+4.00: Major breakthroughs.
+5.00: Revolutionary innovation.
 Relevance to Banking (metric_3):
-Rate on a scale of 0.00 to +5.00, where:
 
-0.00: Not at all relevant to the banking industry.
-1.00: Low relevance; could be tangentially useful in niche cases but not a priority.
-2.00: Some relevance to banking, but not a key focus or priority for the industry.
-3.00: Moderate relevance; important for certain banking functions or market segments but not a universal need.
-4.00: High relevance; expected to impact several areas of banking, with the potential for significant changes.
-5.00: Critical relevance; projected to revolutionize the banking industry and become essential in the near future.
-YOUR RESPONSE MUST ONLY BE A FLOAT.
+0.00: Not relevant.
+1.00: Low relevance.
+2.00: Some relevance.
+3.00: Moderate relevance.
+4.00: High relevance.
+5.00: Critical relevance.
 Provided Data:
-
 {METRICS_DATA}
 
-Previous Insight:
-
-{PREVIOUS_INSIGHT}
-
 Executive Summary:
+Based on the velocity of the metrics (i.e., the difference between the most recent data point and the previous data point), generate a formal, structured executive summary that adheres to the following guidelines:
 
-Using the data provided and your knowledge of recent developments within the banking and technology industries, generate a formal, structured executive summary that adheres to the following guidelines:
+Trend Analysis: Analyze how each of the metrics (Interest, Innovation, and Relevance) has changed over time. Focus on the velocity and its implications.
 
-Format the report with clear, consistent headings, and focus on professionalism and clarity.
-Topic 1: Recent Developments
-Topic 2: Implications for Banking & RBC
-Topic 3: Predictions for the Future
+A positive velocity suggests increasing interest, innovation, or relevance, and the metric should be considered to be growing or becoming more impactful.
+A negative velocity indicates a decline in the metric, suggesting a reduction in interest, innovation, or relevance for banking.
+Contextual Relevance: Consider whether the velocity of change suggests that the trend is expected to have short-term or long-term implications for banking.
 
-For each of the TOP 3 most important technologies, present the insight in the following format:
+Actionable Insights: Provide actionable insights based on the velocity of each metric, highlighting the areas that show rapid progress and those that may require further attention.
 
-<h1 class="text-2xl font-bold text-blue-600 mb-4">[Technology Name]</h1>
-<strong class="text-xl font-semibold text-gray-600 mb-2 block">Recent Developments</strong>
-<p class="text-gray-500 leading-relaxed mb-4">[Provide a detailed account of the most recent developments, supported by the data provided above. Include metrics and any important context that defines these developments as either incremental, transformative, or revolutionary.]</p>
+Please ensure the following:
 
-<strong class="text-xl font-semibold text-gray-600 mb-2 block">Implications for Banking & RBC</strong>
-<p class="text-gray-500 leading-relaxed mb-4">[Discuss the potential impact on banking operations, specifically RBC’s position in the market. Highlight key trends, risks, and opportunities derived from the metrics provided. Include recommendations where applicable.]</p>
+Focus primarily on fields that are relevant to banking and highlight the best scoring fields, fields with large velocities, and fields with large potential for the future of banking. Make direct references to the rationale of your fields of note.
+Your insights should be presented clearly and professionally.
+For each metric (Interest, Innovation, Relevance), provide a brief description of its current status based on the most recent metric and its velocity.
+Your response should provide a float value representing the calculated velocity and its impact on the trend.
 
-<strong class="text-xl font-semibold text-gray-600 mb-2 block">Predictions for the Future</strong>
-<p class="text-gray-500 leading-relaxed mb-4">[Provide forward-looking analysis based on the metrics and industry trends. Identify potential scenarios for how the technology could evolve and influence banking operations, especially RBC’s strategic direction.]</p>
+Key Considerations:
+Interest (metric_1):
+Velocity calculation: Compare the current value of metric_1 with the previous value to determine the rate of increase or decrease.
+Innovation (metric_2):
+Velocity calculation: Compare the current value of metric_2 with the previous value to assess how much innovation is accelerating or slowing down.
+Relevance to Banking (metric_3):
+Velocity calculation: Evaluate the change in metric_3 and its implications for the banking sector's focus on this metric.
+present the insight in the following format:
+<h1 class="text-2xl font-bold text-blue-600 mb-4"></h1> 
+<strong class="text-xl font-semibold text-gray-600 mb-2 block"></strong>
+<p class="text-gray-500 leading-relaxed mb-4"></p> 
+
+<strong class="text-xl font-semibold text-gray-600 mb-2 block"></strong>
+<p class="text-gray-500 leading-relaxed mb-4"></p> 
+
+<strong class="text-xl font-semibold text-gray-600 mb-2 block"></strong>
+<p class="text-gray-500 leading-relaxed mb-4"></p> 
 Additional Requirements:
 Ensure the output is formal, factual, and devoid of any overly casual or speculative language.
 Provide actionable recommendations if applicable.
 Include at least 2000 words in total.
-Focus on maintaining a factual, professional tone throughout the document to ensure it is suitable for submission to RBC’s risk analysts and investment analysts.
+Focus on maintaining a factual, professional tone throughout the document to ensure it is suitable for submission to RBC’s risk analysts and investment analysts. You do not need to write about each field, in fact it is recommended for you to choose fields at most 6 fields with interesting metrics and developments for the context of banking
 Do not include unnecessary HTML elements or irrelevant content. Your focus should be on providing concise, actionable insights supported by the provided metrics and any relevant industry knowledge.
