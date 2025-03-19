@@ -172,10 +172,16 @@ app.post("/gpt-update-metrics", async (req, res) => {
     const fieldQuery = await pool.query(`
       SELECT f.field_id, f.field_name, t.metric_1, t.metric_2, t.metric_3, t.rationale 
       FROM Field f 
-      JOIN TIMEDMETRICS t ON f.field_id = t.field_id 
-      WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id) 
-        AND t.subfield_id IS NULL
-        AND f.field_id = $1
+      JOIN TIMEDMETRICS t 
+          ON f.field_id = t.field_id 
+      WHERE t.metric_date = (
+          SELECT MAX(metric_date) 
+          FROM TIMEDMETRICS 
+          WHERE field_id = f.field_id 
+            AND subfield_id IS NULL  -- Exclude rows where subfield_id is NOT NULL
+      ) 
+      AND t.subfield_id IS NULL
+      AND f.field_id = $1;
     `, [field_id]);
 
     if (fieldQuery.rowCount === 0) {
@@ -196,7 +202,7 @@ app.post("/gpt-update-metrics", async (req, res) => {
     console.log(`Update temp: ${tempTopPData.temperature}, topP: ${tempTopPData.top_p}`);
 
     // Read articles from the JSON file
-    const articlesPath = path.join(__dirname, '../../client/techpulse_app/public/arxiv_papers.json');
+    const articlesPath = path.join(__dirname, "scrape_db", "arxiv_papers.json");
     const articles = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
 
     // Read the prompt template from file
@@ -955,6 +961,7 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
       WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE subfield_id = s.subfield_id) 
         AND s.subfield_id = $1
         AND s.field_id = $2
+        AND t.subfield_id NOT = NULL
     `, [subfield_id, field_id]);
 
     if (subfieldQuery.rowCount === 0) {
@@ -975,7 +982,7 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
     console.log(`Update temp: ${tempTopPData.temperature}, topP: ${tempTopPData.top_p}`);
 
     // Read articles from the JSON file
-    const articlesPath = path.join(__dirname, '../../client/techpulse_app/public/arxiv_papers_sf.json');
+    const articlesPath = path.join(__dirname, "scrape_db", "arxiv_papers_sf.json");
     const articles = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
 
     // Read the prompt template from file
@@ -1020,7 +1027,7 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
     });
 
     const aiResponse = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
-    //console.log(`Raw AI Response for ${subfieldName}:\n`, aiResponse);
+    console.log(`Raw AI Response for ${subfieldName}:\n`, aiResponse);
 
     if (aiResponse === "NO_VALID_AI_RESPONSE") {
       console.warn(`AI response was invalid for subfield: ${subfieldName}`);
