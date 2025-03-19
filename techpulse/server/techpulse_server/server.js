@@ -721,9 +721,9 @@ app.post("/gpt-subfield", async (req, res) => {
 
       // Insert metrics into TIMEDMETRICS
       await pool.query(
-        `INSERT INTO TimedMetrics (metric_1, metric_2, metric_3, metric_date, subfield_id, rationale, source)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [maturity, innovation, relevance, new Date().toISOString(), subfieldId, rationale, source]
+        `INSERT INTO TimedMetrics (metric_1, metric_2, metric_3, metric_date, field_id, subfield_id, rationale, source)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [maturity, innovation, relevance, new Date().toISOString(), fieldId, subfieldId, rationale, source]
       );
 
       console.log(`Metrics for '${subfieldName}' inserted successfully.`);

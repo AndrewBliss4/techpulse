@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ArrowDown, RadarIcon, TrendingUp } from 'lucide-react';
 import SubfieldChart from './SubfieldChart';
-
 const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [data, setData] = useState([]);
   const [historicalData, setHistoricalData] = useState([]); // State for historical data
@@ -17,7 +16,32 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [selectedFieldId, setSelectedFieldId] = useState(null); // Track the selected field ID for 
 
   const [showAllTechnologies, setShowAllTechnologies] = useState(false);
-
+  const handleGenerateSubfields = async (fieldName) => {
+    try {
+      const field = data.find(d => d.field_name === fieldName);
+      if (!field) {
+        console.error("Field not found.");
+        return;
+      }
+  
+      const response = await axios.post('http://localhost:4000/gpt-subfield', {
+        fieldName: field.field_name,
+        fieldId: field.field_id
+      });
+  
+      if (response.status === 200) {
+        alert("Subfields generated successfully!");
+        // Optionally, you can refresh the subfield data here
+        const subfieldResponse = await axios.post('http://localhost:4000/api/subfields', { fieldId: field.field_id });
+        setSubfieldData(subfieldResponse.data.metrics);
+      } else {
+        alert("Failed to generate subfields.");
+      }
+    } catch (error) {
+      console.error("Error generating subfields:", error);
+      alert("Error generating subfields.");
+    }
+  };
   const handleFieldClick = async (fieldId) => {
     setSelectedFieldId(fieldId);
     try {
@@ -546,7 +570,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         }}>
           {clickedDataPoint
             ? <>
-
               <strong>Date of Scoring:</strong> {formatDate(clickedDataPoint.metric_date)}<br />
               <strong>Rationale:</strong> {clickedDataPoint.rationale || "No rationale available."}<br />
               <strong>Field Description: </strong>{clickedDataPoint.description || "No description available"}<br />
@@ -572,8 +595,22 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                 ) : (
                   "No sources available."
                 )}
-
-
+                <button
+                  onClick={() => handleGenerateSubfields(selectedTechnology)}
+                  style={{
+                    marginTop: '10px',
+                    padding: '8px 16px',
+                    backgroundColor: '#2466e0',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                  }}
+                >
+                  Generate Subfields
+                </button>
               </>
               : "Click a technology to show its description and rationale."
             )
