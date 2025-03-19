@@ -1,44 +1,89 @@
 import React, { useState } from 'react';
 
-const AIPromptFieldButton = ({ setTextResult, setTrendingTopics, setLatestInsights, setLoading, setCurrentLoaderIndex, setError, setRenderText, setRenderTrends }) => {
+const AIPromptFieldButton = ({
+  setTextResult,
+  setTrendingTopics,
+  setLatestInsights,
+  setLoading,
+  setCurrentLoaderIndex,
+  setError,
+  setRenderText,
+  setRenderTrends,
+}) => {
   const [generatedText, setGeneratedText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  // Fetch all field IDs from the backend
+  const fetchAllFieldIds = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/get-all-field-ids', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch field IDs: ${response.statusText}`);
+      }
+      const data = await response.json();
+      return data.fieldIds; // Assuming the response is { fieldIds: [1, 2, 3, ...] }
+    } catch (error) {
+      console.error('Error fetching field IDs:', error);
+      return [];
+    }
+  };
+
   const handleButtonClick = async () => {
-    const isConfirmed = window.confirm("⚠️ Warning: Are you sure you want to make 10 Gajillion API calls? Each request costs tokens and I am poor! 💸");
+    const isConfirmed = window.confirm(
+      "⚠️ Warning: Are you sure you want to make 10 Gajillion API calls? Each request costs tokens and I am poor! 💸"
+    );
     if (!isConfirmed) {
       return;
     }
+
     setIsLoading(true);
     setGeneratedText(""); // Clear old responses before a new request
-
-    // Display loading sign
     setLoading(true);
-    // Reset loader cycle
     setCurrentLoaderIndex(0);
-    // Reset error state
     setError(false);
-    // Reset the old output
     setRenderText(false);
-    // Reset trends
     setRenderTrends(false);
 
     try {
       console.log("Triggering metric reevaluation...");
 
-      // Step 1: Trigger metric reevaluation
-      const reevaluateResponse = await fetch('http://localhost:4000/gpt-update-metrics', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (!reevaluateResponse.ok) {
-        throw new Error(`Reevaluation failed: ${reevaluateResponse.statusText}`);
+      // Step 1: Fetch all field IDs
+      const fieldIds = await fetchAllFieldIds();
+      if (fieldIds.length === 0) {
+        throw new Error("No fields found to update.");
       }
 
-      console.log("Metrics reevaluated successfully. Proceeding to new field generation...");
+      let successfulUpdates = 0;
+      let failedUpdates = 0;
 
-      // Step 2: Proceed with generating new fields
+      // Step 2: Loop through each field and update metrics
+      for (const fieldId of fieldIds) {
+        try {
+          const reevaluateResponse = await fetch('http://localhost:4000/gpt-update-metrics', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ field_id: fieldId }),
+          });
+
+          if (!reevaluateResponse.ok) {
+            throw new Error(`Reevaluation failed for field ID: ${fieldId}`);
+          }
+
+          console.log(`Metrics reevaluated successfully for field ID: ${fieldId}`);
+          successfulUpdates++;
+        } catch (error) {
+          console.error(`Error updating metrics for field ID: ${fieldId}`, error);
+          failedUpdates++;
+        }
+      }
+
+      console.log(`Metrics updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
+
+      // Step 3: Proceed with generating new fields
+      console.log("Proceeding to new field generation...");
       const fieldResponse = await fetch('http://localhost:4000/gpt-field', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -50,7 +95,7 @@ const AIPromptFieldButton = ({ setTextResult, setTrendingTopics, setLatestInsigh
 
       console.log("Fields generated successfully. Proceeding to insight generation...");
 
-      // Step 3: Trigger insight generation with field_id = 0
+      // Step 4: Trigger insight generation with field_id = 0
       const insightResponse = await fetch('http://localhost:4000/generate-insight', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -65,10 +110,9 @@ const AIPromptFieldButton = ({ setTextResult, setTrendingTopics, setLatestInsigh
       console.log("Insight generated successfully:", insightData.insight);
 
       let insightResult = insightData.insight;
-
       setTextResult(insightResult);
 
-      // Step 4: Generate trends with field_id = 0
+      // Step 5: Generate trends with field_id = 0
       const trendsResponse = await fetch('http://localhost:4000/generate-insight-trends', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -92,7 +136,7 @@ const AIPromptFieldButton = ({ setTextResult, setTrendingTopics, setLatestInsigh
 
       setTrendingTopics(tempTrendingTopics);
 
-      // Step 5: Generate top insights with field_id = 0
+      // Step 6: Generate top insights with field_id = 0
       const topResponse = await fetch('http://localhost:4000/generate-insight-top', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -116,6 +160,8 @@ const AIPromptFieldButton = ({ setTextResult, setTrendingTopics, setLatestInsigh
 
       setLatestInsights(tempInsights);
 
+      // Final success message
+      setGeneratedText(`Fields updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
     } catch (error) {
       console.error('Error:', error);
       setGeneratedText(`Error: ${error.message}`);

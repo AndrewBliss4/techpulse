@@ -29,4 +29,7 @@ description: (MUST BE A STRING) describe the field
 rationale: (see instructions) YOUR ANSWER MUST BE A STRING, you can really get into specifics for how this will affect banking.
 source: YOUR ANSWER MUST BE A STRING AND IDEALLY IS A PLAIN URL, Additionally you will be rewarded if your sources are **VERY RECENT**
 
+source: (string preferably a url)
 **DO NOT** include any extra commentary. **DO NOT** modify the format.
+
+IF AND ONLY IF you are genuinely incapable of formulating any new fields, output: NUH_UH

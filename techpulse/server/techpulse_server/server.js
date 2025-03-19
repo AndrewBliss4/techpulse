@@ -9,7 +9,8 @@ dotenv.config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-
+const amountScraped = 5;
+const amountScrapedsf = 1;
 
 // Define the path to your scraper script
 const scraperScriptPath = path.join(__dirname, "scraper.js");
@@ -30,7 +31,32 @@ app.use(cors());
 app.use(express.json());
 
 // ----------- POSTGRES BACKEND ----------- //
+app.get("/get-all-field-ids", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT field_id FROM Field");
+    const fieldIds = result.rows.map(row => row.field_id);
+    res.status(200).json({ fieldIds });
+  } catch (error) {
+    console.error("Error fetching field IDs:", error);
+    res.status(500).send("Error fetching field IDs.");
+  }
+});
+app.get("/get-all-subfield-ids", async (req, res) => {
+  const { fieldId } = req.query;
 
+  if (!fieldId) {
+    return res.status(400).send("Field ID is required.");
+  }
+
+  try {
+    const result = await pool.query("SELECT subfield_id FROM Subfield WHERE field_id = $1", [fieldId]);
+    const subfieldIds = result.rows.map(row => row.subfield_id);
+    res.status(200).json({ subfieldIds });
+  } catch (error) {
+    console.error("Error fetching subfield IDs:", error);
+    res.status(500).send("Error fetching subfield IDs.");
+  }
+});
 app.get('/api/data', async (req, res) => {
   try {
     const result = await pool.query('SELECT top_p,temperature FROM public.modelparameters ORDER BY parameter_id DESC LIMIT 1');
@@ -134,148 +160,127 @@ const openai = new OpenAI({
 const fsPromises = require("fs").promises;
 
 
+app.post("/gpt-update-metrics", async (req, res) => {
+  const { field_id } = req.body; // Accept field_id from the request body
 
-let updateExistingFieldMetrics = async () => {
+  if (!field_id) {
+    return res.status(400).send("Field ID is required.");
+  }
+
   try {
-    // Fetch field data
+    // Fetch the specific field from the database
     const fieldQuery = await pool.query(`
       SELECT f.field_id, f.field_name, t.metric_1, t.metric_2, t.metric_3, t.rationale 
       FROM Field f 
       JOIN TIMEDMETRICS t ON f.field_id = t.field_id 
-      WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id) AND t.subfield_id IS NULL
-    `);
-  
+      WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id) 
+        AND t.subfield_id IS NULL
+        AND f.field_id = $1
+    `, [field_id]);
+
     if (fieldQuery.rowCount === 0) {
-      console.log("No fields found.");
-      return "NO_FIELDS";
+      console.log(`No field found with ID: ${field_id}`);
+      return res.status(404).send("Field not found.");
     }
 
-    const fieldData = fieldQuery.rows.map(row => `
-      field_name: ${row.field_name}
-      metric_1: ${row.metric_1}
-      metric_2: ${row.metric_2}
-      metric_3: ${row.metric_3}
-      rationale: ${row.rationale},
-      metric_date: ${row.metric_date}`).join('\n\n');
+    const row = fieldQuery.rows[0];
+    const fieldName = row.field_name;
 
-    const tempTopPQuery = await pool.query(`SELECT top_p,temperature FROM public.modelparameters ORDER BY parameter_id DESC LIMIT 1`);
-    
+    // Fetch temperature and top_p parameters
+    const tempTopPQuery = await pool.query(`SELECT top_p, temperature FROM public.modelparameters ORDER BY parameter_id DESC LIMIT 1`);
     if (tempTopPQuery.rowCount === 0) {
       console.log("No TempTopP found.");
-      return "NO_TempTopP";
+      return res.status(404).send("No TempTopP found.");
     }
-
     const tempTopPData = tempTopPQuery.rows[0];
-    console.log(`update temp:${tempTopPData.temperature} topP:${tempTopPData.top_p}`);
+    console.log(`Update temp: ${tempTopPData.temperature}, topP: ${tempTopPData.top_p}`);
 
     // Read articles from the JSON file
     const articlesPath = path.join(__dirname, '../../client/techpulse_app/public/arxiv_papers.json');
     const articles = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
 
-    // Filter articles for each field and limit to the last {amountScraped} articles
-    const articlesData = fieldQuery.rows.map(row => {
-      const fieldArticles = articles
-        .filter(article => article.field === row.field_name) // Match articles by field name
-        .sort((a, b) => new Date(b.published) - new Date(a.published)) // Sort by published date (newest first)
-        .slice(0, amountScraped); // Limit to the last {amountScraped} articles
-
-      return fieldArticles.map(article => `
-        field_name: ${row.field_name}
-        title: ${article.title}
-        summary: ${article.summary}
-        published: ${article.published}`).join('\n\n');
-    }).join('\n\n');
-
     // Read the prompt template from file
     let promptTemplate = await fsPromises.readFile("./prompts/prompt_update_metrics.txt", "utf8");
+
+    // Filter articles for the current field and limit to the last {amountScraped} articles
+    const fieldArticles = articles
+      .filter(article => article.field === fieldName) // Match articles by field name
+      .sort((a, b) => new Date(b.published) - new Date(a.published)) // Sort by published date (newest first)
+      .slice(0, amountScraped); // Limit to the last {amountScraped} articles
+
+    // Construct articles data string for the current field
+    const articlesData = fieldArticles.map(article => `
+      field_name: ${fieldName}
+      title: ${article.title}
+      summary: ${article.summary}
+      published: ${article.published}`).join('\n\n');
+
+    // Construct field data string for the current field
+    const fieldData = `
+      field_name: ${fieldName}
+      metric_1: ${row.metric_1}
+      metric_2: ${row.metric_2}
+      metric_3: ${row.metric_3}
+      rationale: ${row.rationale},
+      metric_date: ${row.metric_date}`;
+
+    // Construct the dynamic prompt for the current field
     let dynamicPrompt = promptTemplate
       .replace("{FIELD_DATA}", fieldData)
       .replace("{ARTICLES_DATA}", articlesData);
 
-    console.log("Generated Prompt:\n", dynamicPrompt);
+    console.log(`Generated Prompt for ${fieldName}:\n`, dynamicPrompt);
 
-    // Call OpenAI
+    // Call OpenAI API for the current field
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [{ role: "system", content: dynamicPrompt }],
       temperature: tempTopPData.temperature,
       max_tokens: 2048,
-      top_p: tempTopPData.top_p
+      top_p: tempTopPData.top_p,
     });
 
-    return response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
+    const aiResponse = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
+    console.log(`Raw AI Response for ${fieldName}:\n`, aiResponse);
 
+    if (aiResponse === "NO_VALID_AI_RESPONSE") {
+      console.warn(`AI response was invalid for field: ${fieldName}`);
+      return res.status(400).send("AI response was invalid.");
+    }
+
+    // Parse the AI response for the current field
+    const fieldNameMatch = aiResponse.match(/field_name:\s*(.+)/);
+    const maturityMatch = aiResponse.match(/metric_1:\s*([\d.]+)/);
+    const innovationMatch = aiResponse.match(/metric_2:\s*([\d.]+)/);
+    const relevanceMatch = aiResponse.match(/metric_3:\s*([\d.]+)/);
+    const rationaleMatch = aiResponse.match(/rationale:\s*([\s\S]+?)\nsource:/);
+    const sourcesMatch = aiResponse.match(/source:\s*(https?:\/\/[^\s]+)/);
+
+    if (!fieldNameMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourcesMatch) {
+      console.error(`Error: AI response is in an invalid format for field: ${fieldName}`);
+      return res.status(400).send("AI response is in an invalid format.");
+    }
+
+    const maturity = parseFloat(maturityMatch[1]);
+    const innovation = parseFloat(innovationMatch[1]);
+    const relevance = parseFloat(relevanceMatch[1]);
+    const rationale = rationaleMatch[1].trim();
+    const source = sourcesMatch[1].trim();
+
+    console.log(`Updating metrics for field: ${fieldName}`);
+
+    // Insert new updated metrics into TIMEDMETRICS
+    await pool.query(
+      `INSERT INTO TIMEDMETRICS (metric_1, metric_2, metric_3, metric_date, field_id, rationale, source)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [maturity, innovation, relevance, new Date().toISOString(), row.field_id, rationale, source]
+    );
+
+    console.log(`Updated metrics for '${fieldName}' successfully.`);
+    return res.status(200).send(`Metrics updated successfully for field: ${fieldName}`);
   } catch (error) {
     console.error("Error:", error);
-    return "ERROR: Unable to process request.";
-  }
-};
-
-app.post("/gpt-update-metrics", async (req, res) => {
-  let aiResponse = await updateExistingFieldMetrics();
-  console.log("Raw AI Response:\n", aiResponse);
-
-  if (aiResponse === "NO_FIELDS") {
-    return res.status(200).send("No fields available for update.");
-  }
-
-  if (aiResponse === "NO_VALID_AI_RESPONSE") {
-    console.warn("AI response was invalid, but proceeding with request completion.");
-    return res.status(200).send("AI response was empty or invalid, but request completed.");
-  }
-
-  try {
-    const fieldEntries = aiResponse.split(/\n\s*\n/).filter(entry => entry.trim().startsWith("field_name:"));
-
-    if (fieldEntries.length === 0) {
-      console.error("Error: AI response contains no valid fields.");
-      return res.status(400).send("Invalid AI response format.");
-    }
-
-    for (const entry of fieldEntries) {
-      const fieldNameMatch = entry.match(/field_name:\s*(.+)/);
-      const maturityMatch = entry.match(/metric_1:\s*([\d.]+)/);
-      const innovationMatch = entry.match(/metric_2:\s*([\d.]+)/);
-      const relevanceMatch = entry.match(/metric_3:\s*([\d.]+)/);
-      const rationaleMatch = entry.match(/rationale:\s*([\s\S]+?)\nsource:/);
-      const sourcesMatch = entry.match(/source:\s*(https?:\/\/[^\s]+)/);
-
-      if (!fieldNameMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourcesMatch) {
-        console.error("Error: AI response is in an invalid format.", entry);
-        continue; // Skip invalid entry but continue processing the rest
-      }
-
-      const fieldName = fieldNameMatch[1].trim();
-      const maturity = parseFloat(maturityMatch[1]);
-      const innovation = parseFloat(innovationMatch[1]);
-      const relevance = parseFloat(relevanceMatch[1]);
-      const rationale = rationaleMatch[1].trim();
-      const source = sourcesMatch[1].trim();
-
-      console.log(`Updating metrics for field: ${fieldName}`);
-
-      // Fetch field ID
-      const fieldResult = await pool.query("SELECT field_id FROM Field WHERE field_name = $1", [fieldName]);
-      if (fieldResult.rowCount === 0) {
-        console.error(`Field not found: ${fieldName}`);
-        continue;
-      }
-      const fieldId = fieldResult.rows[0].field_id;
-
-      // Insert new updated metrics into TIMEDMETRICS
-      await pool.query(
-        `INSERT INTO TIMEDMETRICS (metric_1, metric_2, metric_3, metric_date, field_id, rationale, source)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [maturity, innovation, relevance, new Date().toISOString(), fieldId, rationale, source]
-      );
-
-      console.log(`Updated metrics for '${fieldName}' successfully.`);
-    }
-
-    res.status(200).send("Fields updated successfully.");
-  } catch (err) {
-    console.error("Database error:", err);
-    res.status(500).send("Error updating fields.");
+    return res.status(500).send("Error updating metrics.");
   }
 });
 
@@ -297,33 +302,53 @@ let promptAIField = async () => {
       messages: [{ role: "system", content: dynamicPrompt }],
       temperature: 0,
       max_tokens: 2048,
-      top_p: 1
+      top_p: 1,
     });
 
-    return response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
+    const aiResponse = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
 
+    // Log the raw AI response for debugging
+    console.log("Raw AI Response:\n", aiResponse);
+
+    // Check if the AI response is "NUH_UH"
+    if (aiResponse === "NUH_UH") {
+      console.log("AI could not think of any new fields.");
+      return "NUH_UH";
+    }
+
+    return aiResponse;
   } catch (error) {
     console.error("Error:", error);
     return "ERROR: Unable to process request.";
   }
 };
-
 // New endpoint
 app.post("/gpt-field", async (req, res) => {
   let aiResponse = await promptAIField();
-  console.log("Raw AI Response:\n", aiResponse);
+  console.log("Raw AI Response in Endpoint:\n", aiResponse);
+
+  // Handle the "NUH_UH" case
+  if (aiResponse === "NUH_UH") {
+    return res.status(200).send("AI could not think of any new fields.");
+  }
+
+  // Handle invalid AI response
+  if (aiResponse === "NO_VALID_AI_RESPONSE" || aiResponse === "ERROR: Unable to process request.") {
+    return res.status(400).send("Invalid AI response.");
+  }
 
   // Split AI response into separate field entries
   const fieldEntries = aiResponse.split(/\n\s*\n/).filter(entry => entry.trim().startsWith("field_name:"));
 
   if (fieldEntries.length === 0) {
     console.error("Error: AI response contains no valid fields.");
-    res.status(400).send("Invalid AI response format.");
-    return;
+    return res.status(400).send("Invalid AI response format.");
   }
 
   try {
     for (const entry of fieldEntries) {
+      console.log("Processing Entry:\n", entry);
+
       // Extract values using regex
       const fieldNameMatch = entry.match(/field_name:\s*(.+)/);
       const descriptionMatch = entry.match(/description:\s*([\s\S]+?)\nmetric_1:/);
@@ -333,10 +358,18 @@ app.post("/gpt-field", async (req, res) => {
       const rationaleMatch = entry.match(/rationale:\s*([\s\S]+?)\nsource:/);
       const sourcesMatch = entry.match(/source:\s*(https?:\/\/[^\s]+)/);
 
-      if (!fieldNameMatch || !descriptionMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourcesMatch) {
-        console.error("Error: AI response is in an invalid format.");
-        res.status(400).send("Invalid AI response format.");
-        return;
+      // Validate extracted values
+      if (
+        !fieldNameMatch ||
+        !descriptionMatch ||
+        !maturityMatch ||
+        !innovationMatch ||
+        !relevanceMatch ||
+        !rationaleMatch ||
+        !sourcesMatch
+      ) {
+        console.error("Error: AI response is in an invalid format.", entry);
+        continue; // Skip invalid entry but continue processing the rest
       }
 
       const fieldName = fieldNameMatch[1].trim();
@@ -375,7 +408,7 @@ app.post("/gpt-field", async (req, res) => {
       console.log(`Metrics for '${fieldName}' inserted successfully.`);
     }
 
-    res.send("Fields processed successfully.");
+    res.status(200).send("Fields processed successfully.");
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).send("Error processing fields.");
@@ -418,7 +451,7 @@ const generateInsight = async (type, fieldId) => {
 
       if (fieldQuery.rowCount === 0) {
         console.log("Field not found.");
-        return "NO_FIELD";
+        return { insight: "NO_FIELD", confidenceScore: 0 };
       }
 
       fieldName = fieldQuery.rows[0].field_name;
@@ -447,7 +480,7 @@ const generateInsight = async (type, fieldId) => {
 
     if (metricsQuery.rowCount === 0) {
       console.log("No metrics found.");
-      return "NO_METRICS";
+      return { insight: "NO_METRICS", confidenceScore: 0 };
     }
 
     // Fetch the previous insight, if it exists
@@ -552,15 +585,16 @@ const generateInsight = async (type, fieldId) => {
 
     // Write the insight to the file
     if (type === "insight") {
-    await fsPromises.writeFile(filePath, generatedInsight, 'utf8');
-    console.log(`Insight written to ${filePath}`);
+      await fsPromises.writeFile(filePath, generatedInsight, 'utf8');
+      console.log(`Insight written to ${filePath}`);
     }
 
-    return generatedInsight;
+    // Return both the generated insight and the confidence score
+    return { insight: generatedInsight, confidenceScore };
 
   } catch (error) {
     console.error("Error:", error);
-    return "ERROR: Unable to process request.";
+    return { insight: "ERROR: Unable to process request.", confidenceScore: 0 };
   }
 };
 let promptAISubfield = async (fieldName) => {
@@ -599,10 +633,10 @@ let promptAISubfield = async (fieldName) => {
 
 // New endpoint to handle subfield generation
 app.post("/gpt-subfield", async (req, res) => {
-  const { fieldName } = req.body; // Get fieldName from the request body
-  console.log("Received fieldName:")
-  if (!fieldName) {
-    return res.status(400).send("Field name is required.");
+  const { fieldName, fieldId } = req.body; // Get fieldName and fieldId from the request body
+  console.log("Received fieldName:", fieldName);
+  if (!fieldName || !fieldId) {
+    return res.status(400).send("Field name and field ID are required.");
   }
 
   let aiResponse = await promptAISubfield(fieldName);
@@ -613,8 +647,7 @@ app.post("/gpt-subfield", async (req, res) => {
 
   if (subfieldEntries.length === 0) {
     console.error("Error: AI response contains no valid subfields.");
-    res.status(400).send("Invalid AI response format.");
-    return;
+    return res.status(400).send("Invalid AI response format.");
   }
 
   try {
@@ -622,8 +655,7 @@ app.post("/gpt-subfield", async (req, res) => {
     const fieldResult = await pool.query('SELECT field_id FROM Field WHERE field_name = $1', [fieldName]);
     if (fieldResult.rowCount === 0) {
       console.error("Error: Field not found.");
-      res.status(404).send("Field not found.");
-      return;
+      return res.status(404).send("Field not found.");
     }
     const fieldId = fieldResult.rows[0].field_id;
 
@@ -655,10 +687,8 @@ app.post("/gpt-subfield", async (req, res) => {
       if (!subfieldNameMatch || !descriptionMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourceMatch) {
         console.error("Error: AI response is in an invalid format.");
         console.error("Problematic entry:", entry);
-        res.status(400).send("Invalid AI response format.");
-        return;
+        return res.status(400).send("Invalid AI response format.");
       }
-
 
       const subfieldName = subfieldNameMatch[1].trim();
       const description = descriptionMatch[1].trim();
@@ -691,175 +721,182 @@ app.post("/gpt-subfield", async (req, res) => {
 
       // Insert metrics into TIMEDMETRICS
       await pool.query(
-        `INSERT INTO TimedMetrics (metric_1, metric_2, metric_3, metric_date, subfield_id, rationale, source)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [maturity, innovation, relevance, new Date().toISOString(), subfieldId, rationale, source]
+        `INSERT INTO TimedMetrics (metric_1, metric_2, metric_3, metric_date, field_id, subfield_id, rationale, source)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [maturity, innovation, relevance, new Date().toISOString(), fieldId, subfieldId, rationale, source]
       );
 
       console.log(`Metrics for '${subfieldName}' inserted successfully.`);
     }
 
-    res.send("Subfields processed successfully.");
+    // Return success response after processing subfields
+    res.status(200).json({ 
+      message: "Subfields processed successfully.",
+    });
+
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).send("Error processing subfields.");
   }
 });
-let updateSubfieldTimedMetrics = async (fieldName) => {
+
+app.post("/gpt-update-subfield-metrics", async (req, res) => {
+  const { subfield_id, field_id } = req.body; // Accept subfield_id and field_id from the request body
+
+  if (!subfield_id || !field_id) {
+    return res.status(400).send("Subfield ID and Field ID are required.");
+  }
+
   try {
-    // Fetch the fieldId using the provided field_name
-    const fieldIdQuery = await pool.query("SELECT field_id FROM Field WHERE field_name = $1", [fieldName]);
-
-    if (fieldIdQuery.rowCount === 0) {
-      console.log(`Field not found: ${fieldName}`);
-      return "NO_FIELDS";
-    }
-
-    const fieldId = fieldIdQuery.rows[0].field_id;
-
-    // Fetch subfields and their corresponding metrics for the selected field
+    // Fetch the specific subfield from the database
     const subfieldQuery = await pool.query(`
-      SELECT s.subfield_id, s.subfield_name, t.metric_1, t.metric_2, t.metric_3, t.rationale, t.metric_date
+      SELECT s.subfield_id, s.subfield_name, t.metric_1, t.metric_2, t.metric_3, t.rationale 
       FROM Subfield s 
-      JOIN TimedMetrics t ON s.subfield_id = t.subfield_id 
-      WHERE s.field_id = $1 AND t.metric_date = (SELECT MAX(metric_date) FROM TimedMetrics WHERE subfield_id = s.subfield_id)
-    `, [fieldId]);
+      JOIN TIMEDMETRICS t ON s.subfield_id = t.subfield_id 
+      WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE subfield_id = s.subfield_id) 
+        AND s.subfield_id = $1
+        AND s.field_id = $2
+    `, [subfield_id, field_id]);
 
     if (subfieldQuery.rowCount === 0) {
-      console.log("No subfields found for the selected field.");
-      return "NO_SUBFIELDS";
+      console.log(`No subfield found with ID: ${subfield_id} for field ID: ${field_id}`);
+      return res.status(404).send("Subfield not found.");
     }
 
-    const subfieldData = subfieldQuery.rows.map(row => `
-      subfield_name: ${row.subfield_name}
+    const row = subfieldQuery.rows[0];
+    const subfieldName = row.subfield_name;
+
+    // Fetch temperature and top_p parameters
+    const tempTopPQuery = await pool.query(`SELECT top_p, temperature FROM public.modelparameters ORDER BY parameter_id DESC LIMIT 1`);
+    if (tempTopPQuery.rowCount === 0) {
+      console.log("No TempTopP found.");
+      return res.status(404).send("No TempTopP found.");
+    }
+    const tempTopPData = tempTopPQuery.rows[0];
+    console.log(`Update temp: ${tempTopPData.temperature}, topP: ${tempTopPData.top_p}`);
+
+    // Read articles from the JSON file
+    const articlesPath = path.join(__dirname, '../../client/techpulse_app/public/arxiv_papers_sf.json');
+    const articles = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
+
+    // Read the prompt template from file
+    let promptTemplate = await fsPromises.readFile("./prompts/prompt_update_metrics.txt", "utf8");
+
+    // Filter articles for the current subfield and limit to the last {amountScrapedsf} articles
+    const subfieldArticles = articles
+      .filter(article => article.subfield_id === subfield_id) // Match articles by subfield_id
+      .sort((a, b) => new Date(b.published) - new Date(a.published)) // Sort by published date (newest first)
+      .slice(0, amountScrapedsf); // Limit to the last {amountScrapedsf} articles
+
+    // Construct articles data string for the current subfield
+    const articlesData = subfieldArticles.map(article => `
+      subfield_name: ${subfieldName}
+      title: ${article.title}
+      summary: ${article.summary}
+      published: ${article.published}`).join('\n\n');
+
+    // Construct subfield data string for the current subfield
+    const subfieldData = `
+      subfield_name: ${subfieldName}
       metric_1: ${row.metric_1}
       metric_2: ${row.metric_2}
       metric_3: ${row.metric_3}
       rationale: ${row.rationale},
-      metric_date: ${row.metric_date}`).join('\n\n');
+      metric_date: ${row.metric_date}`;
 
-    const tempTopPQuery = await pool.query(`SELECT top_p,temperature FROM public.modelparameters ORDER BY parameter_id DESC LIMIT 1`);
-    
-    if(tempTopPQuery.rowCount == 0) {
-      console.log("No TempTopP found.");
-      return "NO_TempTopP";
-    }
+    // Construct the dynamic prompt for the current subfield
+    let dynamicPrompt = promptTemplate
+      .replace("{FIELD_DATA}", subfieldData)
+      .replace("{ARTICLES_DATA}", articlesData);
 
-    const tempTopPData = tempTopPQuery.rows[0];
-    console.log(`update temp:${tempTopPData.temperature} topP:${tempTopPData.top_p}`);
+    console.log(`Generated Prompt for ${subfieldName}:\n`, dynamicPrompt);
 
-    // Read the prompt template from file
-    let promptTemplate = await fsPromises.readFile("./prompts/prompt_update_metrics.txt", "utf8");
-    let dynamicPrompt = promptTemplate.replace("{FIELD_DATA}", subfieldData);
-
-    console.log("Generated Prompt:\n", dynamicPrompt);
-
-    // Call OpenAI
+    // Call OpenAI API for the current subfield
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
       messages: [{ role: "system", content: dynamicPrompt }],
       temperature: tempTopPData.temperature,
       max_tokens: 2048,
-      top_p: tempTopPData.top_p
+      top_p: tempTopPData.top_p,
     });
 
-    return response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
+    const aiResponse = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
+    console.log(`Raw AI Response for ${subfieldName}:\n`, aiResponse);
 
+    if (aiResponse === "NO_VALID_AI_RESPONSE") {
+      console.warn(`AI response was invalid for subfield: ${subfieldName}`);
+      return res.status(400).send("AI response was invalid.");
+    }
+
+    // Parse the AI response for the current subfield
+    const subfieldNameMatch = aiResponse.match(/field_name:\s*(.+)/);
+    const maturityMatch = aiResponse.match(/metric_1:\s*([\d.]+)/);
+    const innovationMatch = aiResponse.match(/metric_2:\s*([\d.]+)/);
+    const relevanceMatch = aiResponse.match(/metric_3:\s*([\d.]+)/);
+    const rationaleMatch = aiResponse.match(/rationale:\s*([\s\S]+?)\nsource:/);
+    const sourcesMatch = aiResponse.match(/source:\s*(https?:\/\/[^\s]+)/);
+
+    if (!subfieldNameMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourcesMatch) {
+      console.error(`Error: AI response is in an invalid format for subfield: ${subfieldName}`);
+      return res.status(400).send("AI response is in an invalid format.");
+    }
+
+    const maturity = parseFloat(maturityMatch[1]);
+    const innovation = parseFloat(innovationMatch[1]);
+    const relevance = parseFloat(relevanceMatch[1]);
+    const rationale = rationaleMatch[1].trim();
+    const source = sourcesMatch[1].trim();
+
+    console.log(`Updating metrics for subfield: ${subfieldName}`);
+
+    // Insert new updated metrics into TIMEDMETRICS
+    await pool.query(
+      `INSERT INTO TIMEDMETRICS (metric_1, metric_2, metric_3, metric_date, subfield_id, field_id, rationale, source)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [maturity, innovation, relevance, new Date().toISOString(), row.subfield_id, field_id, rationale, source]
+    );
+
+    console.log(`Updated metrics for '${subfieldName}' successfully.`);
+    return res.status(200).send(`Metrics updated successfully for subfield: ${subfieldName}`);
   } catch (error) {
     console.error("Error:", error);
-    return "ERROR: Unable to process request.";
-  }
-};
-
-
-app.post("/gpt-update-subfield-metrics", async (req, res) => {
-  const { fieldId } = req.body; // Assuming fieldId is provided in the request body
-  let aiResponse = await updateSubfieldTimedMetrics(fieldId);
-  console.log("Raw AI Response:\n", aiResponse);
-
-  if (aiResponse === "NO_SUBFIELDS") {
-    return res.status(200).send("No subfields available for update.");
-  }
-
-  if (aiResponse === "NO_VALID_AI_RESPONSE") {
-    console.warn("AI response was invalid, but proceeding with request completion.");
-    return res.status(200).send("AI response was empty or invalid, but request completed.");
-  }
-
-  try {
-    const subfieldEntries = aiResponse.split(/\n\s*\n/).filter(entry => entry.trim().startsWith("subfield_name:"));
-
-    if (subfieldEntries.length === 0) {
-      console.error("Error: AI response contains no valid subfields.");
-      return res.status(400).send("Invalid AI response format.");
-    }
-
-    for (const entry of subfieldEntries) {
-      const subfieldNameMatch = entry.match(/subfield_name:\s*(.+)/);
-      const maturityMatch = entry.match(/metric_1:\s*([\d.]+)/);
-      const innovationMatch = entry.match(/metric_2:\s*([\d.]+)/);
-      const relevanceMatch = entry.match(/metric_3:\s*([\d.]+)/);
-      const rationaleMatch = entry.match(/rationale:\s*([\s\S]+?)\nsource:/);
-      const sourceMatch = entry.match(/source:\s*"?(\bhttps?:\/\/[^\s"]+)"?/);
-
-      
-
-      if (!subfieldNameMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourcesMatch) {
-        console.error("Error: AI response is in an invalid format.", entry);
-        continue; // Skip invalid entry but continue processing the rest
-      }
- 
-      const subfieldName = subfieldNameMatch[1].trim();
-      const maturity = parseFloat(maturityMatch[1]);
-      const innovation = parseFloat(innovationMatch[1]);
-      const relevance = parseFloat(relevanceMatch[1]);
-      const rationale = rationaleMatch[1].trim();
-      const source = sourcesMatch[1].trim();
-
-      console.log(`Updating metrics for subfield: ${subfieldName}`);
-
-      // Fetch subfield ID
-      const subfieldResult = await pool.query("SELECT subfield_id FROM Subfield WHERE subfield_name = $1 AND field_id = $2", [subfieldName, fieldId]);
-      if (subfieldResult.rowCount === 0) {
-        console.error(`Subfield not found: ${subfieldName}`);
-        continue;
-      }
-      const subfieldId = subfieldResult.rows[0].subfield_id;
-
-      // Insert new updated metrics into TIMEDMETRICS
-      await pool.query(
-        `INSERT INTO TimedMetrics (metric_1, metric_2, metric_3, metric_date, subfield_id, rationale, source)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [maturity, innovation, relevance, new Date().toISOString(), subfieldId, rationale, source]
-      );
-
-      console.log(`Updated metrics for subfield '${subfieldName}' successfully.`);
-    }
-
-    res.status(200).send("Subfields updated successfully.");
-  } catch (err) {
-    console.error("Database error:", err);
-    res.status(500).send("Error updating subfields.");
+    return res.status(500).send("Error updating metrics.");
   }
 });
-
   
 
 app.post("/generate-insight", async (req, res) => {
-  const { fieldId } = req.body;
-  let aiResponse = await generateInsight("insight", fieldId);
-  console.log("Raw AI Response:\n", aiResponse);
+  const { fieldId } = req.body; // Get fieldId from the request body
 
-  if (aiResponse === "NO_METRICS") {
-    return res.status(200).send("No metrics available for insight generation.");
+  if (!fieldId) {
+    return res.status(400).send("Field ID is required.");
   }
 
-  if (aiResponse === "NO_VALID_AI_RESPONSE") {
-    console.warn("AI response was invalid, but proceeding with request completion.");
-    return res.status(200).send("AI response was empty or invalid, but request completed.");
-  }
+  try {
+    // Fetch field details from the database
+    const fieldResult = await pool.query('SELECT * FROM Field WHERE field_id = $1', [fieldId]);
+    if (fieldResult.rowCount === 0) {
+      return res.status(404).send("Field not found.");
+    }
 
-  res.status(200).json({ insight: aiResponse });
+    const fieldName = fieldResult.rows[0].field_name;
+
+    // Call the AI to generate insight
+    const { insight, confidenceScore } = await generateInsight("insight", fieldId);
+
+    // Save the generated insight to the database (optional)
+    await pool.query(
+      `INSERT INTO Insight (field_id, insight_text, confidence_score)
+       VALUES ($1, $2, $3)`,
+      [fieldId, insight, confidenceScore]
+    );
+
+    // Return the generated insight
+    res.json({ insight });
+  } catch (err) {
+    console.error("Error generating insight:", err);
+    res.status(500).send("Error generating insight.");
+  }
 });
 
 app.post("/generate-insight-trends", async (req, res) => {
@@ -967,9 +1004,3 @@ app.get("/api/run-scraper-sf", (req, res) => {
     return res.json({ success: true, message: "Scraper ran successfully", output: stdout });
   });
 });
-
-
-
-
-
-
