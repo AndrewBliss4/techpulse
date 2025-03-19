@@ -107,36 +107,36 @@ app.get('/api/radar', async (req, res) => {
 
 app.get('/api/latest-id', async (req, res) => {
   try {
-      const result = await pool.query('SELECT insight_id FROM public.insight ORDER BY insight_id DESC LIMIT 1');
-      console.log('Data fetched successfully:', result.rows[0]);
-      res.json({ latestId: result.rows[0]?.insight_id });
+    const result = await pool.query('SELECT insight_id FROM public.insight ORDER BY insight_id DESC LIMIT 1');
+    console.log('Data fetched successfully:', result.rows[0]);
+    res.json({ latestId: result.rows[0]?.insight_id });
   } catch (error) {
-      console.error('Error fetching data:', error.message);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error('Error fetching data:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 // Example API endpoint to insert data into feeback table
 app.post('/api/data1', async (req, res) => {
-    const { insight_id, feedback_text, rating } = req.body;
-    try {
-        await pool.query('INSERT INTO public.feedback (insight_id ,feedback_text, rating) VALUES ($1, $2, $3)', [insight_id, feedback_text, rating]);
-        res.status(201).send('Data inserted');
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error inserting data');
-    }
+  const { insight_id, feedback_text, rating } = req.body;
+  try {
+    await pool.query('INSERT INTO public.feedback (insight_id ,feedback_text, rating) VALUES ($1, $2, $3)', [insight_id, feedback_text, rating]);
+    res.status(201).send('Data inserted');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error inserting data');
+  }
 });
 
 app.post('/api/data2', async (req, res) => {
   const { temperature, top_p, parameter_id } = req.body;
   try {
-      // Correct the SQL query syntax with `SET` and add a condition for which row to update
-      await pool.query('UPDATE public.modelparameters SET temperature = $1, top_p = $2 WHERE parameter_id = $3', [temperature, top_p, parameter_id]);
-      res.status(200).send('Data updated successfully');
+    // Correct the SQL query syntax with `SET` and add a condition for which row to update
+    await pool.query('UPDATE public.modelparameters SET temperature = $1, top_p = $2 WHERE parameter_id = $3', [temperature, top_p, parameter_id]);
+    res.status(200).send('Data updated successfully');
   } catch (err) {
-      console.error(err);
-      res.status(500).send('Error updating data');
+    console.error(err);
+    res.status(500).send('Error updating data');
   }
 });
 
@@ -698,7 +698,7 @@ const generateSubInsight = async (type, fieldId) => {
 
     // Construct the dynamic prompt
     let promptTemplate;
-    
+
     switch (type) {
       case "insight":
         promptTemplate = await fsPromises.readFile("./prompts/full_radar_insight_generation.txt.txt", "utf8");
@@ -860,29 +860,29 @@ app.post("/gpt-subfield", async (req, res) => {
 
     for (const entry of subfieldEntries) {
       console.log("Processing Entry:\n", entry);
-    
+
       // Extract values using regex
       const subfieldNameMatch = entry.match(/subfield_name:\s*(.+)/);
       console.log("Subfield Name Match:", subfieldNameMatch);
-    
+
       const descriptionMatch = entry.match(/description:\s*([\s\S]+?)\s*\nmetric_1:/);
       console.log("Description Match:", descriptionMatch);
-    
+
       const maturityMatch = entry.match(/metric_1:\s*([\d.]+)/);
       console.log("Maturity Match:", maturityMatch);
-    
+
       const innovationMatch = entry.match(/metric_2:\s*([\d.]+)/);
       console.log("Innovation Match:", innovationMatch);
-    
+
       const relevanceMatch = entry.match(/metric_3:\s*([\d.]+)/);
       console.log("Relevance Match:", relevanceMatch);
-    
+
       const rationaleMatch = entry.match(/rationale:\s*([\s\S]+?)\s*\nsource:/);
       console.log("Rationale Match:", rationaleMatch);
-    
+
       const sourceMatch = entry.match(/source:\s*"?(\bhttps?:\/\/[^\s"]+)"?/);
       console.log("Source Match:", sourceMatch);
-    
+
       if (!subfieldNameMatch || !descriptionMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourceMatch) {
         console.error("Error: AI response is in an invalid format.");
         console.error("Problematic entry:", entry);
@@ -929,7 +929,7 @@ app.post("/gpt-subfield", async (req, res) => {
     }
 
     // Return success response after processing subfields
-    res.status(200).json({ 
+    res.status(200).json({
       message: "Subfields processed successfully.",
     });
 
@@ -1062,7 +1062,7 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
     return res.status(500).send("Error updating metrics.");
   }
 });
-  
+
 app.post("/generate-insight", async (req, res) => {
   let aiResponse = await generateInsight("insight");
   console.log("Raw AI Response:\n", aiResponse);
@@ -1086,32 +1086,32 @@ app.post("/generate-sub-insight", async (req, res) => {
     return res.status(400).send("Field ID is required.");
   }
 
-    try {
-      // Fetch field details from the database
-      const fieldResult = await pool.query('SELECT * FROM Field WHERE field_id = $1', [fieldId]);
-      if (fieldResult.rowCount === 0) {
-        return res.status(404).send("Field not found.");
-      }
-
-      //what is this line
-      const fieldName = fieldResult.rows[0].field_name;
-
-      // Call the AI to generate insight
-      const { insight, confidenceScore } = await generateSubInsight("insight", fieldId);
-
-      // Save the generated insight to the database (optional)
-      await pool.query(
-        `INSERT INTO Insight (field_id, insight_text, confidence_score)
-        VALUES ($1, $2, $3)`,
-        [fieldId, insight, confidenceScore]
-      );
-
-      // Return the generated insight
-      res.json({ insight });
-    } catch (err) {
-      console.error("Error generating insight:", err);
-      res.status(500).send("Error generating insight.");
+  try {
+    // Fetch field details from the database
+    const fieldResult = await pool.query('SELECT * FROM Field WHERE field_id = $1', [fieldId]);
+    if (fieldResult.rowCount === 0) {
+      return res.status(404).send("Field not found.");
     }
+
+    //what is this line
+    const fieldName = fieldResult.rows[0].field_name;
+
+    // Call the AI to generate insight
+    const { insight, confidenceScore } = await generateSubInsight("insight", fieldId);
+
+    // Save the generated insight to the database (optional)
+    await pool.query(
+      `INSERT INTO Insight (field_id, insight_text, confidence_score)
+        VALUES ($1, $2, $3)`,
+      [fieldId, insight, confidenceScore]
+    );
+
+    // Return the generated insight
+    res.json({ insight });
+  } catch (err) {
+    console.error("Error generating insight:", err);
+    res.status(500).send("Error generating insight.");
+  }
 });
 
 
@@ -1168,9 +1168,10 @@ app.get("/api/run-scraper", (req, res) => {
       console.error(`Error executing scraper: ${error.message}`);
       return res.status(500).json({ success: false, message: "Scraper failed", error: error.message });
     }
+
+    // Log stderr but don't treat it as an error
     if (stderr) {
-      console.error(`Scraper stderr: ${stderr}`);
-      return res.status(500).json({ success: false, message: "Scraper encountered an issue", error: stderr });
+      console.warn(`Scraper stderr: ${stderr}`);
     }
 
     console.log("Scraper executed successfully.");
@@ -1180,19 +1181,47 @@ app.get("/api/run-scraper", (req, res) => {
 
 // API route to trigger the scraper
 app.get("/api/run-scraper-sf", (req, res) => {
-  console.log("Scraper API called. Running Subfield scraper...");
+  console.log("Scraper API called. Running scraper...");
 
   exec(`node ${subfieldScraperScriptPath}`, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error executing scraper: ${error.message}`);
       return res.status(500).json({ success: false, message: "Scraper failed", error: error.message });
     }
+
+    // Log stderr but don't treat it as an error
     if (stderr) {
-      console.error(`Scraper stderr: ${stderr}`);
-      return res.status(500).json({ success: false, message: "Scraper encountered an issue", error: stderr });
+      console.warn(`Scraper stderr: ${stderr}`);
     }
 
     console.log("Scraper executed successfully.");
     return res.json({ success: true, message: "Scraper ran successfully", output: stdout });
+  });
+});
+
+
+app.get("/api/arxiv-papers", (req, res) => {
+  const filePath = path.join(__dirname, "scrape_db", "arxiv_papers.json");
+
+  fs.readFile(filePath, "utf8", (err, data) => {
+    if (err) {
+      console.error("Error reading JSON file:", err);
+      return res.status(500).json({ error: "Failed to read JSON file" });
+    }
+
+    res.json(JSON.parse(data));
+  });
+});
+
+app.get("/api/arxiv-papers-sf", (req, res) => {
+  const filePath = path.join(__dirname, "scrape_db", "arxiv_papers_sf.json");
+
+  fs.readFile(filePath, "utf8", (err, data) => {
+    if (err) {
+      console.error("Error reading JSON file:", err);
+      return res.status(500).json({ error: "Failed to read JSON file" });
+    }
+
+    res.json(JSON.parse(data));
   });
 });
