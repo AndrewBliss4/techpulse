@@ -172,10 +172,16 @@ app.post("/gpt-update-metrics", async (req, res) => {
     const fieldQuery = await pool.query(`
       SELECT f.field_id, f.field_name, t.metric_1, t.metric_2, t.metric_3, t.rationale 
       FROM Field f 
-      JOIN TIMEDMETRICS t ON f.field_id = t.field_id 
-      WHERE t.metric_date = (SELECT MAX(metric_date) FROM TIMEDMETRICS WHERE field_id = f.field_id) 
-        AND t.subfield_id IS NULL
-        AND f.field_id = $1
+      JOIN TIMEDMETRICS t 
+          ON f.field_id = t.field_id 
+      WHERE t.metric_date = (
+          SELECT MAX(metric_date) 
+          FROM TIMEDMETRICS 
+          WHERE field_id = f.field_id 
+            AND subfield_id IS NULL  -- Exclude rows where subfield_id is NOT NULL
+      ) 
+      AND t.subfield_id IS NULL
+      AND f.field_id = $1;
     `, [field_id]);
 
     if (fieldQuery.rowCount === 0) {
