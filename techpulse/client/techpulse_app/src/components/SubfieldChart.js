@@ -80,7 +80,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
       const intervalId = setInterval(() => {
         setCurrentLoaderIndex((prevIndex) => (prevIndex + 1) % loaders.length);
       }, 5000);
-  
+
       return () => clearInterval(intervalId);
     }
   }, [loading]);
@@ -284,7 +284,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
     } catch (error) {
       console.error('Error:', error);
       setInsight('Failed to generate insight. Please try again.');
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -320,31 +320,31 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
 
       {/* Insight Generation Button */}
       <button
-  onClick={handleGenerateInsight}
-  style={{
-    padding: '8px 16px',
-    backgroundColor: loading ? '#f0f0f0' : '#2466e0',
-    color: loading ? '#666' : 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: loading ? 'not-allowed' : 'pointer',
-    marginBottom: '20px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '8px',
-  }}
-  disabled={loading}
->
-  {loading ? (
-    <>
-      {loaders[currentLoaderIndex].loader}
-      <span>{loaders[currentLoaderIndex].text}</span>
-    </>
-  ) : (
-    'Generate Insight'
-  )}
-</button>
+        onClick={handleGenerateInsight}
+        style={{
+          padding: '8px 16px',
+          backgroundColor: loading ? '#f0f0f0' : '#2466e0',
+          color: loading ? '#666' : 'white',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: loading ? 'not-allowed' : 'pointer',
+          marginBottom: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+        }}
+        disabled={loading}
+      >
+        {loading ? (
+          <>
+            {loaders[currentLoaderIndex].loader}
+            <span>{loaders[currentLoaderIndex].text}</span>
+          </>
+        ) : (
+          'Generate Insight'
+        )}
+      </button>
 
       {/* Display Insight */}
       {insight && (
@@ -362,26 +362,27 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
       )}
 
       {/* Subfield Filter Buttons */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '8px',
+        justifyContent: 'center', // Center buttons horizontally
+        marginBottom: '20px'
+      }}>
         {filteredData.map((point, index) => {
-          const isSelected = selectedSubfield === point.subfield_id;
+          const isSelected = !selectedSubfield || point.subfield_id === selectedSubfield;
           return (
-            <button
+            <Scatter
               key={point.subfield_id}
-              onClick={() => handleSubfieldClick(point.subfield_id)}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: isSelected ? 'white' : colors[index % colors.length],
-                color: isSelected ? 'black' : 'white',
-                border: `1px solid ${isSelected ? '#ccc' : colors[index % colors.length]}`,
-                borderRadius: '5px',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-              }}
-            >
-              {point.subfield_name}
-            </button>
+              data={[point]}
+              fill={colors[index % colors.length]}
+              fillOpacity={0.7} // Default opacity
+              cursor="pointer"
+              shape="circle"
+              size={point.metric_3_scaled * 100} // Use metric_3_scaled for size
+              opacity={isSelected ? 1 : 0.2} // Make non-selected points transparent
+              onClick={() => handleSubfieldClick(point.subfield_id)} // Add onClick handler
+            />
           );
         })}
       </div>
@@ -477,6 +478,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
                   shape="circle"
                   size={point.metric_3_scaled * 100} // Use metric_3_scaled for size
                   opacity={isSelected ? 1 : 0.2} // Make non-selected points transparent
+                  onClick={() => handleSubfieldClick(point.subfield_id)} // Add onClick handler
                 />
               );
             })}
