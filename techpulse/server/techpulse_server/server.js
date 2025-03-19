@@ -701,7 +701,7 @@ const generateSubInsight = async (type, fieldId) => {
     
     switch (type) {
       case "insight":
-        promptTemplate = await fsPromises.readFile("./prompts/full_radar_insight_generation.txt.txt", "utf8");
+        promptTemplate = await fsPromises.readFile("./prompts/insight_subfield_gen.txt", "utf8");
         break;
       case "trends":
         promptTemplate = await fsPromises.readFile("./prompts/insight_prompt_trends.txt", "utf8");
