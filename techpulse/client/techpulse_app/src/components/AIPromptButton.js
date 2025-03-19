@@ -186,12 +186,12 @@ const AIPromptFieldButton = ({
       >
         {isLoading ? 'Processing...' : 'View Insights'}
       </button>
-      {generatedText && (
+      {/*generatedText && (
         <div>
           <h3>Generated Insight:</h3>
           <p>{generatedText}</p>
         </div>
-      )}
+      )*/}
     </div>
   );
 };
