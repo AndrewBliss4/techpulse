@@ -72,6 +72,27 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
     fetchMostRecentInsight();
   }, [fieldName]);
 
+  // Function to trigger the scraper
+  const runScraper = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/api/run-scraper-sf', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Scraper failed: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('Scraper executed successfully:', data.message);
+      return true; // Indicate success
+    } catch (error) {
+      console.error('Error running scraper:', error);
+      throw error; // Propagate the error
+    }
+  };
+
   // Filter radarData to only include subfields for the selected field
   const subfieldData = radarData.filter(
     (point) => point.field_id === selectedFieldId && point.subfield_id !== null
@@ -85,15 +106,13 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
       return () => clearInterval(intervalId);
     }
   }, [loading]);
+  
+  
   useEffect(() => {
     const fetchSFArticles = async () => {
       try {
-        const response = await axios.get("/arxiv_papers_sf.json");
-        if (response.status !== 200) {
-          throw new Error("Failed to fetch articles");
-        }
+        const response = await axios.get("http://localhost:4000/api/arxiv-papers-sf"); // Fetch from the API
         const articles = response.data;
-        console.log('Articles Fetched:', articles);
 
         // Transform articles into an object for quick lookup by field name
         const sourcesMap = {};
@@ -101,6 +120,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
           if (!sourcesMap[article.subfield_name]) {
             sourcesMap[article.subfield_name] = [];
           }
+          // Store both title and link
           sourcesMap[article.subfield_name].push({
             title: article.title || "No Title Available",
             link: article.link || "#"
@@ -108,7 +128,9 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
         });
 
         setArticleSFSources(sourcesMap);
-        console.log("Source Map:", sourcesMap);
+
+        // Debugging: Print available field names in the JSON
+        console.log("Available fields in JSON:", Object.keys(sourcesMap));
       } catch (error) {
         console.error("Error fetching articles:", error);
       }
@@ -200,6 +222,14 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
     setLoading(true);
     setCurrentLoaderIndex(0);
     try {
+
+
+      // Step 0: Run the scraper
+      const scraperSuccess = await runScraper();
+      if (!scraperSuccess) {
+        throw new Error("Scraper failed to run.");
+      }
+
       // Step 1: Fetch all subfields for the selected field
       const subfieldsResponse = await fetch(`http://localhost:4000/api/subfields`, {
         method: 'POST',
@@ -308,7 +338,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
           No subfield data is currently available for the selected field.
         </p>
       </div>
-      </div>;
+    </div>;
   }
 
   const loaders = [

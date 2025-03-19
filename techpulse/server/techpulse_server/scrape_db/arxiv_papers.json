@@ -1,0 +1,528 @@
+[
+    {
+        "id": "2503.14462v1",
+        "title": "Blockchain with proof of quantum work",
+        "authors": [
+            "Mohammad H. Amin",
+            "Jack Raymond",
+            "Daniel Kinn",
+            "Firas Hamze",
+            "Kelsey Hamer",
+            "Joel Pasvolsky",
+            "William Bernoudy",
+            "Andrew D. King",
+            "Samuel Kortas"
+        ],
+        "published": "2025-03-18T17:37:22Z",
+        "summary": "We propose a blockchain architecture in which mining requires a quantum computer. The consensus mechanism is based on proof of quantum work, a quantum-enhanced alternative to traditional proof of work that leverages quantum supremacy to make mining intractable for classical computers. We have refined the blockchain framework to incorporate the probabilistic nature of quantum mechanics, ensuring stability against sampling errors and hardware inaccuracies. To validate our approach, we implemented a prototype blockchain on four D-Wave$^{\\rm TM}$ quantum annealing processors geographically distributed within North America, demonstrating stable operation across hundreds of thousands of quantum hashing operations. Our experimental protocol follows the same approach used in the recent demonstration of quantum supremacy [1], ensuring that classical computers cannot efficiently perform the same computation task. By replacing classical machines with quantum systems for mining, it is possible to significantly reduce the energy consumption and environmental impact traditionally associated with blockchain mining. Beyond serving as a proof of concept for a meaningful application of quantum computing, this work highlights the potential for other near-term quantum computing applications using existing technology.",
+        "field": "Quantum Computing",
+        "link": "http://arxiv.org/abs/2503.14462v1"
+    },
+    {
+        "id": "2503.14279v1",
+        "title": "Anti-Tamper Radio meets Reconfigurable Intelligent Surface for System-Level Tamper Detection",
+        "authors": [
+            "Maryam Shaygan Tabar",
+            "Johannes Kortz",
+            "Paul Staat",
+            "Harald Elders-Boll",
+            "Christof Paar",
+            "Christian Zenger"
+        ],
+        "published": "2025-03-18T14:18:31Z",
+        "summary": "Many computing systems need to be protected against physical attacks using active tamper detection based on sensors. One technical solution is to employ an ATR (Anti-Tamper Radio) approach, analyzing the radio wave propagation effects within a protected device to detect unauthorized physical alterations. However, ATR systems face key challenges in terms of susceptibility to signal manipulation attacks, limited reliability due to environmental noise, and regulatory constraints from wide bandwidth usage. In this work, we propose and experimentally evaluate an ATR system complemented by an RIS to dynamically reconfigure the wireless propagation environment. We show that this approach can enhance resistance against signal manipulation attacks, reduce bandwidth requirements from several~GHz down to as low as 20 MHz, and improve robustness to environmental disturbances such as internal fan movements. Our work demonstrates that RIS integration can strengthen the ATR performance to enhance security, sensitivity, and robustness, recognizing the potential of smart radio environments for ATR-based tamper detection",
+        "field": "Quantum Computing",
+        "link": "http://arxiv.org/abs/2503.14279v1"
+    },
+    {
+        "id": "2503.14213v1",
+        "title": "Rolling Forward: Enhancing LightGCN with Causal Graph Convolution for Credit Bond Recommendation",
+        "authors": [
+            "Ashraf Ghiye",
+            "Baptiste Barreau",
+            "Laurent Carlier",
+            "Michalis Vazirgiannis"
+        ],
+        "published": "2025-03-18T12:47:01Z",
+        "summary": "Graph Neural Networks have significantly advanced research in recommender systems over the past few years. These methods typically capture global interests using aggregated past interactions and rely on static embeddings of users and items over extended periods of time. While effective in some domains, these methods fall short in many real-world scenarios, especially in finance, where user interests and item popularity evolve rapidly over time. To address these challenges, we introduce a novel extension to Light Graph Convolutional Network (LightGCN) designed to learn temporal node embeddings that capture dynamic interests. Our approach employs causal convolution to maintain a forward-looking model architecture. By preserving the chronological order of user-item interactions and introducing a dynamic update mechanism for embeddings through a sliding window, the proposed model generates well-timed and contextually relevant recommendations. Extensive experiments on a real-world dataset from BNP Paribas demonstrate that our approach significantly enhances the performance of LightGCN while maintaining the simplicity and efficiency of its architecture. Our findings provide new insights into designing graph-based recommender systems in time-sensitive applications, particularly for financial product recommendations.",
+        "field": "Quantum Computing",
+        "link": "http://arxiv.org/abs/2503.14213v1"
+    },
+    {
+        "id": "2503.13994v1",
+        "title": "TarPro: Targeted Protection against Malicious Image Editing",
+        "authors": [
+            "Kaixin Shen",
+            "Ruijie Quan",
+            "Jiaxu Miao",
+            "Jun Xiao",
+            "Yi Yang"
+        ],
+        "published": "2025-03-18T07:54:44Z",
+        "summary": "The rapid advancement of image editing techniques has raised concerns about their misuse for generating Not-Safe-for-Work (NSFW) content. This necessitates a targeted protection mechanism that blocks malicious edits while preserving normal editability. However, existing protection methods fail to achieve this balance, as they indiscriminately disrupt all edits while still allowing some harmful content to be generated. To address this, we propose TarPro, a targeted protection framework that prevents malicious edits while maintaining benign modifications. TarPro achieves this through a semantic-aware constraint that only disrupts malicious content and a lightweight perturbation generator that produces a more stable, imperceptible, and robust perturbation for image protection. Extensive experiments demonstrate that TarPro surpasses existing methods, achieving a high protection efficacy while ensuring minimal impact on normal edits. Our results highlight TarPro as a practical solution for secure and controlled image editing.",
+        "field": "Quantum Computing",
+        "link": "http://arxiv.org/abs/2503.13994v1"
+    },
+    {
+        "id": "2503.13637v1",
+        "title": "XChainDataGen: A Cross-Chain Dataset Generation Framework",
+        "authors": [
+            "André Augusto",
+            "André Vasconcelos",
+            "Miguel Correia",
+            "Luyao Zhang"
+        ],
+        "published": "2025-03-17T18:39:43Z",
+        "summary": "The number of blockchain interoperability protocols for transferring data and assets between blockchains has grown significantly. However, no open dataset of cross-chain transactions exists to study interoperability protocols in operation. There is also no tool to generate such datasets and make them available to the community. This paper proposes XChainDataGen, a tool to extract cross-chain data from blockchains and generate datasets of cross-chain transactions (cctxs). Using XChainDataGen, we extracted over 35 GB of data from five cross-chain protocols deployed on 11 blockchains in the last seven months of 2024, identifying 11,285,753 cctxs that moved over 28 billion USD in cross-chain token transfers. Using the data collected, we compare protocols and provide insights into their security, cost, and performance trade-offs. As examples, we highlight differences between protocols that require full finality on the source blockchain and those that only demand soft finality (\\textit{security}). We compare user costs, fee models, and the impact of variables such as the Ethereum gas price on protocol fees (\\textit{cost}). Finally, we produce the first analysis of the implications of EIP-7683 for cross-chain intents, which are increasingly popular and greatly improve the speed with which cctxs are processed (\\textit{performance}), thereby enhancing the user experience. The availability of XChainDataGen and this dataset allows various analyses, including trends in cross-chain activity, security assessments of interoperability protocols, and financial research on decentralized finance (DeFi) protocols.",
+        "field": "Quantum Computing",
+        "link": "http://arxiv.org/abs/2503.13637v1"
+    },
+    {
+        "id": "2503.13637v1",
+        "title": "XChainDataGen: A Cross-Chain Dataset Generation Framework",
+        "authors": [
+            "André Augusto",
+            "André Vasconcelos",
+            "Miguel Correia",
+            "Luyao Zhang"
+        ],
+        "published": "2025-03-17T18:39:43Z",
+        "summary": "The number of blockchain interoperability protocols for transferring data and assets between blockchains has grown significantly. However, no open dataset of cross-chain transactions exists to study interoperability protocols in operation. There is also no tool to generate such datasets and make them available to the community. This paper proposes XChainDataGen, a tool to extract cross-chain data from blockchains and generate datasets of cross-chain transactions (cctxs). Using XChainDataGen, we extracted over 35 GB of data from five cross-chain protocols deployed on 11 blockchains in the last seven months of 2024, identifying 11,285,753 cctxs that moved over 28 billion USD in cross-chain token transfers. Using the data collected, we compare protocols and provide insights into their security, cost, and performance trade-offs. As examples, we highlight differences between protocols that require full finality on the source blockchain and those that only demand soft finality (\\textit{security}). We compare user costs, fee models, and the impact of variables such as the Ethereum gas price on protocol fees (\\textit{cost}). Finally, we produce the first analysis of the implications of EIP-7683 for cross-chain intents, which are increasingly popular and greatly improve the speed with which cctxs are processed (\\textit{performance}), thereby enhancing the user experience. The availability of XChainDataGen and this dataset allows various analyses, including trends in cross-chain activity, security assessments of interoperability protocols, and financial research on decentralized finance (DeFi) protocols.",
+        "field": "Decentralized Finance (DeFi)",
+        "link": "http://arxiv.org/abs/2503.13637v1"
+    },
+    {
+        "id": "2503.11940v1",
+        "title": "Vote Delegation in DeFi Governance",
+        "authors": [
+            "Dion Bongaerts",
+            "Thomas Lambert",
+            "Daniel Liebau",
+            "Peter Roosenboom"
+        ],
+        "published": "2025-03-15T01:15:08Z",
+        "summary": "We investigate the drivers of vote delegation in Decentralized Autonomous Organizations (DAOs), using the Uniswap governance DAO as a laboratory. We show that parties with fewer self-owned votes and those affiliated with the controlling venture capital firm, Andreesen Horowitz (a16z), receive more vote delegations. These patterns suggest that while the Uniswap ecosystem values decentralization, a16z may engage in window-dressing around it. Moreover, we find that an active and successful track record in submitting improvement proposals, especially in the final stage, leads to more vote delegations, indicating that delegation in DAOs is at least partly reputation- or merit-based. Combined, our findings provide new insights into how governance and decentralization operate in DeFi.",
+        "field": "Decentralized Finance (DeFi)",
+        "link": "http://arxiv.org/abs/2503.11940v1"
+    },
+    {
+        "id": "2503.06279v1",
+        "title": "Mitigating Blockchain extractable value (BEV) threats by Distributed Transaction Sequencing in Blockchains",
+        "authors": [
+            "Xiongfei Zhao",
+            "Hou-Wan Long",
+            "Zhengzhe Li",
+            "Jiangchuan Liu",
+            "Yain-Whar Si"
+        ],
+        "published": "2025-03-08T16:55:52Z",
+        "summary": "The rapid growth of Blockchain and Decentralized Finance (DeFi) has introduced new challenges and vulnerabilities that threaten the integrity and efficiency of the ecosystem. This study identifies critical issues such as Transaction Order Dependence (TOD), Blockchain Extractable Value (BEV), and Transaction Importance Diversity (TID), which collectively undermine the fairness and security of DeFi systems. BEV-related activities, including Sandwich attacks, Liquidations, and Transaction Replay, have emerged as significant threats, collectively generating $540.54 million in losses over 32 months across 11,289 addresses, involving 49,691 cryptocurrencies and 60,830 on-chain markets. These attacks exploit transaction mechanics to manipulate asset prices and extract value at the expense of other participants, with Sandwich attacks being particularly impactful. Additionally, the growing adoption of Blockchain in traditional finance highlights the challenge of TID, where high transaction volumes can strain systems and compromise time-sensitive operations. To address these pressing issues, we propose a novel Distributed Transaction Sequencing Strategy (DTSS), which combines forking mechanisms and the Analytic Hierarchy Process (AHP) to enforce fair and transparent transaction ordering in a decentralized manner. Our approach is further enhanced by an optimization framework and the introduction of the Normalized Allocation Disparity Metric (NADM), which ensures optimal parameter selection for transaction prioritization. Experimental evaluations demonstrate that DTSS effectively mitigates BEV risks, enhances transaction fairness, and significantly improves the security and transparency of DeFi ecosystems. This work is essential for protecting the future of decentralized finance and promoting its integration into global financial systems.",
+        "field": "Decentralized Finance (DeFi)",
+        "link": "http://arxiv.org/abs/2503.06279v1"
+    },
+    {
+        "id": "2503.04850v2",
+        "title": "Slow is Fast! Dissecting Ethereum's Slow Liquidity Drain Scams",
+        "authors": [
+            "Minh Trung Tran",
+            "Nasrin Sohrabi",
+            "Zahir Tari",
+            "Qin Wang",
+            "Xiaoyu Xia"
+        ],
+        "published": "2025-03-06T02:24:35Z",
+        "summary": "We identify the slow liquidity drain (SLID) scam, an insidious and highly profitable threat to decentralized finance (DeFi), posing a large-scale, persistent, and growing risk to the ecosystem. Unlike traditional scams such as rug pulls or honeypots (USENIX Sec'19, USENIX Sec'23), SLID gradually siphons funds from liquidity pools over extended periods, making detection significantly more challenging. In this paper, we conducted the first large-scale empirical analysis of 319,166 liquidity pools across six major decentralized exchanges (DEXs) since 2018. We identified 3,117 SLID affected liquidity pools, resulting in cumulative losses of more than US$103 million. We propose a rule-based heuristic and an enhanced machine learning model for early detection. Our machine learning model achieves a detection speed 4.77 times faster than the heuristic while maintaining 95% accuracy. Our study establishes a foundation for protecting DeFi investors at an early stage and promoting transparency in the DeFi ecosystem.",
+        "field": "Decentralized Finance (DeFi)",
+        "link": "http://arxiv.org/abs/2503.04850v2"
+    },
+    {
+        "id": "2503.01944v1",
+        "title": "Protecting DeFi Platforms against Non-Price Flash Loan Attacks",
+        "authors": [
+            "Abdulrahman Alhaidari",
+            "Balaji Palanisamy",
+            "Prashant Krishnamurthy"
+        ],
+        "published": "2025-03-03T18:18:05Z",
+        "summary": "Smart contracts in Decentralized Finance (DeFi) platforms are attractive targets for attacks as their vulnerabilities can lead to massive amounts of financial losses. Flash loan attacks, in particular, pose a major threat to DeFi protocols that hold a Total Value Locked (TVL) exceeding \\$106 billion. These attacks use the atomicity property of blockchains to drain funds from smart contracts in a single transaction. While existing research primarily focuses on price manipulation attacks, such as oracle manipulation, mitigating non-price flash loan attacks that often exploit smart contracts' zero-day vulnerabilities remains largely unaddressed. These attacks are challenging to detect because of their unique patterns, time sensitivity, and complexity. In this paper, we present FlashGuard, a runtime detection and mitigation method for non-price flash loan attacks. Our approach targets smart contract function signatures to identify attacks in real-time and counterattack by disrupting the attack transaction atomicity by leveraging the short window when transactions are visible in the mempool but not yet confirmed. When FlashGuard detects an attack, it dispatches a stealthy dusting counterattack transaction to miners to change the victim contract's state which disrupts the attack's atomicity and forces the attack transaction to revert. We evaluate our approach using 20 historical attacks and several unseen attacks. FlashGuard achieves an average real-time detection latency of 150.31ms, a detection accuracy of over 99.93\\%, and an average disruption time of 410.92ms. FlashGuard could have potentially rescued over \\$405.71 million in losses if it were deployed prior to these attack instances. FlashGuard demonstrates significant potential as a DeFi security solution to mitigate and handle rising threats of non-price flash loan attacks.",
+        "field": "Decentralized Finance (DeFi)",
+        "link": "http://arxiv.org/abs/2503.01944v1"
+    },
+    {
+        "id": "2503.14284v1",
+        "title": "Entente: Cross-silo Intrusion Detection on Network Log Graphs with Federated Learning",
+        "authors": [
+            "Jiacen Xu",
+            "Chenang Li",
+            "Yu Zheng",
+            "Zhou Li"
+        ],
+        "published": "2025-03-18T14:21:24Z",
+        "summary": "Graph-based Network Intrusion Detection System (GNIDS) has gained significant momentum in detecting sophisticated cyber-attacks, like Advanced Persistent Threat (APT), in an organization or across organizations. Though achieving satisfying detection accuracy and adapting to ever-changing attacks and normal patterns, all prior GNIDSs assume the centralized data settings directly, but non-trivial data collection is not always practical under privacy regulations nowadays. We argue that training a GNIDS model has to consider privacy regulations, and propose to leverage federated learning (FL) to address this prominent challenge. Yet, directly applying FL to GNIDS is unlikely to succeed, due to issues like non-IID (independent and identically distributed) graph data over clients and the diverse design choices taken by different GNIDS. We address these issues with a set of novel techniques tailored to the graph datasets, including reference graph synthesis, graph sketching and adaptive contribution scaling, and develop a new system Entente. We evaluate Entente on the large-scale LANL, OpTC and Pivoting datasets. The result shows Entente outperforms the other baseline FL algorithms and sometimes even the non-FL GNIDS. We also evaluate Entente under FL poisoning attacks tailored to the GNIDS setting, and show Entente is able to bound the attack success rate to low values. Overall, our result suggests building cross-silo GNIDS is feasible and we hope to encourage more efforts in this direction.",
+        "field": "Artificial Intelligence (AI) in Fraud Detection",
+        "link": "http://arxiv.org/abs/2503.14284v1"
+    },
+    {
+        "id": "2503.14281v1",
+        "title": "XOXO: Stealthy Cross-Origin Context Poisoning Attacks against AI Coding Assistants",
+        "authors": [
+            "Adam Štorek",
+            "Mukur Gupta",
+            "Noopur Bhatt",
+            "Aditya Gupta",
+            "Janie Kim",
+            "Prashast Srivastava",
+            "Suman Jana"
+        ],
+        "published": "2025-03-18T14:20:54Z",
+        "summary": "AI coding assistants are widely used for tasks like code generation, bug detection, and comprehension. These tools now require large and complex contexts, automatically sourced from various origins$\\unicode{x2014}$across files, projects, and contributors$\\unicode{x2014}$forming part of the prompt fed to underlying LLMs. This automatic context-gathering introduces new vulnerabilities, allowing attackers to subtly poison input to compromise the assistant's outputs, potentially generating vulnerable code, overlooking flaws, or introducing critical errors. We propose a novel attack, Cross-Origin Context Poisoning (XOXO), that is particularly challenging to detect as it relies on adversarial code modifications that are semantically equivalent. Traditional program analysis techniques struggle to identify these correlations since the semantics of the code remain correct, making it appear legitimate. This allows attackers to manipulate code assistants into producing incorrect outputs, including vulnerabilities or backdoors, while shifting the blame to the victim developer or tester. We introduce a novel, task-agnostic black-box attack algorithm GCGS that systematically searches the transformation space using a Cayley Graph, achieving an 83.09% attack success rate on average across five tasks and eleven models, including GPT-4o and Claude 3.5 Sonnet v2 used by many popular AI coding assistants. Furthermore, existing defenses, including adversarial fine-tuning, are ineffective against our attack, underscoring the need for new security measures in LLM-powered coding tools.",
+        "field": "Artificial Intelligence (AI) in Fraud Detection",
+        "link": "http://arxiv.org/abs/2503.14281v1"
+    },
+    {
+        "id": "2503.14279v1",
+        "title": "Anti-Tamper Radio meets Reconfigurable Intelligent Surface for System-Level Tamper Detection",
+        "authors": [
+            "Maryam Shaygan Tabar",
+            "Johannes Kortz",
+            "Paul Staat",
+            "Harald Elders-Boll",
+            "Christof Paar",
+            "Christian Zenger"
+        ],
+        "published": "2025-03-18T14:18:31Z",
+        "summary": "Many computing systems need to be protected against physical attacks using active tamper detection based on sensors. One technical solution is to employ an ATR (Anti-Tamper Radio) approach, analyzing the radio wave propagation effects within a protected device to detect unauthorized physical alterations. However, ATR systems face key challenges in terms of susceptibility to signal manipulation attacks, limited reliability due to environmental noise, and regulatory constraints from wide bandwidth usage. In this work, we propose and experimentally evaluate an ATR system complemented by an RIS to dynamically reconfigure the wireless propagation environment. We show that this approach can enhance resistance against signal manipulation attacks, reduce bandwidth requirements from several~GHz down to as low as 20 MHz, and improve robustness to environmental disturbances such as internal fan movements. Our work demonstrates that RIS integration can strengthen the ATR performance to enhance security, sensitivity, and robustness, recognizing the potential of smart radio environments for ATR-based tamper detection",
+        "field": "Artificial Intelligence (AI) in Fraud Detection",
+        "link": "http://arxiv.org/abs/2503.14279v1"
+    },
+    {
+        "id": "2503.13419v1",
+        "title": "Securing Virtual Reality Experiences: Unveiling and Tackling Cybersickness Attacks with Explainable AI",
+        "authors": [
+            "Ripan Kumar Kundu",
+            "Matthew Denton",
+            "Genova Mongalo",
+            "Prasad Calyam",
+            "Khaza Anuarul Hoque"
+        ],
+        "published": "2025-03-17T17:49:51Z",
+        "summary": "The synergy between virtual reality (VR) and artificial intelligence (AI), specifically deep learning (DL)-based cybersickness detection models, has ushered in unprecedented advancements in immersive experiences by automatically detecting cybersickness severity and adaptively various mitigation techniques, offering a smooth and comfortable VR experience. While this DL-enabled cybersickness detection method provides promising solutions for enhancing user experiences, it also introduces new risks since these models are vulnerable to adversarial attacks; a small perturbation of the input data that is visually undetectable to human observers can fool the cybersickness detection model and trigger unexpected mitigation, thus disrupting user immersive experiences (UIX) and even posing safety risks. In this paper, we present a new type of VR attack, i.e., a cybersickness attack, which successfully stops the triggering of cybersickness mitigation by fooling DL-based cybersickness detection models and dramatically hinders the UIX. Next, we propose a novel explainable artificial intelligence (XAI)-guided cybersickness attack detection framework to detect such attacks in VR to ensure UIX and a comfortable VR experience. We evaluate the proposed attack and the detection framework using two state-of-the-art open-source VR cybersickness datasets: Simulation 2021 and Gameplay dataset. Finally, to verify the effectiveness of our proposed method, we implement the attack and the XAI-based detection using a testbed with a custom-built VR roller coaster simulation with an HTC Vive Pro Eye headset and perform a user study. Our study shows that such an attack can dramatically hinder the UIX. However, our proposed XAI-guided cybersickness attack detection can successfully detect cybersickness attacks and trigger the proper mitigation, effectively reducing VR cybersickness.",
+        "field": "Artificial Intelligence (AI) in Fraud Detection",
+        "link": "http://arxiv.org/abs/2503.13419v1"
+    },
+    {
+        "id": "2503.13572v1",
+        "title": "VeriContaminated: Assessing LLM-Driven Verilog Coding for Data Contamination",
+        "authors": [
+            "Zeng Wang",
+            "Minghao Shao",
+            "Jitendra Bhandari",
+            "Likhitha Mankali",
+            "Ramesh Karri",
+            "Ozgur Sinanoglu",
+            "Muhammad Shafique",
+            "Johann Knechtel"
+        ],
+        "published": "2025-03-17T12:26:49Z",
+        "summary": "Large Language Models (LLMs) have revolutionized code generation, achieving exceptional results on various established benchmarking frameworks. However, concerns about data contamination - where benchmark data inadvertently leaks into pre-training or fine-tuning datasets - raise questions about the validity of these evaluations. While this issue is known, limiting the industrial adoption of LLM-driven software engineering, hardware coding has received little to no attention regarding these risks. For the first time, we analyze state-of-the-art (SOTA) evaluation frameworks for Verilog code generation (VerilogEval and RTLLM), using established methods for contamination detection (CCD and Min-K% Prob). We cover SOTA commercial and open-source LLMs (CodeGen2.5, Minitron 4b, Mistral 7b, phi-4 mini, LLaMA-{1,2,3.1}, GPT-{2,3.5,4o}, Deepseek-Coder, and CodeQwen 1.5), in baseline and fine-tuned models (RTLCoder and Verigen). Our study confirms that data contamination is a critical concern. We explore mitigations and the resulting trade-offs for code quality vs fairness (i.e., reducing contamination toward unbiased benchmarking).",
+        "field": "Artificial Intelligence (AI) in Fraud Detection",
+        "link": "http://arxiv.org/abs/2503.13572v1"
+    },
+    {
+        "id": "2503.12952v1",
+        "title": "Performance Analysis and Industry Deployment of Post-Quantum Cryptography Algorithms",
+        "authors": [
+            "Elif Dicle Demir",
+            "Buse Bilgin",
+            "Mehmet Cengiz Onbasli"
+        ],
+        "published": "2025-03-17T09:06:03Z",
+        "summary": "As quantum computing advances, modern cryptographic standards face an existential threat, necessitating a transition to post-quantum cryptography (PQC). The National Institute of Standards and Technology (NIST) has selected CRYSTALS-Kyber and CRYSTALS-Dilithium as standardized PQC algorithms for secure key exchange and digital signatures, respectively. This study conducts a comprehensive performance analysis of these algorithms by benchmarking execution times across cryptographic operations such as key generation, encapsulation, decapsulation, signing, and verification. Additionally, the impact of AVX2 optimizations is evaluated to assess hardware acceleration benefits. Our findings demonstrate that Kyber and Dilithium achieve efficient execution times, outperforming classical cryptographic schemes such as RSA and ECDSA at equivalent security levels. Beyond technical performance, the real-world deployment of PQC introduces challenges in telecommunications networks, where large-scale infrastructure upgrades, interoperability with legacy systems, and regulatory constraints must be addressed. This paper examines the feasibility of PQC adoption in telecom environments, highlighting key transition challenges, security risks, and implementation strategies. Through industry case studies, we illustrate how telecom operators are integrating PQC into 5G authentication, subscriber identity protection, and secure communications. Our analysis provides insights into the computational trade-offs, deployment considerations, and standardization efforts shaping the future of quantum-safe cryptographic infrastructure.",
+        "field": "Biometric Authentication",
+        "link": "http://arxiv.org/abs/2503.12952v1"
+    },
+    {
+        "id": "2503.11508v1",
+        "title": "Leveraging Angle of Arrival Estimation against Impersonation Attacks in Physical Layer Authentication",
+        "authors": [
+            "Thuy M. Pham",
+            "Linda Senigagliesi",
+            "Marco Baldi",
+            "Rafael F. Schaefer",
+            "Gerhard P. Fettweis",
+            "Arsenia Chorti"
+        ],
+        "published": "2025-03-14T15:29:55Z",
+        "summary": "In this paper, we investigate the utilization of the angle of arrival (AoA) as a feature for robust physical layer authentication (PLA). While most of the existing approaches to PLA focus on common features of the physical layer of communication channels, such as channel frequency response, channel impulse response or received signal strength, the use of AoA in this domain has not yet been studied in depth, particularly regarding the ability to thwart impersonation attacks. In this work, we demonstrate that an impersonation attack targeting AoA based PLA is only feasible under strict conditions on the attacker's location and hardware capabilities, which highlights the AoA's potential as a strong feature for PLA. We extend previous works considering a single-antenna attacker to the case of a multiple-antenna attacker, and we develop a theoretical characterization of the conditions in which a successful impersonation attack can be mounted. Furthermore, we leverage extensive simulations in support of theoretical analyses, to validate the robustness of AoA-based PLA.",
+        "field": "Biometric Authentication",
+        "link": "http://arxiv.org/abs/2503.11508v1"
+    },
+    {
+        "id": "2503.08632v1",
+        "title": "Secret-Key Generation from Private Identifiers under Channel Uncertainty",
+        "authors": [
+            "Vamoua Yachongka",
+            "Rémi A. Chou"
+        ],
+        "published": "2025-03-11T17:20:48Z",
+        "summary": "This study investigates secret-key generation for device authentication using physical identifiers, such as responses from physical unclonable functions (PUFs). The system includes two legitimate terminals (encoder and decoder) and an eavesdropper (Eve), each with access to different measurements of the identifier. From the device identifier, the encoder generates a secret key, which is securely stored in a private database, along with helper data that is saved in a public database accessible by the decoder for key reconstruction. Eve, who also has access to the public database, may use both her own measurements and the helper data to attempt to estimate the secret key and identifier. Our setup focuses on authentication scenarios where channel statistics are uncertain, with the involved parties employing multiple antennas to enhance signal reception. Our contributions include deriving inner and outer bounds on the optimal trade-off among secret-key, storage, and privacy-leakage rates for general discrete sources, and showing that these bounds are tight for Gaussian sources.",
+        "field": "Biometric Authentication",
+        "link": "http://arxiv.org/abs/2503.08632v1"
+    },
+    {
+        "id": "2503.08256v1",
+        "title": "SoK: A cloudy view on trust relationships of CVMs -- How Confidential Virtual Machines are falling short in Public Cloud",
+        "authors": [
+            "Jana Eisoldt",
+            "Anna Galanou",
+            "Andrey Ruzhanskiy",
+            "Nils Küchenmeister",
+            "Yewgenij Baburkin",
+            "Tianxiang Dai",
+            "Ivan Gudymenko",
+            "Stefan Köpsell",
+            "Rüdiger Kapitza"
+        ],
+        "published": "2025-03-11T10:21:29Z",
+        "summary": "Confidential computing in the public cloud intends to safeguard workload privacy while outsourcing infrastructure management to a cloud provider. This is achieved by executing customer workloads within so called Trusted Execution Environments (TEEs), such as Confidential Virtual Machines (CVMs), which protect them from unauthorized access by cloud administrators and privileged system software. At the core of confidential computing lies remote attestation -- a mechanism that enables workload owners to verify the initial state of their workload and furthermore authenticate the underlying hardware. hile this represents a significant advancement in cloud security, this SoK critically examines the confidential computing offerings of market-leading cloud providers to assess whether they genuinely adhere to its core principles. We develop a taxonomy based on carefully selected criteria to systematically evaluate these offerings, enabling us to analyse the components responsible for remote attestation, the evidence provided at each stage, the extent of cloud provider influence and whether this undermines the threat model of confidential computing. Specifically, we investigate how CVMs are deployed in the public cloud infrastructures, the extent to which customers can request and verify attestation evidence, and their ability to define and enforce configuration and attestation requirements. This analysis provides insight into whether confidential computing guarantees -- namely confidentiality and integrity -- are genuinely upheld. Our findings reveal that all major cloud providers retain control over critical parts of the trusted software stack and, in some cases, intervene in the standard remote attestation process. This directly contradicts their claims of delivering confidential computing, as the model fundamentally excludes the cloud provider from the set of trusted entities.",
+        "field": "Biometric Authentication",
+        "link": "http://arxiv.org/abs/2503.08256v1"
+    },
+    {
+        "id": "2503.07857v1",
+        "title": "Efficient Resource Management for Secure and Low-Latency O-RAN Communication",
+        "authors": [
+            "Zaineh Abughazzah",
+            "Emna Baccour",
+            "Ahmed Refaey",
+            "Amr Mohamed",
+            "Mounir Hamdi"
+        ],
+        "published": "2025-03-10T21:03:48Z",
+        "summary": "Open Radio Access Networks (O-RAN) are transforming telecommunications by shifting from centralized to distributed architectures, promoting flexibility, interoperability, and innovation through open interfaces and multi-vendor environments. However, O-RAN's reliance on cloud-based architecture and enhanced observability introduces significant security and resource management challenges. Efficient resource management is crucial for secure and reliable communication in O-RAN, within the resource-constrained environment and heterogeneity of requirements, where multiple User Equipment (UE) and O-RAN Radio Units (O-RUs) coexist. This paper develops a framework to manage these aspects, ensuring each O-RU is associated with UEs based on their communication channel qualities and computational resources, and selecting appropriate encryption algorithms to safeguard data confidentiality, integrity, and authentication. A Multi-objective Optimization Problem (MOP) is formulated to minimize latency and maximize security within resource constraints. Different approaches are proposed to relax the complexity of the problem and achieve near-optimal performance, facilitating trade-offs between latency, security, and solution complexity. Simulation results demonstrate that the proposed approaches are close enough to the optimal solution, proving that our approach is both effective and efficient.",
+        "field": "Biometric Authentication",
+        "link": "http://arxiv.org/abs/2503.07857v1"
+    },
+    {
+        "id": "2503.13637v1",
+        "title": "XChainDataGen: A Cross-Chain Dataset Generation Framework",
+        "authors": [
+            "André Augusto",
+            "André Vasconcelos",
+            "Miguel Correia",
+            "Luyao Zhang"
+        ],
+        "published": "2025-03-17T18:39:43Z",
+        "summary": "The number of blockchain interoperability protocols for transferring data and assets between blockchains has grown significantly. However, no open dataset of cross-chain transactions exists to study interoperability protocols in operation. There is also no tool to generate such datasets and make them available to the community. This paper proposes XChainDataGen, a tool to extract cross-chain data from blockchains and generate datasets of cross-chain transactions (cctxs). Using XChainDataGen, we extracted over 35 GB of data from five cross-chain protocols deployed on 11 blockchains in the last seven months of 2024, identifying 11,285,753 cctxs that moved over 28 billion USD in cross-chain token transfers. Using the data collected, we compare protocols and provide insights into their security, cost, and performance trade-offs. As examples, we highlight differences between protocols that require full finality on the source blockchain and those that only demand soft finality (\\textit{security}). We compare user costs, fee models, and the impact of variables such as the Ethereum gas price on protocol fees (\\textit{cost}). Finally, we produce the first analysis of the implications of EIP-7683 for cross-chain intents, which are increasingly popular and greatly improve the speed with which cctxs are processed (\\textit{performance}), thereby enhancing the user experience. The availability of XChainDataGen and this dataset allows various analyses, including trends in cross-chain activity, security assessments of interoperability protocols, and financial research on decentralized finance (DeFi) protocols.",
+        "field": "Blockchain Interoperability",
+        "link": "http://arxiv.org/abs/2503.13637v1"
+    },
+    {
+        "id": "2503.12952v1",
+        "title": "Performance Analysis and Industry Deployment of Post-Quantum Cryptography Algorithms",
+        "authors": [
+            "Elif Dicle Demir",
+            "Buse Bilgin",
+            "Mehmet Cengiz Onbasli"
+        ],
+        "published": "2025-03-17T09:06:03Z",
+        "summary": "As quantum computing advances, modern cryptographic standards face an existential threat, necessitating a transition to post-quantum cryptography (PQC). The National Institute of Standards and Technology (NIST) has selected CRYSTALS-Kyber and CRYSTALS-Dilithium as standardized PQC algorithms for secure key exchange and digital signatures, respectively. This study conducts a comprehensive performance analysis of these algorithms by benchmarking execution times across cryptographic operations such as key generation, encapsulation, decapsulation, signing, and verification. Additionally, the impact of AVX2 optimizations is evaluated to assess hardware acceleration benefits. Our findings demonstrate that Kyber and Dilithium achieve efficient execution times, outperforming classical cryptographic schemes such as RSA and ECDSA at equivalent security levels. Beyond technical performance, the real-world deployment of PQC introduces challenges in telecommunications networks, where large-scale infrastructure upgrades, interoperability with legacy systems, and regulatory constraints must be addressed. This paper examines the feasibility of PQC adoption in telecom environments, highlighting key transition challenges, security risks, and implementation strategies. Through industry case studies, we illustrate how telecom operators are integrating PQC into 5G authentication, subscriber identity protection, and secure communications. Our analysis provides insights into the computational trade-offs, deployment considerations, and standardization efforts shaping the future of quantum-safe cryptographic infrastructure.",
+        "field": "Blockchain Interoperability",
+        "link": "http://arxiv.org/abs/2503.12952v1"
+    },
+    {
+        "id": "2503.09666v1",
+        "title": "Blockchain-Enabled Management Framework for Federated Coalition Networks",
+        "authors": [
+            "Jorge Álvaro González",
+            "Ana María Saiz García",
+            "Victor Monzon Baeza"
+        ],
+        "published": "2025-03-12T16:59:23Z",
+        "summary": "In a globalized and interconnected world, interoperability has become a key concept for advancing tactical scenarios. Federated Coalition Networks (FCN) enable cooperation between entities from multiple nations while allowing each to maintain control over their systems. However, this interoperability necessitates the sharing of increasing amounts of information between different tactical assets, raising the need for higher security measures. Emerging technologies like blockchain drive a revolution in secure communications, paving the way for new tactical scenarios. In this work, we propose a blockchain-based framework to enhance the resilience and security of the management of these networks. We offer a guide to FCN design to help a broad audience understand the military networks in international missions by a use case and key functions applied to a proposed architecture. We evaluate its effectiveness and performance in information encryption to validate this framework.",
+        "field": "Blockchain Interoperability",
+        "link": "http://arxiv.org/abs/2503.09666v1"
+    },
+    {
+        "id": "2503.09165v1",
+        "title": "Blockchain Data Analytics: Review and Challenges",
+        "authors": [
+            "Rischan Mafrur"
+        ],
+        "published": "2025-03-12T08:49:51Z",
+        "summary": "The integration of blockchain technology with data analytics is essential for extracting insights in the cryptocurrency space. Although academic literature on blockchain data analytics is limited, various industry solutions have emerged to address these needs. This paper provides a comprehensive literature review, drawing from both academic research and industry applications. We classify blockchain analytics tools into categories such as block explorers, on-chain data providers, research platforms, and crypto market data providers. Additionally, we discuss the challenges associated with blockchain data analytics, including data accessibility, scalability, accuracy, and interoperability. Our findings emphasize the importance of bridging academic research and industry innovations to advance blockchain data analytics.",
+        "field": "Blockchain Interoperability",
+        "link": "http://arxiv.org/abs/2503.09165v1"
+    },
+    {
+        "id": "2503.07857v1",
+        "title": "Efficient Resource Management for Secure and Low-Latency O-RAN Communication",
+        "authors": [
+            "Zaineh Abughazzah",
+            "Emna Baccour",
+            "Ahmed Refaey",
+            "Amr Mohamed",
+            "Mounir Hamdi"
+        ],
+        "published": "2025-03-10T21:03:48Z",
+        "summary": "Open Radio Access Networks (O-RAN) are transforming telecommunications by shifting from centralized to distributed architectures, promoting flexibility, interoperability, and innovation through open interfaces and multi-vendor environments. However, O-RAN's reliance on cloud-based architecture and enhanced observability introduces significant security and resource management challenges. Efficient resource management is crucial for secure and reliable communication in O-RAN, within the resource-constrained environment and heterogeneity of requirements, where multiple User Equipment (UE) and O-RAN Radio Units (O-RUs) coexist. This paper develops a framework to manage these aspects, ensuring each O-RU is associated with UEs based on their communication channel qualities and computational resources, and selecting appropriate encryption algorithms to safeguard data confidentiality, integrity, and authentication. A Multi-objective Optimization Problem (MOP) is formulated to minimize latency and maximize security within resource constraints. Different approaches are proposed to relax the complexity of the problem and achieve near-optimal performance, facilitating trade-offs between latency, security, and solution complexity. Simulation results demonstrate that the proposed approaches are close enough to the optimal solution, proving that our approach is both effective and efficient.",
+        "field": "Blockchain Interoperability",
+        "link": "http://arxiv.org/abs/2503.07857v1"
+    },
+    {
+        "id": "2503.14462v1",
+        "title": "Blockchain with proof of quantum work",
+        "authors": [
+            "Mohammad H. Amin",
+            "Jack Raymond",
+            "Daniel Kinn",
+            "Firas Hamze",
+            "Kelsey Hamer",
+            "Joel Pasvolsky",
+            "William Bernoudy",
+            "Andrew D. King",
+            "Samuel Kortas"
+        ],
+        "published": "2025-03-18T17:37:22Z",
+        "summary": "We propose a blockchain architecture in which mining requires a quantum computer. The consensus mechanism is based on proof of quantum work, a quantum-enhanced alternative to traditional proof of work that leverages quantum supremacy to make mining intractable for classical computers. We have refined the blockchain framework to incorporate the probabilistic nature of quantum mechanics, ensuring stability against sampling errors and hardware inaccuracies. To validate our approach, we implemented a prototype blockchain on four D-Wave$^{\\rm TM}$ quantum annealing processors geographically distributed within North America, demonstrating stable operation across hundreds of thousands of quantum hashing operations. Our experimental protocol follows the same approach used in the recent demonstration of quantum supremacy [1], ensuring that classical computers cannot efficiently perform the same computation task. By replacing classical machines with quantum systems for mining, it is possible to significantly reduce the energy consumption and environmental impact traditionally associated with blockchain mining. Beyond serving as a proof of concept for a meaningful application of quantum computing, this work highlights the potential for other near-term quantum computing applications using existing technology.",
+        "field": "Neuromorphic Computing",
+        "link": "http://arxiv.org/abs/2503.14462v1"
+    },
+    {
+        "id": "2503.14279v1",
+        "title": "Anti-Tamper Radio meets Reconfigurable Intelligent Surface for System-Level Tamper Detection",
+        "authors": [
+            "Maryam Shaygan Tabar",
+            "Johannes Kortz",
+            "Paul Staat",
+            "Harald Elders-Boll",
+            "Christof Paar",
+            "Christian Zenger"
+        ],
+        "published": "2025-03-18T14:18:31Z",
+        "summary": "Many computing systems need to be protected against physical attacks using active tamper detection based on sensors. One technical solution is to employ an ATR (Anti-Tamper Radio) approach, analyzing the radio wave propagation effects within a protected device to detect unauthorized physical alterations. However, ATR systems face key challenges in terms of susceptibility to signal manipulation attacks, limited reliability due to environmental noise, and regulatory constraints from wide bandwidth usage. In this work, we propose and experimentally evaluate an ATR system complemented by an RIS to dynamically reconfigure the wireless propagation environment. We show that this approach can enhance resistance against signal manipulation attacks, reduce bandwidth requirements from several~GHz down to as low as 20 MHz, and improve robustness to environmental disturbances such as internal fan movements. Our work demonstrates that RIS integration can strengthen the ATR performance to enhance security, sensitivity, and robustness, recognizing the potential of smart radio environments for ATR-based tamper detection",
+        "field": "Neuromorphic Computing",
+        "link": "http://arxiv.org/abs/2503.14279v1"
+    },
+    {
+        "id": "2503.14213v1",
+        "title": "Rolling Forward: Enhancing LightGCN with Causal Graph Convolution for Credit Bond Recommendation",
+        "authors": [
+            "Ashraf Ghiye",
+            "Baptiste Barreau",
+            "Laurent Carlier",
+            "Michalis Vazirgiannis"
+        ],
+        "published": "2025-03-18T12:47:01Z",
+        "summary": "Graph Neural Networks have significantly advanced research in recommender systems over the past few years. These methods typically capture global interests using aggregated past interactions and rely on static embeddings of users and items over extended periods of time. While effective in some domains, these methods fall short in many real-world scenarios, especially in finance, where user interests and item popularity evolve rapidly over time. To address these challenges, we introduce a novel extension to Light Graph Convolutional Network (LightGCN) designed to learn temporal node embeddings that capture dynamic interests. Our approach employs causal convolution to maintain a forward-looking model architecture. By preserving the chronological order of user-item interactions and introducing a dynamic update mechanism for embeddings through a sliding window, the proposed model generates well-timed and contextually relevant recommendations. Extensive experiments on a real-world dataset from BNP Paribas demonstrate that our approach significantly enhances the performance of LightGCN while maintaining the simplicity and efficiency of its architecture. Our findings provide new insights into designing graph-based recommender systems in time-sensitive applications, particularly for financial product recommendations.",
+        "field": "Neuromorphic Computing",
+        "link": "http://arxiv.org/abs/2503.14213v1"
+    },
+    {
+        "id": "2503.13994v1",
+        "title": "TarPro: Targeted Protection against Malicious Image Editing",
+        "authors": [
+            "Kaixin Shen",
+            "Ruijie Quan",
+            "Jiaxu Miao",
+            "Jun Xiao",
+            "Yi Yang"
+        ],
+        "published": "2025-03-18T07:54:44Z",
+        "summary": "The rapid advancement of image editing techniques has raised concerns about their misuse for generating Not-Safe-for-Work (NSFW) content. This necessitates a targeted protection mechanism that blocks malicious edits while preserving normal editability. However, existing protection methods fail to achieve this balance, as they indiscriminately disrupt all edits while still allowing some harmful content to be generated. To address this, we propose TarPro, a targeted protection framework that prevents malicious edits while maintaining benign modifications. TarPro achieves this through a semantic-aware constraint that only disrupts malicious content and a lightweight perturbation generator that produces a more stable, imperceptible, and robust perturbation for image protection. Extensive experiments demonstrate that TarPro surpasses existing methods, achieving a high protection efficacy while ensuring minimal impact on normal edits. Our results highlight TarPro as a practical solution for secure and controlled image editing.",
+        "field": "Neuromorphic Computing",
+        "link": "http://arxiv.org/abs/2503.13994v1"
+    },
+    {
+        "id": "2503.13637v1",
+        "title": "XChainDataGen: A Cross-Chain Dataset Generation Framework",
+        "authors": [
+            "André Augusto",
+            "André Vasconcelos",
+            "Miguel Correia",
+            "Luyao Zhang"
+        ],
+        "published": "2025-03-17T18:39:43Z",
+        "summary": "The number of blockchain interoperability protocols for transferring data and assets between blockchains has grown significantly. However, no open dataset of cross-chain transactions exists to study interoperability protocols in operation. There is also no tool to generate such datasets and make them available to the community. This paper proposes XChainDataGen, a tool to extract cross-chain data from blockchains and generate datasets of cross-chain transactions (cctxs). Using XChainDataGen, we extracted over 35 GB of data from five cross-chain protocols deployed on 11 blockchains in the last seven months of 2024, identifying 11,285,753 cctxs that moved over 28 billion USD in cross-chain token transfers. Using the data collected, we compare protocols and provide insights into their security, cost, and performance trade-offs. As examples, we highlight differences between protocols that require full finality on the source blockchain and those that only demand soft finality (\\textit{security}). We compare user costs, fee models, and the impact of variables such as the Ethereum gas price on protocol fees (\\textit{cost}). Finally, we produce the first analysis of the implications of EIP-7683 for cross-chain intents, which are increasingly popular and greatly improve the speed with which cctxs are processed (\\textit{performance}), thereby enhancing the user experience. The availability of XChainDataGen and this dataset allows various analyses, including trends in cross-chain activity, security assessments of interoperability protocols, and financial research on decentralized finance (DeFi) protocols.",
+        "field": "Neuromorphic Computing",
+        "link": "http://arxiv.org/abs/2503.13637v1"
+    },
+    {
+        "id": "2503.14462v1",
+        "title": "Blockchain with proof of quantum work",
+        "authors": [
+            "Mohammad H. Amin",
+            "Jack Raymond",
+            "Daniel Kinn",
+            "Firas Hamze",
+            "Kelsey Hamer",
+            "Joel Pasvolsky",
+            "William Bernoudy",
+            "Andrew D. King",
+            "Samuel Kortas"
+        ],
+        "published": "2025-03-18T17:37:22Z",
+        "summary": "We propose a blockchain architecture in which mining requires a quantum computer. The consensus mechanism is based on proof of quantum work, a quantum-enhanced alternative to traditional proof of work that leverages quantum supremacy to make mining intractable for classical computers. We have refined the blockchain framework to incorporate the probabilistic nature of quantum mechanics, ensuring stability against sampling errors and hardware inaccuracies. To validate our approach, we implemented a prototype blockchain on four D-Wave$^{\\rm TM}$ quantum annealing processors geographically distributed within North America, demonstrating stable operation across hundreds of thousands of quantum hashing operations. Our experimental protocol follows the same approach used in the recent demonstration of quantum supremacy [1], ensuring that classical computers cannot efficiently perform the same computation task. By replacing classical machines with quantum systems for mining, it is possible to significantly reduce the energy consumption and environmental impact traditionally associated with blockchain mining. Beyond serving as a proof of concept for a meaningful application of quantum computing, this work highlights the potential for other near-term quantum computing applications using existing technology.",
+        "field": "Edge Computing",
+        "link": "http://arxiv.org/abs/2503.14462v1"
+    },
+    {
+        "id": "2503.14279v1",
+        "title": "Anti-Tamper Radio meets Reconfigurable Intelligent Surface for System-Level Tamper Detection",
+        "authors": [
+            "Maryam Shaygan Tabar",
+            "Johannes Kortz",
+            "Paul Staat",
+            "Harald Elders-Boll",
+            "Christof Paar",
+            "Christian Zenger"
+        ],
+        "published": "2025-03-18T14:18:31Z",
+        "summary": "Many computing systems need to be protected against physical attacks using active tamper detection based on sensors. One technical solution is to employ an ATR (Anti-Tamper Radio) approach, analyzing the radio wave propagation effects within a protected device to detect unauthorized physical alterations. However, ATR systems face key challenges in terms of susceptibility to signal manipulation attacks, limited reliability due to environmental noise, and regulatory constraints from wide bandwidth usage. In this work, we propose and experimentally evaluate an ATR system complemented by an RIS to dynamically reconfigure the wireless propagation environment. We show that this approach can enhance resistance against signal manipulation attacks, reduce bandwidth requirements from several~GHz down to as low as 20 MHz, and improve robustness to environmental disturbances such as internal fan movements. Our work demonstrates that RIS integration can strengthen the ATR performance to enhance security, sensitivity, and robustness, recognizing the potential of smart radio environments for ATR-based tamper detection",
+        "field": "Edge Computing",
+        "link": "http://arxiv.org/abs/2503.14279v1"
+    },
+    {
+        "id": "2503.14213v1",
+        "title": "Rolling Forward: Enhancing LightGCN with Causal Graph Convolution for Credit Bond Recommendation",
+        "authors": [
+            "Ashraf Ghiye",
+            "Baptiste Barreau",
+            "Laurent Carlier",
+            "Michalis Vazirgiannis"
+        ],
+        "published": "2025-03-18T12:47:01Z",
+        "summary": "Graph Neural Networks have significantly advanced research in recommender systems over the past few years. These methods typically capture global interests using aggregated past interactions and rely on static embeddings of users and items over extended periods of time. While effective in some domains, these methods fall short in many real-world scenarios, especially in finance, where user interests and item popularity evolve rapidly over time. To address these challenges, we introduce a novel extension to Light Graph Convolutional Network (LightGCN) designed to learn temporal node embeddings that capture dynamic interests. Our approach employs causal convolution to maintain a forward-looking model architecture. By preserving the chronological order of user-item interactions and introducing a dynamic update mechanism for embeddings through a sliding window, the proposed model generates well-timed and contextually relevant recommendations. Extensive experiments on a real-world dataset from BNP Paribas demonstrate that our approach significantly enhances the performance of LightGCN while maintaining the simplicity and efficiency of its architecture. Our findings provide new insights into designing graph-based recommender systems in time-sensitive applications, particularly for financial product recommendations.",
+        "field": "Edge Computing",
+        "link": "http://arxiv.org/abs/2503.14213v1"
+    },
+    {
+        "id": "2503.13994v1",
+        "title": "TarPro: Targeted Protection against Malicious Image Editing",
+        "authors": [
+            "Kaixin Shen",
+            "Ruijie Quan",
+            "Jiaxu Miao",
+            "Jun Xiao",
+            "Yi Yang"
+        ],
+        "published": "2025-03-18T07:54:44Z",
+        "summary": "The rapid advancement of image editing techniques has raised concerns about their misuse for generating Not-Safe-for-Work (NSFW) content. This necessitates a targeted protection mechanism that blocks malicious edits while preserving normal editability. However, existing protection methods fail to achieve this balance, as they indiscriminately disrupt all edits while still allowing some harmful content to be generated. To address this, we propose TarPro, a targeted protection framework that prevents malicious edits while maintaining benign modifications. TarPro achieves this through a semantic-aware constraint that only disrupts malicious content and a lightweight perturbation generator that produces a more stable, imperceptible, and robust perturbation for image protection. Extensive experiments demonstrate that TarPro surpasses existing methods, achieving a high protection efficacy while ensuring minimal impact on normal edits. Our results highlight TarPro as a practical solution for secure and controlled image editing.",
+        "field": "Edge Computing",
+        "link": "http://arxiv.org/abs/2503.13994v1"
+    },
+    {
+        "id": "2503.13637v1",
+        "title": "XChainDataGen: A Cross-Chain Dataset Generation Framework",
+        "authors": [
+            "André Augusto",
+            "André Vasconcelos",
+            "Miguel Correia",
+            "Luyao Zhang"
+        ],
+        "published": "2025-03-17T18:39:43Z",
+        "summary": "The number of blockchain interoperability protocols for transferring data and assets between blockchains has grown significantly. However, no open dataset of cross-chain transactions exists to study interoperability protocols in operation. There is also no tool to generate such datasets and make them available to the community. This paper proposes XChainDataGen, a tool to extract cross-chain data from blockchains and generate datasets of cross-chain transactions (cctxs). Using XChainDataGen, we extracted over 35 GB of data from five cross-chain protocols deployed on 11 blockchains in the last seven months of 2024, identifying 11,285,753 cctxs that moved over 28 billion USD in cross-chain token transfers. Using the data collected, we compare protocols and provide insights into their security, cost, and performance trade-offs. As examples, we highlight differences between protocols that require full finality on the source blockchain and those that only demand soft finality (\\textit{security}). We compare user costs, fee models, and the impact of variables such as the Ethereum gas price on protocol fees (\\textit{cost}). Finally, we produce the first analysis of the implications of EIP-7683 for cross-chain intents, which are increasingly popular and greatly improve the speed with which cctxs are processed (\\textit{performance}), thereby enhancing the user experience. The availability of XChainDataGen and this dataset allows various analyses, including trends in cross-chain activity, security assessments of interoperability protocols, and financial research on decentralized finance (DeFi) protocols.",
+        "field": "Edge Computing",
+        "link": "http://arxiv.org/abs/2503.13637v1"
+    }
+]
