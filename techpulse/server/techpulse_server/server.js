@@ -525,6 +525,24 @@ const generateInsight = async (type) => {
          VALUES ($1, $2, $3)`,
         [null, generatedInsight, confidenceScore]
       );
+
+      // Define the relative path to the Insights directory
+      const insightsDir = path.resolve(
+        process.cwd(),
+        "../../client/techpulse_app/src/components/Insights"
+      );
+
+      // Define the file name based on field_id
+      let fileName = "MostRecentInsight.txt"
+      
+      const filePath = path.join(insightsDir, fileName);
+
+      // Write the insight to the file
+      if (type === "insight") {
+        await fsPromises.writeFile(filePath, generatedInsight, 'utf8');
+        console.log(`Insight written to ${filePath}`);
+      }
+
     }
 
     return generatedInsight;
