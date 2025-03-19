@@ -12,6 +12,7 @@ import {
   Line,
 } from 'recharts';
 import parse from 'html-react-parser'; // Import the html-react-parser library
+import axios from 'axios';
 
 const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) => {
   const [selectedSubfield, setSelectedSubfield] = useState(null);
@@ -20,6 +21,8 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
   const [selectedTab, setSelectedTab] = useState('scatter');
   const [clickedTimelinePoint, setClickedTimelinePoint] = useState(null);
   const [insight, setInsight] = useState(null);
+
+  const [articleSFSources, setArticleSFSources] = useState({});
 
   // Dynamically import the most recent insight file based on fieldName
   useEffect(() => {
@@ -66,10 +69,43 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
     (point) => point.field_id === selectedFieldId && point.subfield_id !== null
   );
 
+  useEffect(() => {
+    const fetchSFArticles = async () => {
+      try {
+        const response = await axios.get("/arxiv_papers_sf.json");
+        if (response.status !== 200) {
+          throw new Error("Failed to fetch articles");
+        }
+        const articles = response.data;
+        console.log('Articles Fetched:', articles);
+
+        // Transform articles into an object for quick lookup by field name
+        const sourcesMap = {};
+        articles.forEach(article => {
+          if (!sourcesMap[article.subfield_name]) {
+            sourcesMap[article.subfield_name] = [];
+          }
+          sourcesMap[article.subfield_name].push({
+            title: article.title || "No Title Available",
+            link: article.link || "#"
+          });
+        });
+
+        setArticleSFSources(sourcesMap);
+        console.log("Source Map:", sourcesMap);
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      }
+    };
+
+    fetchSFArticles();
+  }, []);
+
+
   // Find the most recent metric for each subfield and calculate metric_3_scaled
   const latestMetricsBySubfield = subfieldData.reduce((acc, point) => {
     if (
-      !acc[point.subfield_id] || 
+      !acc[point.subfield_id] ||
       new Date(point.metric_date) > new Date(acc[point.subfield_id].metric_date)
     ) {
       acc[point.subfield_id] = {
@@ -114,7 +150,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
   const handleSubfieldClick = (subfieldId) => {
     const isCurrentlySelected = selectedSubfield === subfieldId;
     const selected = isCurrentlySelected ? null : filteredData.find(point => point.subfield_id === subfieldId);
-    
+
     setSelectedSubfield(isCurrentlySelected ? null : subfieldId);
     setSelectedSubfieldDetails(selected);
     setClickedTimelinePoint(null); // Reset clicked timeline point
@@ -128,12 +164,12 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
     const subfieldHistoricalData = isCurrentlySelected
       ? []
       : radarData
-          .filter((point) => point.subfield_id === subfieldId)
-          .map((point) => ({
-            ...point,
-            metric_date: new Date(point.metric_date).getTime(), // Convert date to timestamp
-            metric_3_scaled: Math.pow(point.metric_3, 5), // Calculate metric_3_scaled for historical data
-          }));
+        .filter((point) => point.subfield_id === subfieldId)
+        .map((point) => ({
+          ...point,
+          metric_date: new Date(point.metric_date).getTime(), // Convert date to timestamp
+          metric_3_scaled: Math.pow(point.metric_3, 5), // Calculate metric_3_scaled for historical data
+        }));
     setHistoricalData(subfieldHistoricalData);
   };
 
@@ -152,37 +188,37 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fieldId: selectedFieldId }), // Pass the selected field ID
       });
-  
+
       if (!subfieldsResponse.ok) {
         throw new Error('Failed to fetch subfields.');
       }
-  
+
       const subfieldsData = await subfieldsResponse.json();
       const subfields = subfieldsData.subfields; // Array of subfields
-  
+
       if (subfields.length === 0) {
         throw new Error('No subfields found for the selected field.');
       }
-  
+
       // Step 2: Update metrics for each subfield individually
       let successfulUpdates = 0;
       let failedUpdates = 0;
-  
+
       for (const subfield of subfields) {
         try {
           const updateMetricsResponse = await fetch('http://localhost:4000/gpt-update-subfield-metrics', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
               subfield_id: subfield.subfield_id, // Pass subfield_id
               field_id: selectedFieldId, // Pass field_id from the parent component
             }),
           });
-  
+
           if (!updateMetricsResponse.ok) {
             throw new Error(`Failed to update metrics for subfield: ${subfield.subfield_name}`);
           }
-  
+
           const updateMetricsData = await updateMetricsResponse.json();
           console.log(`Metrics updated successfully for subfield: ${subfield.subfield_name}`, updateMetricsData);
           successfulUpdates++;
@@ -191,43 +227,43 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
           failedUpdates++;
         }
       }
-  
+
       console.log(`Subfields updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
-  
+
       // Step 3: Generate a new subfield (if applicable)
       const newSubfieldResponse = await fetch('http://localhost:4000/gpt-subfield', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           fieldId: selectedFieldId,
           fieldName: fieldName // Pass the fieldName here
         }),
       });
-  
+
       if (!newSubfieldResponse.ok) {
         throw new Error('Failed to generate a new subfield.');
       }
-  
+
       const newSubfieldData = await newSubfieldResponse.json();
       console.log('New subfield generated successfully:', newSubfieldData);
-  
+
       // Step 4: Generate insights for the selected field
       const insightResponse = await fetch('http://localhost:4000/generate-insight', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fieldId: selectedFieldId }), // Pass the selected field ID
       });
-  
+
       if (!insightResponse.ok) {
         throw new Error('Failed to generate insights.');
       }
-  
+
       const insightData = await insightResponse.json();
       console.log('Insight generated successfully:', insightData.insight);
-  
+
       // Set the generated insight in the state
       setInsight(insightData.insight);
-  
+
     } catch (error) {
       console.error('Error:', error);
       setInsight('Failed to generate insight. Please try again.');
@@ -238,6 +274,8 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
   if (!filteredData.length) {
     return <div>No subfield data available for the selected field.</div>;
   }
+
+
 
   return (
     <div style={{ marginTop: '20px' }}>
@@ -328,7 +366,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
               borderBottom: selectedTab === 'timeline' ? '2px solid #2466e0' : 'none',
               cursor: 'pointer',
             }}
-            >
+          >
             Timeline
           </button>
         )}
@@ -499,11 +537,17 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
             <>
               <strong>Rationale:</strong> {selectedSubfieldDetails.rationale || "No rationale available."}<br />
               <strong>Subfield Description:</strong> {selectedSubfieldDetails.subfield_description || "No description available."}<br />
-              <strong>Sources:</strong> {selectedSubfieldDetails.source ? (
-                <a href={selectedSubfieldDetails.source} target="_blank" rel="noopener noreferrer" style={{ color: 'blue', textDecoration: 'underline' }}>
-                  {selectedSubfieldDetails.source}
-                </a>
-              ) : "No sources available."}
+              <strong>Sources:</strong> {articleSFSources[selectedSubfieldDetails.subfield_name] && articleSFSources[selectedSubfieldDetails.subfield_name].length > 0 ? (
+                articleSFSources[selectedSubfieldDetails.subfield_name].map((article, index) => (
+                  <div key={index} style={{ marginBottom: "5px" }}>
+                    🔗 <a href={article.link} target="_blank" rel="noopener noreferrer" style={{ color: "blue", textDecoration: "underline" }}>
+                      {article.title}
+                    </a>
+                  </div>
+                ))
+              ) : (
+                "No sources available."
+              )}
             </>
           ) : (
             "Select a subfield or click on a timeline data point to view its rationale, description, and sources."
