@@ -386,29 +386,33 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
 
       {/* Subfield Filter Buttons */}
       <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '8px',
-        justifyContent: 'center', // Center buttons horizontally
-        marginBottom: '20px'
-      }}>
-        {filteredData.map((point, index) => {
-          const isSelected = !selectedSubfield || point.subfield_id === selectedSubfield;
-          return (
-            <Scatter
-              key={point.subfield_id}
-              data={[point]}
-              fill={colors[index % colors.length]}
-              fillOpacity={0.7} // Default opacity
-              cursor="pointer"
-              shape="circle"
-              size={point.metric_3_scaled * 100} // Use metric_3_scaled for size
-              opacity={isSelected ? 1 : 0.2} // Make non-selected points transparent
-              onClick={() => handleSubfieldClick(point.subfield_id)} // Add onClick handler
-            />
-          );
-        })}
-      </div>
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '8px',
+  justifyContent: 'center', // Center buttons horizontally
+  marginBottom: '20px'
+}}>
+  {filteredData.map((point, index) => {
+    const isSelected = !selectedSubfield || point.subfield_id === selectedSubfield;
+    return (
+      <button
+        key={point.subfield_id}
+        style={{
+          padding: '8px 16px',
+          backgroundColor: isSelected ? colors[index % colors.length] : '#f0f0f0',
+          color: isSelected ? 'white' : '#666',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          opacity: isSelected ? 1 : 0.6, // Make non-selected buttons semi-transparent
+        }}
+        onClick={() => handleSubfieldClick(point.subfield_id)}
+      >
+        {point.subfield_name}
+      </button>
+    );
+  })}
+</div>
 
       {/* Tab System */}
       <div style={{ marginBottom: '20px', borderBottom: '1px solid #e1e4e8' }}>
@@ -482,7 +486,6 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
                       <p>Interest: {(point.metric_1).toFixed(2)}</p>
                       <p>Innovation: {(point.metric_2).toFixed(2)}</p>
                       <p>Relevance: {(point.metric_3).toFixed(2)}</p>
-                      <p>Relevance Scaled: {(point.metric_3_scaled).toFixed(2)}</p>
                     </div>
                   );
                 }
