@@ -3,3 +3,5 @@ geckodriver.log
 *.txt
 techpulse/client/techpulse_app/src/components/Insights/MostRecentInsight.txt
 /techpulse/client/techpulse_app/src/components/Insights
+techpulse/client/techpulse_app/public/arxiv_papers.json
+techpulse/client/techpulse_app/public/arxiv_papers_sf.json
