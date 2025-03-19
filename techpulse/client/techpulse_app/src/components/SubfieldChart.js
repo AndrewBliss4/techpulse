@@ -22,10 +22,10 @@ quantum.register();
 grid.register();
 helix.register();
 
-const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) => {
-  
+const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode, selectedSubfieldDetails, setSelectedSubfieldDetails }) => {
+
   const [selectedSubfield, setSelectedSubfield] = useState(null);
-  const [selectedSubfieldDetails, setSelectedSubfieldDetails] = useState(null);
+
   const [historicalData, setHistoricalData] = useState([]);
   const [selectedTab, setSelectedTab] = useState('scatter');
   const [clickedTimelinePoint, setClickedTimelinePoint] = useState(null);
