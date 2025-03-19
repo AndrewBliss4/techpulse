@@ -173,7 +173,7 @@ const Home = () => {
 
       setLatestInsights(tempInsights);
 
-      console.log(resp.data);
+      //console.log(resp.data);
 
       //Render the output
       setRenderText(true);
@@ -226,7 +226,7 @@ const Home = () => {
 
       setLatestInsights(tempInsights);
 
-      console.log(resp.data);
+      //console.log(resp.data);
 
       //Render the output
       setRenderText(true);

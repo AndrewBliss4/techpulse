@@ -121,7 +121,7 @@ const Technology = () => {
 
             setLatestInsights(tempInsights);
 
-            console.log(resp.data);
+            //console.log(resp.data);
 
             //Render the output
             setRenderText(true);
