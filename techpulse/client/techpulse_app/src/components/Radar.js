@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ArrowDown, RadarIcon, TrendingUp } from 'lucide-react';
 import SubfieldChart from './SubfieldChart';
+
 const Radar = ({ radarData, radarSearch, homePage, technology }) => {
   const [data, setData] = useState([]);
   const [historicalData, setHistoricalData] = useState([]); // State for historical data
@@ -112,6 +113,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
 
     return Object.values(mostRecentData);
   };
+  
   const handleFilterClick = (point) => {
     // Check if this point is currently selected
     const isCurrentlySelected = selectedTechnology === point.field_name;

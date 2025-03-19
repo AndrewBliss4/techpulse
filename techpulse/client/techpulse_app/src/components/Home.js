@@ -604,7 +604,7 @@ const Home = () => {
                 The Industry Radar visualization plots emerging technologies across three key dimensions:
               </p>
               <ul className="list-disc pl-5 space-y-2">
-                <li><span className="font-medium">Maturity (X-axis):</span> Measures from 0-5 how developed and ready for implementation the technology is in banking.</li>
+                <li><span className="font-medium">Interest (X-axis):</span> Measures from 0-5 how developed and ready for implementation the technology is in banking.</li>
                 <li><span className="font-medium">Innovation Rate (Y-axis):</span> Indicates from 0-5 the pace of breakthrough developments in the last 6 months.</li>
                 <li><span className="font-medium">Industry Relevance (Bubble Size):</span> Represents from 0-5 how critical the technology is expected to be for banking operations.</li>
               </ul>
