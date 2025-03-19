@@ -99,7 +99,7 @@ const AIPromptFieldButton = ({
       const insightResponse = await fetch('http://localhost:4000/generate-insight', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fieldId: 0 }), // Pass field_id = 0
+        //body: JSON.stringify({ fieldId: 0 }), // Pass field_id = 0
       });
 
       if (!insightResponse.ok) {
@@ -116,7 +116,7 @@ const AIPromptFieldButton = ({
       const trendsResponse = await fetch('http://localhost:4000/generate-insight-trends', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fieldId: 0 }), // Pass field_id = 0
+        //body: JSON.stringify({ fieldId: 0 }), // Pass field_id = 0
       });
 
       if (!trendsResponse.ok) {
@@ -140,7 +140,7 @@ const AIPromptFieldButton = ({
       const topResponse = await fetch('http://localhost:4000/generate-insight-top', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fieldId: 0 }), // Pass field_id = 0
+        //body: JSON.stringify({ fieldId: 0 }), // Pass field_id = 0
       });
 
       if (!topResponse.ok) {

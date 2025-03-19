@@ -248,7 +248,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
       console.log('New subfield generated successfully:', newSubfieldData);
 
       // Step 4: Generate insights for the selected field
-      const insightResponse = await fetch('http://localhost:4000/generate-insight', {
+      const insightResponse = await fetch('http://localhost:4000/generate-sub-insight', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fieldId: selectedFieldId }), // Pass the selected field ID
