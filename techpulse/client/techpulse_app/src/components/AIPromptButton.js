@@ -33,7 +33,7 @@ const AIPromptFieldButton = ({
 
   const handleButtonClick = async () => {
     const isConfirmed = window.confirm(
-      "⚠️ Warning: Are you sure you want to make 10 Gajillion API calls? Each request costs tokens and I am poor! 💸"
+      "Are you sure you want to generate insights?"
     );
     if (!isConfirmed) {
       return;
