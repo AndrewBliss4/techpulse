@@ -28,11 +28,11 @@ And the report you provided last time:
 {PREVIOUS_INSIGHT}
 
 Based on the data above and recent knowledge about your competitors, generate a detailed insight that highlights trends, anomalies, or significant changes in the metrics. Provide actionable recommendations if applicable.
-Generate the insights by topic for the TOP 3 most important technologies:
+Generate the insights by topic for the TOP 3 most important technologies: IN STRICTLY THIS PORTION OF YOUR ANSWER if you are referring to specific metrics; say interest instead of metric_1, innovation instead of metric_2, and relevance to banking instead of metric_3
 
 1. Recent Developments
 2. Implications for Banking & RBC
-3. Sources
+3. Predictions for the Future
 
 Ensure the output is at least 2000 words. Format this section's topics with:
 <h1 class="text-2xl font-bold text-blue-600 mb-4">technology</h1> <strong class="text-xl font-semibold text-gray-600 mb-2 block">topic</strong> and the text with <p class="text-gray-500 leading-relaxed mb-4">text</p>.

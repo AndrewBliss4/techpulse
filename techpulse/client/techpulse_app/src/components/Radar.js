@@ -23,12 +23,12 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
         console.error("Field not found.");
         return;
       }
-  
+
       const response = await axios.post('http://localhost:4000/gpt-subfield', {
         fieldName: field.field_name,
         fieldId: field.field_id
       });
-  
+
       if (response.status === 200) {
         alert("Subfields generated successfully!");
         // Optionally, you can refresh the subfield data here
@@ -118,6 +118,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     if (isCurrentlySelected) {
       // If clicking the already selected technology, deselect it
       setSelectedTechnology(null);
+      setSelectedFieldId(null); // Clear the selected field ID
       // Show all technologies again
       const allHistoricalData = radarData
         .filter(d => d.subfield_id === null) // Filter for null subfield_id
@@ -134,6 +135,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
     } else {
       // If selecting a different technology (or first selection)
       setSelectedTechnology(point.field_name);
+      setSelectedFieldId(point.field_id); // Set the selected field ID
       setData(data.map(d => ({
         ...d,
         fillOpacity: d.field_id === point.field_id ? 0.7 : 0.1,
@@ -306,11 +308,10 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
                           data={[point]}
                           fill={colors[index % colors.length]}
                           fillOpacity={0.7}
-                          onClick={() => handleFieldClick(point.field_id)} // Ensure it triggers on click
+                          onClick={() => handleFilterClick(point)} // Call handleFilterClick instead of handleFieldClick
                           cursor="pointer"
                           shape="circle"
                         />
-
                       ))}
                     </ScatterChart>
                   </ResponsiveContainer>
@@ -419,140 +420,141 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
 
       {/* Filter buttons - moved outside of tabs */}
       <div style={{
-        padding: '10px',
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        marginBottom: '15px',
-      }}>
-        {/* Color mode toggle */}
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center', // Center horizontally
+  width: '100%',
+  marginBottom: '15px',
+}}>
+  {/* Color mode toggle */}
+  <div style={{
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginBottom: '10px',
+    alignItems: 'center',
+    width: '100%', // Ensure it spans the full width
+  }}>
+    <span style={{ marginRight: '10px', fontSize: '14px' }}>
+      {useColorMode ? 'Color Legend' : 'Color Legend'}
+    </span>
+    <div
+      onClick={() => setUseColorMode(!useColorMode)}
+      style={{
+        position: 'relative',
+        width: '50px',
+        height: '24px',
+        backgroundColor: useColorMode ? '#2466e0' : '#ccc',
+        borderRadius: '12px',
+        cursor: 'pointer',
+        transition: 'background-color 0.3s',
+      }}
+    >
+      <div style={{
+        position: 'absolute',
+        left: useColorMode ? '26px' : '2px',
+        top: '2px',
+        width: '20px',
+        height: '20px',
+        backgroundColor: 'white',
+        borderRadius: '50%',
+        transition: 'left 0.3s',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.3)'
+      }} />
+    </div>
+  </div>
+
+  {/* Technology buttons */}
+  <div style={{
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center', // Center horizontally
+    width: '100%',
+  }}>
+    <div style={{
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '8px',
+      justifyContent: 'center', // Center buttons horizontally
+      overflowY: data.length > 15 ? 'hidden' : 'auto',
+      borderTop: '1px solid #e1e4e8',
+      width: '100%',
+      padding: '10px 0',
+      maxHeight: data.length > 15 && !showAllTechnologies ? '150px' : 'none',
+      position: 'relative',
+    }}>
+      {data.length > 15 && !showAllTechnologies && (
         <div style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          marginBottom: '10px',
-          alignItems: 'center',
-        }}>
-          <span style={{ marginRight: '10px', fontSize: '14px' }}>
-            {useColorMode ? 'Color Legend' : 'Color Legend'}
-          </span>
-          <div
-            onClick={() => setUseColorMode(!useColorMode)}
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: '50px',
+          background: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))',
+          pointerEvents: 'none',
+        }} />
+      )}
+      {data.map((point, index) => {
+        const backgroundColor = colors[index % colors.length];
+        const isSelected = selectedTechnology === point.field_name;
+
+        return (
+          <button
+            key={point.field_id}
+            onClick={() => handleFilterClick(point)}
             style={{
-              position: 'relative',
-              width: '50px',
-              height: '24px',
-              backgroundColor: useColorMode ? '#2466e0' : '#ccc',
-              borderRadius: '12px',
+              padding: '8px 16px',
+              backgroundColor: isSelected ? 'white' : backgroundColor,
+              color: isSelected ? 'black' : 'white',
+              border: `1px solid ${isSelected ? '#ccc' : backgroundColor}`,
+              borderRadius: '5px',
               cursor: 'pointer',
-              transition: 'background-color 0.3s',
+              transition: 'all 0.2s',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
             }}
           >
-            <div style={{
-              position: 'absolute',
-              left: useColorMode ? '26px' : '2px',
-              top: '2px',
-              width: '20px',
-              height: '20px',
-              backgroundColor: 'white',
-              borderRadius: '50%',
-              transition: 'left 0.3s',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.3)'
-            }} />
-          </div>
-        </div>
-
-
-        {/* Technology buttons */}
-        <div style={{
+            {point.field_name}
+          </button>
+        );
+      })}
+    </div>
+    {data.length > 15 && (
+      <button
+        onClick={() => setShowAllTechnologies(!showAllTechnologies)}
+        style={{
+          alignSelf: 'center',
+          marginTop: '10px',
+          padding: '8px',
+          backgroundColor: '#2466e0',
+          color: 'white',
+          border: 'none',
+          borderRadius: '50%',
+          cursor: 'pointer',
           display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-        }}>
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '8px',
-            alignContent: 'flex-start',
-            overflowY: data.length > 15 ? 'hidden' : 'auto',
-            borderTop: '1px solid #e1e4e8',
-            width: '100%',
-            padding: '10px 0',
-            maxHeight: data.length > 15 && !showAllTechnologies ? '150px' : 'none',
-            position: 'relative',
-          }}>
-            {data.length > 15 && !showAllTechnologies && (
-              <div style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: '50px',
-                background: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))',
-                pointerEvents: 'none',
-              }} />
-            )}
-            {data.map((point, index) => {
-              const backgroundColor = colors[index % colors.length];
-              const isSelected = selectedTechnology === point.field_name;
-
-              return (
-                <button
-                  key={point.field_id}
-                  onClick={() => handleFilterClick(point)}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: isSelected ? 'white' : backgroundColor,
-                    color: isSelected ? 'black' : 'white',
-                    border: `1px solid ${isSelected ? '#ccc' : backgroundColor}`,
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-                  }}
-                >
-                  {point.field_name}
-                </button>
-              );
-            })}
-          </div>
-          {data.length > 15 && (
-            <button
-              onClick={() => setShowAllTechnologies(!showAllTechnologies)}
-              style={{
-                alignSelf: 'center',
-                marginTop: '10px',
-                padding: '8px',
-                backgroundColor: '#2466e0',
-                color: 'white',
-                border: 'none',
-                borderRadius: '50%',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                width: '32px',
-                height: '32px',
-                hover: {
-                  backgroundColor: '#1a4cb8',
-                  transform: 'translateY(-1px)',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                }
-              }}
-              aria-label={showAllTechnologies ? "Show less technologies" : "Show all technologies"}
-            >
-              <ArrowDown
-                size={16}
-                style={{
-                  transform: showAllTechnologies ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.3s ease'
-                }}
-              />
-            </button>
-          )}
-        </div>
-      </div>
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 0.2s ease',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          width: '32px',
+          height: '32px',
+          hover: {
+            backgroundColor: '#1a4cb8',
+            transform: 'translateY(-1px)',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+          }
+        }}
+        aria-label={showAllTechnologies ? "Show less technologies" : "Show all technologies"}
+      >
+        <ArrowDown
+          size={16}
+          style={{
+            transform: showAllTechnologies ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.3s ease'
+          }}
+        />
+      </button>
+    )}
+  </div>
+</div>
 
       {/*Rationale section*/}
       <div style={{
