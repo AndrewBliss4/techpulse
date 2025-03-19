@@ -67,25 +67,25 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
 
   const filterMostRecentData = (data) => {
     const mostRecentData = {};
-  
+
     data.forEach(item => {
       // Exclude entries with field_id: 0
       if (item.subfield_id === null && item.field_id !== 0) {  // Only process if subfield_id is null and field_id is not 0
         const fieldId = item.field_id;
         const currentDate = new Date(item.metric_date);
-  
+
         if (!mostRecentData[fieldId] || new Date(mostRecentData[fieldId].metric_date) < currentDate) {
           mostRecentData[fieldId] = {
             ...item,
             description: item.field_description, // Include the field description
             metric_3_scaled: Math.pow(item.metric_3, 5
-              
+
             ), // Add the cubed value of metric_3
           };
         }
       }
     });
-  
+
     return Object.values(mostRecentData);
   };
   const handleFilterClick = (point) => {
@@ -519,11 +519,11 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
               aria-label={showAllTechnologies ? "Show less technologies" : "Show all technologies"}
             >
               <ArrowDown
-                size={16} 
-                style={{ 
-                  transform: showAllTechnologies ? 'rotate(180deg)' : 'rotate(0deg)', 
-                  transition: 'transform 0.3s ease' 
-                }} 
+                size={16}
+                style={{
+                  transform: showAllTechnologies ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.3s ease'
+                }}
               />
             </button>
           )}
@@ -585,6 +585,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology }) => {
           radarData={radarData}
           selectedFieldId={selectedFieldId}
           fieldName={data.find((field) => field.field_id === selectedFieldId)?.field_name || "Selected Field"}
+          useColorMode={useColorMode} // Pass the useColorMode state as a prop
         />
       )}
     </div>
