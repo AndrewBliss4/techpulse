@@ -54,6 +54,9 @@ const Home = () => {
 
   const [isScrapeExpanded, setIsScrapeExpanded] = useState(false);
 
+  const [scrapeFieldsSuccess, setScrapeFieldsSuccess] = useState(false);
+  const [scrapeSubFieldsSuccess, setScrapeSubFieldsSuccess] = useState(false);
+
   //loader states
 
   const loaders = [
@@ -661,11 +664,11 @@ const Home = () => {
                   <div className="flex justify-end">
                     <ScrapeFieldsButton
                       setError={setError}
-                      setSuccess={setSuccess}
+                      setSuccess={setScrapeFieldsSuccess}
                     />
                   </div>
                 </div>
-                {success && <p className="mt-2 text-green-600">Scraping was successful!</p>}
+                {scrapeFieldsSuccess && <p className="mt-2 text-green-600">Scraping fields was successful!</p>}
               </div>
 
               {/* Scrape Sub Fields Section */}
@@ -682,11 +685,11 @@ const Home = () => {
                   <div className="flex justify-end">
                     <ScrapeSubFieldsButton
                       setError={setError}
-                      setSuccess={setSuccess}
+                      setSuccess={setScrapeSubFieldsSuccess}
                     />
                   </div>
                 </div>
-                {success && <p className="mt-2 text-green-600">Scraping was successful!</p>}
+                {scrapeSubFieldsSuccess && <p className="mt-2 text-green-600">Scraping subfields was successful!</p>}
               </div>
             </div>
           )}
