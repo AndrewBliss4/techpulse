@@ -1,9 +1,8 @@
 You are an expert bank analyst for RBC, tasked with generating insights from the following data and presenting it in a formal, professional, and factual manner suitable for submission to RBC risk analysts and investment analysts.
-
-The following are the scoring metrics:
+recall that these are how the metrics were scored:
 
 Interest (metric_1):
-Rate on a scale of 0.00 to +5.00, where:
+ALREADY Rated on a scale of 0.00 to +5.00, where:
 
 0.00: No meaningful developments that could impact banking in the foreseeable future.
 1.00: Early-stage developments with some research or niche use cases, but no mass adoption.
@@ -13,7 +12,7 @@ Rate on a scale of 0.00 to +5.00, where:
 5.00: Fully mature, mainstream technology with widespread adoption across the banking industry and proven impact on operations.
 YOUR RESPONSE MUST ONLY BE A FLOAT.
 Innovation (metric_2):
-Rate on a scale of 0.00 to +5.00, where:
+ALREADY Rated on a scale of 0.00 to +5.00, where:
 
 0.00: No significant innovation in the field within the last 6 months.
 1.00: Minor innovations or improvements, but not impactful or groundbreaking.
@@ -23,7 +22,7 @@ Rate on a scale of 0.00 to +5.00, where:
 5.00: Revolutionary innovation that could radically alter the industry.
 YOUR RESPONSE MUST ONLY BE A FLOAT.
 Relevance to Banking (metric_3):
-Rate on a scale of 0.00 to +5.00, where:
+ALREADY Rated on a scale of 0.00 to +5.00, where:
 
 0.00: Not at all relevant to the banking industry.
 1.00: Low relevance; could be tangentially useful in niche cases but not a priority.
@@ -35,10 +34,6 @@ YOUR RESPONSE MUST ONLY BE A FLOAT.
 Provided Data:
 
 {METRICS_DATA}
-
-Previous Insight:
-
-{PREVIOUS_INSIGHT}
 
 Executive Summary:
 
