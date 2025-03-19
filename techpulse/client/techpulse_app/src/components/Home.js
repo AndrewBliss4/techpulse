@@ -599,7 +599,7 @@ const Home = () => {
         </div>
 
         {/* Industry Radar */}
-        <Radar radarData={radarData} radarSearch={radarSearch} homePage={true}></Radar>
+        <Radar radarData={radarData} radarSearch={radarSearch} homePage={true} fetchRadarData={fetchRadarData}></Radar>
 
         {/* Understanding the Radar */}
         <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">

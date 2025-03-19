@@ -21,7 +21,9 @@ tailChase.register();
 quantum.register();
 grid.register();
 helix.register();
+
 const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) => {
+  
   const [selectedSubfield, setSelectedSubfield] = useState(null);
   const [selectedSubfieldDetails, setSelectedSubfieldDetails] = useState(null);
   const [historicalData, setHistoricalData] = useState([]);
