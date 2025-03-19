@@ -49,6 +49,27 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
     fetchMostRecentInsight();
   }, [fieldName]);
 
+  // Functon to run scraper
+  const runScraper = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/api/run-scraper-sf', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Scraper failed: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('Scraper executed successfully:', data.message);
+      return true; // Indicate success
+    } catch (error) {
+      console.error('Error running scraper:', error);
+      throw error; // Propagate the error
+    }
+  };
+
   // Fetch the most recent insight on component mount
   useEffect(() => {
     const fetchMostRecentInsight = async () => {
@@ -194,11 +215,21 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   };
 
+
+
   // Function to generate insight
   const handleGenerateInsight = async () => {
     setLoading(true);
     setCurrentLoaderIndex(0);
     try {
+
+      // Step 0: Run the scraper
+      const scraperSuccess = await runScraper();
+      if (!scraperSuccess) {
+        throw new Error("Scraper failed to run.");
+      }
+
+
       // Step 1: Fetch all subfields for the selected field
       const subfieldsResponse = await fetch(`http://localhost:4000/api/subfields`, {
         method: 'POST',
@@ -216,6 +247,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
       if (subfields.length === 0) {
         throw new Error('No subfields found for the selected field.');
       }
+
 
       // Step 2: Update metrics for each subfield individually
       let successfulUpdates = 0;
@@ -263,6 +295,8 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode }) 
 
       const newSubfieldData = await newSubfieldResponse.json();
       console.log('New subfield generated successfully:', newSubfieldData);
+
+
 
       // Step 4: Generate insights for the selected field
       const insightResponse = await fetch('http://localhost:4000/generate-sub-insight', {

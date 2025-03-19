@@ -77,14 +77,14 @@ const Technology = () => {
     useEffect(() => {
         // Set up interval to rotate loaders every 3 seconds
         const intervalId = setInterval(() => {
-          setCurrentLoaderIndex((prevIndex) =>
-            (prevIndex + 1) % loaders.length
-          );
+            setCurrentLoaderIndex((prevIndex) =>
+                (prevIndex + 1) % loaders.length
+            );
         }, 5000);
-    
+
         // Clean up interval on component unmount
         return () => clearInterval(intervalId);
-      }, []);
+    }, []);
 
     const handleRadarSubmit = async (radarTerm) => {
 
@@ -146,7 +146,7 @@ const Technology = () => {
     const interest = parseFloat(searchParams.get('interest') || '0'); // Convert to number
     const innovation = parseFloat(searchParams.get('innovation') || '0');
     const investments = parseInt(searchParams.get('investments') || '0', 10);
-    
+
     // Usestates
     const [trendingTopics, setTrendingTopics] = useState([]);
     const [latestInsights, setLatestInsights] = useState([]);
