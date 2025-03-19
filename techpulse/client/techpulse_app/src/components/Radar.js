@@ -17,7 +17,10 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
   const [subfieldData, setSubfieldData] = useState([]); // State for subfield data
   const [selectedFieldId, setSelectedFieldId] = useState(null); // Track the selected field ID for
   const [isLoading, setIsLoading] = useState(false);
+
+  //State for subfield details
   const [selectedSubfieldDetails, setSelectedSubfieldDetails] = useState(null);
+  const [selectedSubfield, setSelectedSubfield] = useState(null);
 
   const [showAllTechnologies, setShowAllTechnologies] = useState(false);
 
@@ -127,7 +130,11 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
   };
 
   const handleFilterClick = (point) => {
+    
+    //Clear the selected subfield details and subfield
     setSelectedSubfieldDetails(null);
+    setSelectedSubfield(null);
+
     // Check if this point is currently selected
     const isCurrentlySelected = selectedTechnology === point.field_name;
     if (isCurrentlySelected) {
@@ -650,6 +657,8 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
           useColorMode={useColorMode} // Pass the useColorMode state as a prop
           selectedSubfieldDetails={selectedSubfieldDetails}
           setSelectedSubfieldDetails={setSelectedSubfieldDetails}
+          selectedSubfield={selectedSubfield}
+          setSelectedSubfield={setSelectedSubfield}
         />
       )}
     </div>
