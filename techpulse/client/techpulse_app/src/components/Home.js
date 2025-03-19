@@ -339,6 +339,16 @@ const Home = () => {
       .catch(error => console.error('Error fetching data:', error));
   }, []);
 
+  //Function to avoid manual refresh
+  const fetchRadarData = () => {
+    axios.get('http://localhost:4000/api/radar')
+      .then(response => {
+        console.log('Fetched data:', response.data);
+        setRadarData(response.data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  };
+
   async function addData() {
     try {
       // First, wait for the GET request to finish
@@ -429,7 +439,7 @@ const Home = () => {
                 <AIPromptFieldButton setTextResult={setTextResult}
                   setTrendingTopics={setTrendingTopics} setLatestInsights={setLatestInsights}
                   setLoading={setLoading} setCurrentLoaderIndex={setCurrentLoaderIndex} setError={setError}
-                  setRenderText={setRenderText} setRenderTrends={setRenderTrends} />
+                  setRenderText={setRenderText} setRenderTrends={setRenderTrends} fetchRadarData={fetchRadarData} />
               </div>
             </div>
           </div>

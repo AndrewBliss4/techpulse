@@ -9,6 +9,7 @@ const AIPromptFieldButton = ({
   setError,
   setRenderText,
   setRenderTrends,
+  fetchRadarData,
 }) => {
   const [generatedText, setGeneratedText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -199,6 +200,7 @@ const AIPromptFieldButton = ({
       // setRenderTrends(true);
       setIsLoading(false);
       setLoading(false);
+      fetchRadarData();
     }
   };
 
