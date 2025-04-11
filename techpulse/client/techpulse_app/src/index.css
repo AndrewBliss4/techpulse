@@ -11,3 +11,31 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.markdown-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.markdown-container h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 1.5rem 0;
+  color: #2563eb; /* blue-600 */
+}
+
+.markdown-container h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 1.25rem 0;
+  color: #4b5563; /* gray-600 */
+}
+
+.markdown-container p {
+  color: #6b7280; /* gray-500 */
+  line-height: 1.75;
+  margin-bottom: 1rem;
+}
+
+.markdown-container strong {
+  font-weight: 600;
+}

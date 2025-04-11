@@ -495,10 +495,16 @@ const generateInsight = async (type) => {
         };
       }
 
-      // Calculate velocity for metric_1, metric_2, and metric_3
-      const velocity_metric_1 = parseFloat((fieldMetrics[0].metric_1 - fieldMetrics[1].metric_1).toFixed(2));
-      const velocity_metric_2 = parseFloat((fieldMetrics[0].metric_2 - fieldMetrics[1].metric_2).toFixed(2));
-      const velocity_metric_3 = parseFloat((fieldMetrics[0].metric_3 - fieldMetrics[1].metric_3).toFixed(2));
+      const calculateVelocity = (current, previous) => {
+        // Avoid division by zero and handle new trends (no previous data)
+        if (previous === 0 || isNaN(previous)) return current > 0 ? 100 : 0; 
+        
+        return parseFloat((((current - previous) / previous) * 100).toFixed(2));
+      };
+      
+      const velocity_metric_1 = calculateVelocity(fieldMetrics[0].metric_1, fieldMetrics[1].metric_1);
+      const velocity_metric_2 = calculateVelocity(fieldMetrics[0].metric_2, fieldMetrics[1].metric_2);
+      const velocity_metric_3 = calculateVelocity(fieldMetrics[0].metric_3, fieldMetrics[1].metric_3);
 
       return {
         field_id,
@@ -565,7 +571,7 @@ const generateInsight = async (type) => {
       model: "gpt-4o",
       messages: [{ role: "system", content: dynamicPrompt }],
       temperature: 0,
-      max_tokens: 2048,
+      max_tokens: 3000,
       top_p: 1
     });
 
