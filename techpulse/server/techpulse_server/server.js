@@ -467,7 +467,7 @@ const generateInsight = async (type) => {
       return "NO_METRICS";
     }
 
-    // Group metrics by field_id to calculate the velocity for each metric
+    // Group metrics by field_id to calculate the growth for each metric
     const fields = {};
     metricsQuery.rows.forEach(row => {
       if (!fields[row.field_id]) {
@@ -476,11 +476,11 @@ const generateInsight = async (type) => {
       fields[row.field_id].push(row);
     });
 
-    // Calculate velocities for each field (metric_1, metric_2, and metric_3)
-    const velocityData = Object.keys(fields).map(field_id => {
+    // Calculate growths for each field (metric_1, metric_2, and metric_3)
+    const growthData = Object.keys(fields).map(field_id => {
       const fieldMetrics = fields[field_id];
 
-      // If only one metric is available, the velocities are 0
+      // If only one metric is available, the growths are 0
       if (fieldMetrics.length === 1) {
         return {
           field_id,
@@ -489,22 +489,22 @@ const generateInsight = async (type) => {
           most_recent_metric_2: fieldMetrics[0].metric_2,
           most_recent_metric_3: fieldMetrics[0].metric_3,
           rationale: fieldMetrics[0].rationale,
-          velocity_metric_1: 0,
-          velocity_metric_2: 0,
-          velocity_metric_3: 0
+          growth_metric_1: 0,
+          growth_metric_2: 0,
+          growth_metric_3: 0
         };
       }
 
-      const calculateVelocity = (current, previous) => {
+      const calculateGrowth = (current, previous) => {
         // Avoid division by zero and handle new trends (no previous data)
         if (previous === 0 || isNaN(previous)) return current > 0 ? 100 : 0; 
         
         return parseFloat((((current - previous) / previous) * 100).toFixed(2));
       };
       
-      const velocity_metric_1 = calculateVelocity(fieldMetrics[0].metric_1, fieldMetrics[1].metric_1);
-      const velocity_metric_2 = calculateVelocity(fieldMetrics[0].metric_2, fieldMetrics[1].metric_2);
-      const velocity_metric_3 = calculateVelocity(fieldMetrics[0].metric_3, fieldMetrics[1].metric_3);
+      const growth_metric_1 = calculateGrowth(fieldMetrics[0].metric_1, fieldMetrics[1].metric_1);
+      const growth_metric_2 = calculateGrowth(fieldMetrics[0].metric_2, fieldMetrics[1].metric_2);
+      const growth_metric_3 = calculateGrowth(fieldMetrics[0].metric_3, fieldMetrics[1].metric_3);
 
       return {
         field_id,
@@ -513,9 +513,9 @@ const generateInsight = async (type) => {
         most_recent_metric_2: fieldMetrics[0].metric_2,
         most_recent_metric_3: fieldMetrics[0].metric_3,
         rationale: fieldMetrics[0].rationale,
-        velocity_metric_1,
-        velocity_metric_2,
-        velocity_metric_3
+        growth_metric_1,
+        growth_metric_2,
+        growth_metric_3
       };
     });
 
@@ -536,23 +536,23 @@ const generateInsight = async (type) => {
     // Construct the dynamic prompt
     let promptTemplate= await fsPromises.readFile("./prompts/full_radar_insight_generation.txt", "utf8");
 
-    // Format the velocity data to include both the most recent metrics and velocities
-    const velocityDataFormatted = velocityData.map(item => `
+    // Format the growth data to include both the most recent metrics and growths
+    const growthDataFormatted = growthData.map(item => `
       Field Name: ${item.field_name}
       
       Most Recent Metrics:
-        Interest (metric_1): ${item.most_recent_metric_1} (Velocity: ${item.velocity_metric_1})
-        Innovation (metric_2): ${item.most_recent_metric_2} (Velocity: ${item.velocity_metric_2})
-        Relevance to Banking (metric_3): ${item.most_recent_metric_3} (Velocity: ${item.velocity_metric_3})
+        Interest (metric_1): ${item.most_recent_metric_1} (growth: ${item.growth_metric_1})
+        Innovation (metric_2): ${item.most_recent_metric_2} (growth: ${item.growth_metric_2})
+        Relevance to Banking (metric_3): ${item.most_recent_metric_3} (growth: ${item.growth_metric_3})
       
       Rationale: ${item.rationale}
     `).join('\n\n');
 
     const previousInsightText = previousInsight ? `Previous Insight:\n${previousInsight.insight_text}\nGenerated At: ${previousInsight.generated_at}` : "No previous insight available.";
 
-    // Replace {METRICS_DATA} with the formatted velocity data
+    // Replace {METRICS_DATA} with the formatted growth data
     const dynamicPrompt = promptTemplate
-      .replace("{METRICS_DATA}", velocityDataFormatted)
+      .replace("{METRICS_DATA}", growthDataFormatted)
       .replace("{PREVIOUS_INSIGHT}", previousInsightText);
 
     console.log("Generated Prompt:\n", dynamicPrompt);
@@ -727,9 +727,9 @@ const generateSubInsight = async (type, fieldId) => {
 
     const metricsData = metricsQuery.rows.map(row => `
       ${row.field_name ? `field_name: ${row.field_name}` : `subfield_name: ${row.subfield_name}`}
-      metric_1: ${row.metric_1}
-      metric_2: ${row.metric_2}
-      metric_3: ${row.metric_3}
+      Interest: ${row.metric_1}
+      Innovation: ${row.metric_2}
+      Relevance to RBC: ${row.metric_3}
       rationale: ${row.rationale}
       metric_date: ${row.metric_date}`).join('\n\n');
 
