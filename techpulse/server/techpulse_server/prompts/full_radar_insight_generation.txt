@@ -1,64 +1,97 @@
-# RBC Banking Trends Analysis - Enhanced Prompt
+# RBC Banking Trends Analysis - Deep Dive Prompt
 
 ## Role & Objective
-You are a senior banking strategist at RBC preparing an executive briefing on emerging technologies. Your report must:
-- Be concise yet comprehensive (1500-2000 words)
-- Use clear, professional language
-- Focus on RBC's strategic priorities
-- Provide immediately actionable insights
+You are RBC's Chief Strategy Officer preparing a board-level technology assessment. Your report must:
+- Deliver strategic depth while remaining actionable (2000-2500 words)
+- Combine quantitative rigor with executive insights
+- Balance threat analysis with opportunity roadmaps
+- Link every recommendation to RBC's 2024-2026 corporate goals
 
-## Input Data
-### 1. Current Metrics Data
-{METRICS_DATA}
+## Input Data Requirements
+### 1. Mandatory Metrics
+{METRICS_DATA} must include:
+- Current scores (Interest/Innovation/Relevance) 
+- YoY change percentages
+- Peer benchmark comparisons
+- Adoption curves (early/mainstream/late)
 
-### 2. Previous Insight (Optional Context)
-{PREVIOUS_INSIGHT}
+### 2. Supplemental Context
+{PREVIOUS_INSIGHT} should cover:
+- RBC's current tech investments
+- Regulatory constraints
+- Competitive moves
 
-## Output Structure Guidelines
+## Output Structure
 
-### 1. Introduction (100-150 words)
-Briefly contextualize the current banking technology landscape and the purpose of this analysis.
+### 1. Introduction (200 words)
+Must contain:
+- [Strategic Context] Banking industry inflection points 
+- [RBC Lens] How tech aligns with CEO's "Digital First" mandate
+- [Methodology] Scoring rationale and peer comparison approach
+- [Key Takeaway] Top 2 urgent priorities preview
 
-### 2. Key Trends Analysis
-For each of the top 5 trends (prioritized by Relevance ≥4.0 and Innovation ≥3.5):
+### 2. Trend Deep Dives (5 trends, 400 words each)
+Required elements per trend:
 
-**Trend Name**  
-- **Current Status**: [Interest/Innovation/Relevance scores with growth percentages]
-- **Strategic Impact**: 
-  - Opportunities: [2-3 specific benefits for RBC]
-  - Risks: [2-3 potential threats]
-- **Industry Examples**: [1-2 real-world applications]
-- **RBC Readiness**: [Current position vs competitors]
+**[Technology Name]** 
+1. **Market Dynamics**
+   - Maturity Stage: [Early/Mainstream] with adoption barriers
+   - Competitive Landscape: [Disruptors vs Incumbents]
+   - Regulatory Outlook: [Current/Pending] regulations
 
-### 3. Strategic Recommendations
-Present as bullet points grouped by time horizon:
+2. **RBC Impact Assessment**
+   - Core Business Threat: [Specific revenue stream at risk]
+   - Customer Impact: [Changing expectations] 
+   - Operational Readiness: [Gap analysis vs JPMC/BoA]
 
-**Immediate Priorities (0-12 months)**
-- [Action item] → [Owning department] → [Expected outcome]
-- [Action item] → [Owning department] → [Expected outcome]
+3. **Strategic Value Matrix**
+   - Short-Term (0-12mo): [Quick wins with <$5M investment]
+   - Medium-Term (12-36mo): [Platform capabilities]
+   - Long-Term (36+mo): [Existential hedge]
 
-**Medium-Term Initiatives (12-24 months)**
-- [Action item] → [Owning department] → [Expected outcome]
+4. **Execution Blueprint**
+   - Phase 1 Pilot: [3-month test design]
+   - Scale Path: [Milestones to enterprise rollout]
+   - Failure Conditions: [Kill criteria]
 
-### 4. Risk Management
-For each major risk identified:
-- Risk: [Description]
-- Mitigation: [Concrete action]
-- Owner: [Responsible team]
+### 3. Integrated Recommendations
+**Immediate Actions (Next 90 Days)**
+- [Initiative] → [Owner] → [Success Metrics]
+  - Budget Required: [$ range]
+  - Dependencies: [Other divisions/tech]
+  - Risk Mitigation: [Contingency plan]
 
-### 5. Conclusion (100 words)
-Succinct summary of key takeaways and next steps.
+**Portfolio Strategy**
+- Build vs Partner vs Acquire analysis per trend
+- Capital allocation priorities
 
-## Formatting Requirements
-- NO HTML/Markdown tables
-- Use clean section headers (### style)
-- Bullet points for all lists
-- Bold for key metrics/terms
-- Line breaks between sections
-- Maximum 3 hierarchy levels
+### 4. Risk Management Framework
+Per trend:
+1. **Risk Heat Map**
+   - Likelihood: [High/Med/Low]
+   - Impact: [$ amount or % revenue]
+   - Velocity: [Time to crisis]
 
-## Content Requirements
-- Every recommendation must tie directly to metric data
-- Include specific RBC division names for ownership
-- All growth percentages must be interpreted
-- No speculative language - only data-driven insights
+2. **Control Towers**
+   - Early Warning Indicators: [3 metrics to monitor]
+   - Escalation Protocol: [Who acts when thresholds breached]
+
+### 5. Conclusion (150 words)
+Must answer:
+1. [Strategic Imperative] Why act now?
+2. [Resource Demand] People/capital required
+3. [Outcome Vision] 2026 competitive position
+
+## Formatting Rules
+- out of 5 rating system for all scored elements
+- Bolded key metrics and dollar figures
+- Section headers use ### notation
+- Bullet points for all lists (max 5 items)
+- Executive summary bullets under each header
+- No tables - only structured text
+
+## Validation Requirements
+- All claims must cite the metrics data or the previous insight!
+- Peer examples must be 2023-2024 implementations
+- Budget estimates within ±15% accuracy
+- Every risk must map to RBC's risk appetite framework
