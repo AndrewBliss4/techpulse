@@ -61,7 +61,7 @@ app.get("/get-all-subfield-ids", async (req, res) => {
 app.get('/api/data', async (req, res) => {
   try {
     const result = await pool.query('SELECT top_p,temperature FROM public.modelparameters ORDER BY parameter_id DESC LIMIT 1');
-    console.log('Data fetched successfully:', result.rows);
+    //console.log('Data fetched successfully:', result.rows);
     res.json(result.rows);
   } catch (error) {
     console.error('Error fetching data:', error.message);
@@ -98,7 +98,7 @@ app.get('/api/radar', async (req, res) => {
     `;
 
     const result = await pool.query(query);
-    console.log('Joined data fetched successfully:', result.rows);
+    //console.log('Joined data fetched successfully:', result.rows);
     res.json(result.rows);
   } catch (error) {
     console.error('Error fetching joined data:', error.message);
@@ -109,7 +109,7 @@ app.get('/api/radar', async (req, res) => {
 app.get('/api/latest-id', async (req, res) => {
   try {
     const result = await pool.query('SELECT insight_id FROM public.insight ORDER BY insight_id DESC LIMIT 1');
-    console.log('Data fetched successfully:', result.rows[0]);
+    //console.log('Data fetched successfully:', result.rows[0]);
     res.json({ latestId: result.rows[0]?.insight_id });
   } catch (error) {
     console.error('Error fetching data:', error.message);
@@ -283,7 +283,7 @@ app.post("/gpt-update-metrics", async (req, res) => {
       [maturity, innovation, relevance, new Date().toISOString(), row.field_id, rationale, source]
     );
 
-    console.log(`Updated metrics for '${fieldName}' successfully.`);
+    //console.log(`Updated metrics for '${fieldName}' successfully.`);
     return res.status(200).send(`Metrics updated successfully for field: ${fieldName}`);
   } catch (error) {
     console.error("Error:", error);
@@ -330,7 +330,7 @@ let promptAIField = async () => {
   }
 };
 
-// New endpoint
+// New field endpoint 
 app.post("/gpt-field", async (req, res) => {
   let aiResponse = await promptAIField();
   //console.log("Raw AI Response in Endpoint:\n", aiResponse);
@@ -355,7 +355,7 @@ app.post("/gpt-field", async (req, res) => {
 
   try {
     for (const entry of fieldEntries) {
-      console.log("Processing Entry:\n", entry);
+      //console.log("Processing Entry:\n", entry);
 
       // Extract values using regex
       const fieldNameMatch = entry.match(/field_name:\s*(.+)/);
@@ -556,16 +556,16 @@ const generateInsight = async (type) => {
       .replace("{METRICS_DATA}", growthDataFormatted)
       .replace("{PREVIOUS_INSIGHT}", previousInsightText);
 
-    console.log("Generated Prompt:\n", dynamicPrompt);
+    //console.log("Generated Prompt:\n", dynamicPrompt);
 
-    // Save the dynamic prompt to the /prompts folder as WRONG.txt
+    // Save the dynamic prompt to the /prompts folder as POPULATEDPROMPT.txt
     const promptsDir = path.resolve(process.cwd(), "prompts");
     if (!fs.existsSync(promptsDir)) {
       fs.mkdirSync(promptsDir, { recursive: true });
     }
-    const wrongFilePath = path.join(promptsDir, "WRONG.txt");
-    await fsPromises.writeFile(wrongFilePath, dynamicPrompt, 'utf8');
-    console.log(`Dynamic prompt saved to ${wrongFilePath}`);
+    const populatedPromptFilePath = path.join(promptsDir, "POPULATEDPROMPT.txt");
+    await fsPromises.writeFile(populatedPromptFilePath, dynamicPrompt, 'utf8');
+    console.log(`Dynamic prompt saved to ${populatedPromptFilePath}`);
 
     // Call OpenAI to generate the insight
     const response = await openai.chat.completions.create({
@@ -579,7 +579,7 @@ const generateInsight = async (type) => {
     const generatedInsight = response.choices[0]?.message?.content?.trim() || "NO_VALID_AI_RESPONSE";
 
     // Log the raw AI response for debugging
-    console.log("Raw AI Response:\n", generatedInsight);
+    //console.log("Raw AI Response:\n", generatedInsight);
 
     // Extract the confidence score from the generated insight
     let confidenceScore = 0.9; // Default value if extraction fails
@@ -872,29 +872,29 @@ app.post("/gpt-subfield", async (req, res) => {
     const fieldId = fieldResult.rows[0].field_id;
 
     for (const entry of subfieldEntries) {
-      console.log("Processing Entry:\n", entry);
+      //console.log("Processing Entry:\n", entry);
 
       // Extract values using regex
       const subfieldNameMatch = entry.match(/subfield_name:\s*(.+)/);
-      console.log("Subfield Name Match:", subfieldNameMatch);
+      //console.log("Subfield Name Match:", subfieldNameMatch);
 
       const descriptionMatch = entry.match(/description:\s*([\s\S]+?)\s*\nmetric_1:/);
-      console.log("Description Match:", descriptionMatch);
+      //console.log("Description Match:", descriptionMatch);
 
       const maturityMatch = entry.match(/metric_1:\s*([\d.]+)/);
-      console.log("Maturity Match:", maturityMatch);
+      //console.log("Maturity Match:", maturityMatch);
 
       const innovationMatch = entry.match(/metric_2:\s*([\d.]+)/);
-      console.log("Innovation Match:", innovationMatch);
+     //console.log("Innovation Match:", innovationMatch);
 
       const relevanceMatch = entry.match(/metric_3:\s*([\d.]+)/);
-      console.log("Relevance Match:", relevanceMatch);
+      //console.log("Relevance Match:", relevanceMatch);
 
       const rationaleMatch = entry.match(/rationale:\s*([\s\S]+?)\s*\nsource:/);
-      console.log("Rationale Match:", rationaleMatch);
+      //console.log("Rationale Match:", rationaleMatch);
 
       const sourceMatch = entry.match(/source:\s*"?(\bhttps?:\/\/[^\s"]+)"?/);
-      console.log("Source Match:", sourceMatch);
+      //console.log("Source Match:", sourceMatch);
 
       if (!subfieldNameMatch || !descriptionMatch || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourceMatch) {
         console.error("Error: AI response is in an invalid format.");
@@ -1026,7 +1026,7 @@ app.post("/gpt-update-subfield-metrics", async (req, res) => {
       .replace("{FIELD_DATA}", subfieldData)
       .replace("{ARTICLES_DATA}", articlesData);
 
-    console.log(`Generated Prompt for ${subfieldName}:\n`, dynamicPrompt);
+    //console.log(`Generated Prompt for ${subfieldName}:\n`, dynamicPrompt);
 
     // Call OpenAI API for the current subfield
     const response = await openai.chat.completions.create({
