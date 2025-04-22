@@ -329,7 +329,7 @@ let promptAIField = async () => {
   }
 };
 
-// New endpoint
+// New field endpoint 
 app.post("/gpt-field", async (req, res) => {
   let aiResponse = await promptAIField();
   //console.log("Raw AI Response in Endpoint:\n", aiResponse);
