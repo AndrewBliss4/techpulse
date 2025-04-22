@@ -66,6 +66,7 @@ BEGIN
         GRANT ALL PRIVILEGES ON DATABASE techpulse TO admin;
     END IF;
 END $$;
+
 /*UPDATE TimedMetrics tm
 SET field_id = sf.field_id
 FROM Subfield sf

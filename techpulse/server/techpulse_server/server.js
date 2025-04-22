@@ -12,10 +12,11 @@ const app = express();
 const amountScraped = 5;
 const amountScrapedsf = 1;
 
-// Define the path to your scraper script
-const scraperScriptPath = path.join(__dirname, "scraper.js");
-// Define the path to your scraper script
-const subfieldScraperScriptPath = path.join(__dirname, "scraper_sf.js");
+// Scraper Path
+const scraperScriptPath = "./scraper.js";
+
+// Subfield Scraper Path
+const subfieldScraperScriptPath = "./scraper_sf.js";
 
 // Connection to postgres
 const pool = new Pool({
@@ -1218,7 +1219,7 @@ app.get("/api/run-scraper-sf", (req, res) => {
 
 
 app.get("/api/arxiv-papers", (req, res) => {
-  const filePath = path.join(__dirname, "scrape_db", "arxiv_papers.json");
+  const filePath = "scrape_db/arxiv_papers.json";
 
   fs.readFile(filePath, "utf8", (err, data) => {
     if (err) {
@@ -1231,7 +1232,7 @@ app.get("/api/arxiv-papers", (req, res) => {
 });
 
 app.get("/api/arxiv-papers-sf", (req, res) => {
-  const filePath = path.join(__dirname, "scrape_db", "arxiv_papers_sf.json");
+  const filePath = "scrape_db/arxiv_papers.json";
 
   fs.readFile(filePath, "utf8", (err, data) => {
     if (err) {
