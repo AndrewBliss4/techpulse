@@ -14,53 +14,13 @@ const AIPromptFieldButton = ({
   const [generatedText, setGeneratedText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingInsightsOnly, setIsLoadingInsightsOnly] = useState(false);
-
-  // Fetch all field IDs from the backend
-  const fetchAllFieldIds = async () => {
-    try {
-      const response = await fetch('http://localhost:4000/get-all-field-ids', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-      if (!response.ok) {
-        throw new Error(`Failed to fetch field IDs: ${response.statusText}`);
-      }
-      const data = await response.json();
-      return data.fieldIds;
-    } catch (error) {
-      console.error('Error fetching field IDs:', error);
-      return [];
-    }
-  };
-
-  // Function to trigger the scraper
-  const runScraper = async () => {
-    try {
-      const response = await fetch('http://localhost:4000/api/run-scraper', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Scraper failed: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log('Scraper executed successfully:', data.message);
-      return true;
-    } catch (error) {
-      console.error('Error running scraper:', error);
-      throw error;
-    }
-  };
+  const [isLoadingNewFieldsOnly, setIsLoadingNewFieldsOnly] = useState(false);
 
   const handleGenerateInsightsOnly = async () => {
     const isConfirmed = window.confirm(
       "Are you sure you want to generate insights without updating fields?"
     );
-    if (!isConfirmed) {
-      return;
-    }
+    if (!isConfirmed) return;
 
     setIsLoadingInsightsOnly(true);
     setGeneratedText("");
@@ -71,8 +31,6 @@ const AIPromptFieldButton = ({
     setRenderTrends(false);
 
     try {
-      console.log("Proceeding to insight generation...");
-      
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
 
@@ -85,24 +43,12 @@ const AIPromptFieldButton = ({
       clearTimeout(timeoutId);
 
       if (!insightResponse.ok) {
-        const errorData = await insightResponse.json().catch(() => ({}));
-        throw new Error(
-          `Insight generation failed: ${insightResponse.status} - ${insightResponse.statusText}\n${
-            errorData.message || 'No additional error information'
-          }`
-        );
+        throw new Error(`Insight generation failed: ${insightResponse.statusText}`);
       }
 
       const insightData = await insightResponse.json();
-      console.log("Insight generated successfully:", insightData);
-
-      if (!insightData.insight) {
-        throw new Error("Received empty insight from server");
-      }
-
       setTextResult(insightData.insight);
       setGeneratedText("Insights generated successfully");
-      
     } catch (error) {
       console.error('Error generating insights:', error);
       setGeneratedText(`Error: ${error.message}`);
@@ -115,13 +61,46 @@ const AIPromptFieldButton = ({
     }
   };
 
-  const handleButtonClick = async () => {
+  const handleGenerateNewFieldsOnly = async () => {
     const isConfirmed = window.confirm(
-      "Are you sure you want to generate insights?"
+      "Are you sure you want to generate new fields only?"
     );
-    if (!isConfirmed) {
-      return;
+    if (!isConfirmed) return;
+
+    setIsLoadingNewFieldsOnly(true);
+    setGeneratedText("");
+    setLoading(true);
+    setError(false);
+    setRenderText(false);
+
+    try {
+      const response = await fetch('http://localhost:4000/gpt-field', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Field generation failed: ${response.statusText}`);
+      }
+
+      setGeneratedText("New fields generated successfully");
+    } catch (error) {
+      console.error('Error generating new fields:', error);
+      setGeneratedText(`Error: ${error.message}`);
+      setError(true);
+    } finally {
+      setRenderText(true);
+      setIsLoadingNewFieldsOnly(false);
+      setLoading(false);
+      fetchRadarData();
     }
+  };
+
+  const handleFullUpdate = async () => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to update fields and generate insights?"
+    );
+    if (!isConfirmed) return;
 
     setIsLoading(true);
     setGeneratedText("");
@@ -132,68 +111,44 @@ const AIPromptFieldButton = ({
     setRenderTrends(false);
 
     try {
-      console.log("Triggering scraper...");
-      const scraperSuccess = await runScraper();
-      if (!scraperSuccess) {
-        throw new Error("Scraper failed to run.");
-      }
+      // Fetch all field IDs
+      const fieldIdsResponse = await fetch('http://localhost:4000/get-all-field-ids');
+      if (!fieldIdsResponse.ok) throw new Error("Failed to fetch field IDs");
+      const { fieldIds } = await fieldIdsResponse.json();
 
-      console.log("Scraper executed successfully. Proceeding to metric reevaluation...");
-      const fieldIds = await fetchAllFieldIds();
-      if (fieldIds.length === 0) {
-        throw new Error("No fields found to update.");
-      }
-
+      // Update metrics for existing fields
       let successfulUpdates = 0;
-      let failedUpdates = 0;
-
       for (const fieldId of fieldIds) {
         try {
-          const reevaluateResponse = await fetch('http://localhost:4000/gpt-update-metrics', {
+          await fetch('http://localhost:4000/gpt-update-metrics', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ field_id: fieldId }),
           });
-
-          if (!reevaluateResponse.ok) {
-            throw new Error(`Reevaluation failed for field ID: ${fieldId}`);
-          }
           successfulUpdates++;
         } catch (error) {
-          console.error(`Error updating metrics for field ID: ${fieldId}`, error);
-          failedUpdates++;
+          console.error(`Error updating field ${fieldId}:`, error);
         }
       }
 
-      console.log(`Metrics updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
-
-      console.log("Proceeding to new field generation...");
-      const fieldResponse = await fetch('http://localhost:4000/gpt-field', {
+      // Generate new fields
+      await fetch('http://localhost:4000/gpt-field', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
 
-      if (!fieldResponse.ok) {
-        throw new Error(`Field generation failed: ${fieldResponse.statusText}`);
-      }
-
-      console.log("Fields generated successfully. Proceeding to insight generation...");
+      // Generate insights
       const insightResponse = await fetch('http://localhost:4000/generate-insight', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
-
-      if (!insightResponse.ok) {
-        throw new Error(`Insight generation failed: ${insightResponse.statusText}`);
-      }
-
       const insightData = await insightResponse.json();
-      console.log("Insight generated successfully:", insightData.insight);
       setTextResult(insightData.insight);
-      setGeneratedText(`Fields updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
+      setGeneratedText(`Updated ${successfulUpdates} fields and generated new insights`);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error in full update:', error);
       setGeneratedText(`Error: ${error.message}`);
+      setError(true);
     } finally {
       setRenderText(true);
       setIsLoading(false);
@@ -205,26 +160,34 @@ const AIPromptFieldButton = ({
   return (
     <div className="flex flex-col sm:flex-row gap-2">
       <button
-        type="submit"
+        onClick={handleFullUpdate}
+        disabled={isLoading}
         className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-medium 
                rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 
                focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200
                disabled:bg-blue-400 disabled:text-gray-200 disabled:cursor-not-allowed"
-        onClick={handleButtonClick}
-        disabled={isLoading}
       >
-        {isLoading ? 'Processing...' : 'Update Fields & View Insights'}
+        {isLoading ? 'Processing...' : 'Full Update'}
       </button>
       <button
-        type="submit"
+        onClick={handleGenerateInsightsOnly}
+        disabled={isLoadingInsightsOnly}
         className="w-full sm:w-auto px-6 py-2 bg-green-600 text-white font-medium 
                rounded-lg shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 
                focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200
                disabled:bg-green-400 disabled:text-gray-200 disabled:cursor-not-allowed"
-        onClick={handleGenerateInsightsOnly}
-        disabled={isLoadingInsightsOnly}
       >
-        {isLoadingInsightsOnly ? 'Processing...' : 'View Insights Only'}
+        {isLoadingInsightsOnly ? 'Processing...' : 'Insights Only'}
+      </button>
+      <button
+        onClick={handleGenerateNewFieldsOnly}
+        disabled={isLoadingNewFieldsOnly}
+        className="w-full sm:w-auto px-6 py-2 bg-purple-600 text-white font-medium 
+               rounded-lg shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 
+               focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200
+               disabled:bg-purple-400 disabled:text-gray-200 disabled:cursor-not-allowed"
+      >
+        {isLoadingNewFieldsOnly ? 'Processing...' : 'New Fields Only'}
       </button>
     </div>
   );

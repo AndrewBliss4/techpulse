@@ -1,0 +1,77 @@
+Table Field {
+  field_id integer [primary key]
+  field_name varchar(255) [not null]
+  description text
+  depth integer [not null]
+  parent_field_id integer [ref: > Field.field_id]
+}
+
+Table InsightPerspective {
+  perspective_id integer [primary key]
+  perspective_name varchar [not null]
+  description text
+}
+
+Table PerspectiveAxis {
+  axis_id integer [primary key]
+  perspective_id integer [ref: > InsightPerspective.perspective_id]
+  axis_name varchar [not null] // e.g., Innovation, Relevance, etc.
+  axis_prompt text [not null]
+}
+
+Table TimedMetrics {
+  timed_metric_id integer [primary key]
+  metric_date timestamp [not null]
+  field_id integer [ref: > Field.field_id]
+  rationale text
+  confidence_score float
+  perspective_id integer [ref: > InsightPerspective.perspective_id]
+}
+
+Table MetricValue {
+  metric_value_id integer [primary key]
+  timed_metric_id integer [ref: > TimedMetrics.timed_metric_id]
+  axis_id integer [ref: > PerspectiveAxis.axis_id]
+  metric_value float [not null]
+}
+
+Table Source {
+  source_id varchar [primary key] // e.g., arXiv ID like "2503.13224v1"
+  title varchar
+  published timestamp
+  summary text
+  field varchar
+  link varchar
+  authors text
+}
+
+Table TimedMetricSource {
+  timed_metric_id integer [ref: > TimedMetrics.timed_metric_id]
+  source_id varchar [ref: > Source.source_id]
+}
+
+Table Insight {
+  insight_id integer [primary key]
+  field_id integer [ref: > Field.field_id]
+  perspective_id integer [ref: > InsightPerspective.perspective_id]
+  insight_text text [not null]
+  confidence_score float
+  generated_at timestamp
+  final_prompt text [not null] // exact prompt used at generation time
+}
+
+Table Feedback {
+  feedback_id integer [primary key]
+  insight_id integer [ref: > Insight.insight_id]
+  feedback_text text
+  rating float
+  submitted_at timestamp
+}
+
+Table ModelParameters {
+  parameter_id integer [primary key]
+  modelUse varchar
+  top_p float [not null]
+  temperature float [not null]
+  created_at timestamp
+}
