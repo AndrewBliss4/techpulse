@@ -15,7 +15,7 @@ const ScrapeFieldsButton = ({ setError, setSuccess }) => {
     try {
       console.log("Triggering scraper...");
 
-      const response = await fetch("http://localhost:4000/api/run-scraper", {
+      const response = await fetch("http://localhost:4000/api/scraper/run-scraper", {
         method: "GET",
       });
 

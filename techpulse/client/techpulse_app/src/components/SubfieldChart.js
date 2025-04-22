@@ -78,7 +78,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode, se
   // Function to trigger the scraper
   const runScraper = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/run-scraper-sf', {
+      const response = await fetch('http://localhost:4000/api/scraper/arxiv-papers-sf', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -114,7 +114,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode, se
   useEffect(() => {
     const fetchSFArticles = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/arxiv-papers-sf"); // Fetch from the API
+        const response = await axios.get("http://localhost:4000/api/scraper/arxiv-papers-sf"); // Fetch from the API
         const articles = response.data;
 
         // Transform articles into an object for quick lookup by field name
@@ -258,7 +258,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode, se
       if(insight !== "Failed to load insight. Please try again."){
         for (const subfield of subfields) {
           try {
-            const updateMetricsResponse = await fetch('http://localhost:4000/gpt-update-subfield-metrics', {
+            const updateMetricsResponse = await fetch('http://localhost:4000/api/ai/update-subfield-metrics', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -284,7 +284,7 @@ const SubfieldChart = ({ radarData, selectedFieldId, fieldName, useColorMode, se
       console.log(`Subfields updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
 
       // Step 3: Generate a new subfield (if applicable)
-      const newSubfieldResponse = await fetch('http://localhost:4000/gpt-subfield', {
+      const newSubfieldResponse = await fetch('http://localhost:4000/ai/generate-subfield', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

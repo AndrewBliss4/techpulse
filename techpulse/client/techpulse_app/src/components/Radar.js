@@ -187,7 +187,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/arxiv-papers"); // Fetch from the API
+        const response = await axios.get("http://localhost:4000/api/scraper/arxiv-papers"); // Fetch from the API
         const articles = response.data;
 
         // Transform articles into an object for quick lookup by field name
