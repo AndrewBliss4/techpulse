@@ -1,7 +1,7 @@
 geckodriver.log
 
-techpulse/client/techpulse_app/src/components/Insights/MostRecentInsight.txt
-/techpulse/client/techpulse_app/src/components/Insights
+# techpulse/client/techpulse_app/src/components/Insights/MostRecentInsight.txt
+# /techpulse/client/techpulse_app/src/components/Insights
 techpulse/client/techpulse_app/public/arxiv_papers.json
 techpulse/client/techpulse_app/public/arxiv_papers_sf.json
 techpulse/server/techpulse_server/scrape_db/arxiv_papers.json
