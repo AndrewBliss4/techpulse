@@ -23,12 +23,12 @@ const AIPromptFieldButton = ({
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || `Failed to fetch fields: ${response.statusText}`);
       }
-      
+
       const data = await response.json();
       return data.data.map(field => field.id); // Assuming the response has a data array with field objects
     } catch (error) {
@@ -76,7 +76,7 @@ const AIPromptFieldButton = ({
 
     try {
       console.log("Proceeding to insight generation...");
-      
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
 
@@ -104,7 +104,7 @@ const AIPromptFieldButton = ({
 
       setTextResult(insightData.insight);
       setGeneratedText("Insights generated successfully");
-      
+
     } catch (error) {
       console.error('Error generating insights:', error);
       setGeneratedText(`Error: ${error.message}`);
@@ -175,31 +175,41 @@ const AIPromptFieldButton = ({
 
       console.log("Scraper executed successfully. Proceeding to metric reevaluation...");
       const fieldIds = await fetchAllFieldIds();
-      if (fieldIds.length === 0) {
-        throw new Error("No fields found to update.");
-      }
 
       let successfulUpdates = 0;
       let failedUpdates = 0;
 
-      for (const fieldId of fieldIds) {
-        try {
-          const reevaluateResponse = await fetch('http://localhost:4000/api/ai/update-metrics', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ field_id: fieldId }),
-          });
+      if (fieldIds.length > 0) {
+        const scraperSuccess = await runScraper();
+        if (!scraperSuccess) {
+          console.warn("Scraper failed or returned no data - proceeding anyway");
+          // Continue execution even if scraper fails
+        }
 
-          if (!reevaluateResponse.ok) {
-            const errorData = await reevaluateResponse.json();
-            throw new Error(errorData.error || `Reevaluation failed for field ID: ${fieldId}`);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+
+
+        for (const fieldId of fieldIds) {
+          try {
+            const reevaluateResponse = await fetch('http://localhost:4000/api/ai/update-metrics', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ field_id: fieldId }),
+            });
+
+            if (!reevaluateResponse.ok) {
+              const errorData = await reevaluateResponse.json();
+              throw new Error(errorData.error || `Reevaluation failed for field ID: ${fieldId}`);
+            }
+            successfulUpdates++;
+          } catch (error) {
+            console.error(`Error updating metrics for field ID: ${fieldId}`, error);
+            failedUpdates++;
           }
-          successfulUpdates++;
-        } catch (error) {
-          console.error(`Error updating metrics for field ID: ${fieldId}`, error);
-          failedUpdates++;
         }
       }
+
 
       console.log(`Metrics updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
 
