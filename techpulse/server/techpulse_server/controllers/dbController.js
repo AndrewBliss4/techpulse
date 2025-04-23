@@ -319,7 +319,7 @@ class DBController {
       `;
       
       const result = await db.query(query);
-      return result.rows;
+      return result.rows; // This already returns an array
     } catch (error) {
       throw new Error('Failed to fetch radar data');
     }

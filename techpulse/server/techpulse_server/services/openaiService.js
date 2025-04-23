@@ -1,19 +1,24 @@
+require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
+
 const OpenAI = require('openai');
 const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
-const { logger } = require('../utils/logger');
-const { constants } = require('../config');
+const constants = require('../config/constants');  // Fixed import
 const readFile = promisify(fs.readFile);
 
 class OpenAIService {
   constructor() {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY is missing from .env file');
+    }
+
     this.client = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
-      timeout: 30000, // 30 seconds
+      timeout: 30000,
       maxRetries: 3
     });
-    this.model = constants.ai.defaultModel;
+    this.model = constants.ai.defaultModel;  // Now correctly accessing the ai property
     this.fallbackModel = constants.ai.fallbackModel;
   }
 
@@ -39,46 +44,30 @@ class OpenAIService {
         throw new Error('Empty response from OpenAI');
       }
 
-      logger.debug('OpenAI response generated successfully');
       return content;
     } catch (error) {
-      logger.error('OpenAI API error:', error);
-
-      // Fallback to secondary model if primary fails
       if (model !== this.fallbackModel) {
-        logger.warn('Attempting fallback model');
         return this.generateResponse(prompt, {
           ...options,
           model: this.fallbackModel
         });
       }
-
       throw error;
     }
   }
 
   async readPromptTemplate(filename) {
-    try {
-      const filePath = path.join(constants.paths.prompts, filename);
-      const content = await readFile(filePath, 'utf8');
-      return content;
-    } catch (error) {
-      logger.error('Error reading prompt template:', error);
-      throw error;
-    }
+    const filePath = path.join(constants.paths.prompts, filename);
+    const content = await readFile(filePath, 'utf8');
+    return content;
   }
 
   async parseAIResponse(response, pattern) {
-    try {
-      const matches = response.match(pattern);
-      if (!matches) {
-        throw new Error('Failed to parse AI response');
-      }
-      return matches;
-    } catch (error) {
-      logger.error('Error parsing AI response:', error);
-      throw error;
+    const matches = response.match(pattern);
+    if (!matches) {
+      throw new Error('Failed to parse AI response');
     }
+    return matches;
   }
 }
 

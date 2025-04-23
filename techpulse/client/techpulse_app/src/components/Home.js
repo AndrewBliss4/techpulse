@@ -204,7 +204,7 @@ const Home = () => {
 
   // Model parameters
 useEffect(() => {
-  axios.get('http://localhost:4000/db/model-parameters')
+  axios.get('http://localhost:4000/api/db/model-parameters')
     .then(response => {
       console.log('Model params:', response.data);
       if (response.data.success && response.data.data.length > 0) {
@@ -217,7 +217,7 @@ useEffect(() => {
 
 // Radar data
 useEffect(() => {
-  axios.get('http://localhost:4000/db/radar-data')
+  axios.get('http://localhost:4000/api/db/radar-data')
     .then(response => {
       console.log('Radar data:', response.data);
       if (response.data.success) {

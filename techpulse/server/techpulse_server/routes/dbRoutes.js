@@ -134,24 +134,23 @@ router.get('/metrics/subfield/:subfieldId', async (req, res) => {
     });
   }
 });
-
 // Radar Data Endpoint
 router.get('/radar-data', async (req, res) => {
-  try {
-    const radarData = await dbController.getRadarData();
-    res.json({
-      success: true,
-      count: radarData.length,
-      data: radarData
-    });
-  } catch (error) {
-    console.error('GET /radar-data error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to retrieve radar data'
-    });
-  }
-});
+    try {
+      const radarData = await dbController.getRadarData();
+      res.json({
+        success: true,
+        count: radarData.length,
+        data: radarData
+      });
+    } catch (error) {
+      console.error('GET /radar-data error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to retrieve radar data'
+      });
+    }
+  });
 
 // Insights Endpoints
 router.get('/insights', async (req, res) => {
@@ -205,20 +204,21 @@ router.post('/feedback', async (req, res) => {
 
 // Model Parameters Endpoints
 router.get('/model-parameters', async (req, res) => {
-  try {
-    const parameters = await dbController.getModelParameters();
-    res.json({
-      success: true,
-      data: parameters
-    });
-  } catch (error) {
-    console.error('GET /model-parameters error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to retrieve model parameters'
-    });
-  }
-});
+    try {
+      const parameters = await dbController.getModelParameters();
+      res.json({
+        success: true,
+        count: parameters.length,
+        data: parameters
+      });
+    } catch (error) {
+      console.error('GET /model-parameters error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to retrieve model parameters'
+      });
+    }
+  });
 
 router.put('/model-parameters', async (req, res) => {
   try {
