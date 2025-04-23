@@ -1,74 +1,118 @@
-require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
-
-const OpenAI = require('openai');
-const { promisify } = require('util');
-const fs = require('fs');
 const path = require('path');
-const constants = require('../config/constants');  // Fixed import
-const readFile = promisify(fs.readFile);
+require('dotenv').config({ path: path.resolve(__dirname, './../.env') });
+const OpenAI = require('openai');
+const fs = require('fs').promises;
+const constants = require('../config/constants');
 
 class OpenAIService {
   constructor() {
-    if (!process.env.OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY is missing from .env file');
-    }
+    this.initializeOpenAI();
+    this.verifyConstants();
+  }
 
-    this.client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-      timeout: 30000,
-      maxRetries: 3
-    });
-    this.model = constants.ai.defaultModel;  // Now correctly accessing the ai property
-    this.fallbackModel = constants.ai.fallbackModel;
+  initializeOpenAI() {
+    try {
+      if (!process.env.OPENAI_API_KEY) {
+        throw new Error('OPENAI_API_KEY is missing from environment variables');
+      }
+
+      this.client = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY.trim(),
+        timeout: 30000,
+        maxRetries: 3
+      });
+
+      console.log('OpenAI client initialized successfully');
+    } catch (error) {
+      console.error('OpenAI initialization failed:', error);
+      throw error;
+    }
+  }
+
+  verifyConstants() {
+    if (!constants?.ai?.defaultModel) {
+      throw new Error('Default AI model not configured in constants');
+    }
+    if (!constants?.ai?.fallbackModel) {
+      console.warn('No fallback model specified in constants');
+    }
+    
+    this.model = constants.ai.defaultModel;
+    this.fallbackModel = constants.ai.fallbackModel || this.model;
   }
 
   async generateResponse(prompt, options = {}) {
-    const {
-      temperature = constants.ai.defaultTemp,
-      top_p = constants.ai.defaultTopP,
-      max_tokens = constants.ai.maxTokens,
-      model = this.model
-    } = options;
+    const config = {
+      model: options.model || this.model,
+      temperature: options.temperature ?? constants.ai.defaultTemp,
+      top_p: options.top_p ?? constants.ai.defaultTopP,
+      max_tokens: options.max_tokens ?? constants.ai.maxTokens
+    };
 
     try {
+      console.log(`Generating response with model: ${config.model}`);
       const response = await this.client.chat.completions.create({
-        model,
-        messages: [{ role: "system", content: prompt }],
-        temperature,
-        top_p,
-        max_tokens
+        ...config,
+        messages: [{ role: 'system', content: prompt }]
       });
 
-      const content = response.choices[0]?.message?.content?.trim();
-      if (!content) {
-        throw new Error('Empty response from OpenAI');
+      if (!response.choices?.[0]?.message?.content) {
+        throw new Error('Empty response from OpenAI API');
       }
 
-      return content;
+      return response.choices[0].message.content.trim();
     } catch (error) {
-      if (model !== this.fallbackModel) {
+      console.error('OpenAI API Error:', {
+        message: error.message,
+        status: error.status,
+        code: error.code
+      });
+
+      // Try fallback model if different from current model
+      if (config.model !== this.fallbackModel) {
+        console.log(`Attempting fallback model: ${this.fallbackModel}`);
         return this.generateResponse(prompt, {
           ...options,
           model: this.fallbackModel
         });
       }
-      throw error;
+
+      throw new Error(`OpenAI request failed: ${error.message}`);
     }
   }
 
-  async readPromptTemplate(filename) {
-    const filePath = path.join(constants.paths.prompts, filename);
-    const content = await readFile(filePath, 'utf8');
-    return content;
-  }
-
-  async parseAIResponse(response, pattern) {
-    const matches = response.match(pattern);
-    if (!matches) {
-      throw new Error('Failed to parse AI response');
+  async testConnection() {
+    try {
+      const testPrompt = 'Respond with just the word "SUCCESS"';
+      const response = await this.generateResponse(testPrompt);
+      
+      if (response !== 'SUCCESS') {
+        throw new Error('Unexpected test response');
+      }
+      
+      console.log('OpenAI connection test successful');
+      return true;
+    } catch (error) {
+      console.error('OpenAI connection test failed:', error);
+      return false;
     }
-    return matches;
   }
 }
 
-module.exports = new OpenAIService();
+// Create singleton instance with verification
+const openaiService = new OpenAIService();
+
+// Verify connection on startup
+openaiService.testConnection()
+  .then(success => {
+    if (!success) {
+      console.error('Critical: OpenAI service failed to initialize');
+      process.exit(1);
+    }
+  })
+  .catch(err => {
+    console.error('Startup verification error:', err);
+    process.exit(1);
+  });
+
+module.exports = openaiService;

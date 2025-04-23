@@ -241,7 +241,7 @@ async updateSubfieldMetrics(req, res) {
       source: sourceMatch[1].trim()
     };
   }
-  
+
   async _getFieldData(fieldId) {
     const query = `
       SELECT 
@@ -492,27 +492,35 @@ async updateSubfieldMetrics(req, res) {
     
     if (!fieldName || !fieldId) {
       return res.status(400).json({
-        error: "Field name and ID are required"
+        error: "Field name and ID are required",
+        details: `Received - fieldName: ${fieldName}, fieldId: ${fieldId}`
       });
     }
-
+  
     try {
+      console.log(`Generating subfields for field: ${fieldName} (ID: ${fieldId})`);
+      
       const aiResponse = await this._generateSubfieldResponse(fieldName);
+      console.log("AI Response:", aiResponse);
+      
       const subfieldEntries = this._parseSubfieldEntries(aiResponse);
+      console.log("Parsed subfield entries:", subfieldEntries);
+      
       const results = [];
-
+  
       for (const entry of subfieldEntries) {
         try {
           const result = await this._processSubfieldEntry(entry, fieldId);
           results.push(result);
         } catch (entryError) {
+          console.error("Error processing subfield entry:", entryError);
           results.push({
             error: entryError.message,
             entry: entry.substring(0, 100) + '...'
           });
         }
       }
-
+  
       return res.status(200).json({
         message: "Subfields processed",
         fieldId,
@@ -520,8 +528,9 @@ async updateSubfieldMetrics(req, res) {
         results,
         count: results.filter(r => !r.error).length
       });
-
+  
     } catch (error) {
+      console.error("Error in handleNewSubfield:", error);
       return res.status(500).json({
         error: "Failed to generate subfields",
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
