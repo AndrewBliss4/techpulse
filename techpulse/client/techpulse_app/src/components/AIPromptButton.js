@@ -171,7 +171,6 @@ const AIPromptFieldButton = ({
 
     try {
       console.log("Triggering scraper...");
-      await runScraper();
 
       console.log("Scraper executed successfully. Proceeding to metric reevaluation...");
       const fieldIds = await fetchAllFieldIds();

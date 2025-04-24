@@ -229,7 +229,7 @@ useEffect(() => {
 
 // Fetch radar data function
 const fetchRadarData = () => {
-  axios.get('http://localhost:4000/db/radar-data')
+  axios.get('http://localhost:4000/api/db/radar-data')
     .then(response => {
       if (response.data.success) {
         setRadarData(response.data.data);
