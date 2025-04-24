@@ -3,7 +3,7 @@ const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
 const constants = require('../config/constants');
-const db = require('../config/db'); 
+const db = require('../config/db');
 
 const execPromise = promisify(exec);
 const readFile = promisify(fs.readFile);
@@ -23,21 +23,18 @@ class ScraperController {
 
   async runScraper(req, res) {
     try {
+      console.log('Starting scraper...'); // Debug log
       const { stdout, stderr } = await this._executeScraper('main');
-      
-      return res.json({
-        success: true,
-        message: "Main scraper executed successfully",
-        output: stdout,
-        warnings: stderr ? [stderr] : []
-      });
+      console.log('Scraper output:', stdout); // Debug log
+
+      return res.json({ success: true, message: "Main scraper executed successfully" });
     } catch (error) {
+      console.error('Scraper failed:', error); // Debug log
       return res.status(500).json({
         success: false,
         error: "Main scraper failed",
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
-        output: error.stdout,
-        errors: error.stderr ? [error.stderr] : []
+        details: error.message, // Always show the error in development
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
       });
     }
   }
@@ -45,7 +42,7 @@ class ScraperController {
   async runSubfieldScraper(req, res) {
     try {
       const { stdout, stderr } = await this._executeScraper('subfield');
-      
+
       return res.json({
         success: true,
         message: "Subfield scraper executed successfully",
@@ -91,13 +88,13 @@ class ScraperController {
     try {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const backups = {};
-      
+
       for (const [type, filePath] of Object.entries(this.dataFiles)) {
         const backupPath = path.join(
           constants.paths.scrapeDb,
           `backup_${type}_${timestamp}.json`
         );
-        
+
         await this._backupFile(filePath, backupPath);
         backups[type] = backupPath;
       }

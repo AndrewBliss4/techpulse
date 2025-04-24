@@ -30,7 +30,7 @@ router.get("/arxiv-papers-sf", (req, res) => {
   });
 });
 
-router.get("/run-scraper", scraperController.runScraper);
-router.get("/run-scraper-sf", scraperController.runSubfieldScraper);
+router.get("/run-scraper", (req, res) => scraperController.runScraper(req, res));
+router.get("/run-scraper-sf", (req, res) => scraperController.runSubfieldScraper(req, res));
 
 module.exports = router;
