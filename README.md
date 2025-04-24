@@ -1,6 +1,6 @@
 # TechPulse
 
-AI-Powered Insight Generation Tool for RBC
+AI-Powered Insight Generation Tool for RBC, leveraging OpenAI API and RAG. 
 
 ## SCRAPER
 
