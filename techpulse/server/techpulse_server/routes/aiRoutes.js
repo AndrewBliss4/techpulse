@@ -5,7 +5,6 @@ const aiController = require('../controllers/aiController');
 // Update field metrics
 router.post('/update-metrics', (req, res) => aiController.updateMetrics(req, res));
 
-
 // Update subfield metrics
 router.post('/update-subfield-metrics', (req, res) => aiController.updateSubfieldMetrics(req, res));
 
