@@ -30,13 +30,15 @@ const AIPromptFieldButton = ({
       }
 
       const data = await response.json();
-      return data.data.map(field => field.id); // Assuming the response has a data array with field objects
+      console.log(data)
+      return data.data.map(field => field.field_id); // Assuming the response has a data array with field objects
     } catch (error) {
       console.error('Error fetching field IDs:', error);
       setError(error.message);
       return [];
     }
   };
+  
 
   // Function to trigger the scraper (used by other buttons)
   const runScraper = async () => {
