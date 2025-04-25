@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
 const fsPromises = fs.promises;
-const constants = require('../config/constants'); 
+const constants = require('../config/constants');
 
 class AIController {
   constructor() {
@@ -34,9 +34,9 @@ class AIController {
   // FIELD METRICS UPDATE
   async updateMetrics(req, res) {
     const { field_id } = req.body;
-    
+
     if (!field_id) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: "Field ID is required",
         details: "No field_id provided in request body"
       });
@@ -45,13 +45,13 @@ class AIController {
     try {
       // 1. Fetch field data
       const field = await this._getFieldData(field_id);
-      
+
       // 2. Get model parameters
       const { temperature, top_p } = await this._getModelParameters();
-      
+
       // 3. Prepare prompt data
       const { prompt, articlesData } = await this._prepareFieldPromptData(field);
-      
+
       // 4. Generate AI response
       const aiResponse = await openaiService.generateResponse(prompt, {
         temperature,
@@ -60,7 +60,7 @@ class AIController {
 
       // 5. Parse and validate response
       const parsedResponse = this._parseFieldResponse(aiResponse, field.field_name);
-      
+
       // 6. Save to database
       const savedMetrics = await db.query(
         `INSERT INTO ${constants.db.metricsTable} (
@@ -93,35 +93,35 @@ class AIController {
     }
   }
   // SUBFIELD METRICS UPDATE
-async updateSubfieldMetrics(req, res) {
+  async updateSubfieldMetrics(req, res) {
     const { subfield_id, field_id } = req.body;
-    
+
     if (!subfield_id || !field_id) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: "Subfield ID and Field ID are required",
         details: "No subfield_id or field_id provided in request body"
       });
     }
-  
+
     try {
       // 1. Fetch subfield data
       const subfield = await this._getSubfieldData(subfield_id, field_id);
-      
+
       // 2. Get model parameters
       const { temperature, top_p } = await this._getModelParameters();
-      
+
       // 3. Prepare prompt data
       const { prompt, articlesData } = await this._prepareSubfieldPromptData(subfield);
-      
+
       // 4. Generate AI response
       const aiResponse = await openaiService.generateResponse(prompt, {
         temperature,
         top_p
       });
-  
+
       // 5. Parse and validate response
       const parsedResponse = this._parseSubfieldResponse(aiResponse, subfield.subfield_name);
-      
+
       // 6. Save to database
       const savedMetrics = await db.query(
         `INSERT INTO ${constants.db.metricsTable} (
@@ -140,13 +140,13 @@ async updateSubfieldMetrics(req, res) {
           parsedResponse.source
         ]
       );
-  
+
       return res.status(200).json({
         success: true,
         message: `Metrics updated for subfield ${subfield.subfield_name}`,
         data: savedMetrics.rows[0]
       });
-  
+
     } catch (error) {
       return res.status(500).json({
         error: "Failed to update subfield metrics",
@@ -154,7 +154,7 @@ async updateSubfieldMetrics(req, res) {
       });
     }
   }
-  
+
   async _getSubfieldData(subfieldId, fieldId) {
     const query = `
       SELECT 
@@ -171,33 +171,33 @@ async updateSubfieldMetrics(req, res) {
       AND s.field_id = $2
       AND t.subfield_id IS NOT NULL
     `;
-    
+
     const result = await db.query(query, [subfieldId, fieldId]);
-    
+
     if (result.rowCount === 0) {
       throw new Error(`Subfield with ID ${subfieldId} not found for field ${fieldId}`);
     }
-    
+
     return result.rows[0];
   }
-  
+
   async _prepareSubfieldPromptData(subfield) {
     const articlesPath = path.join(constants.paths.scrapeDb, "arxiv_papers_sf.json");
     const articles = JSON.parse(await fsPromises.readFile(articlesPath, 'utf8'));
     const promptTemplatePath = path.join(constants.paths.prompts, "prompt_update_metrics.txt");
     const promptTemplate = await fsPromises.readFile(promptTemplatePath, 'utf8');
-  
+
     const subfieldArticles = articles
       .filter(article => article.subfield_id === subfield.subfield_id)
       .sort((a, b) => new Date(b.published) - new Date(a.published))
       .slice(0, constants.amountScrapedsf);
-  
+
     const articlesData = subfieldArticles.map(article => `
       subfield_name: ${subfield.subfield_name}
       title: ${article.title}
       summary: ${article.summary}
       published: ${article.published}`).join('\n\n');
-  
+
     const subfieldData = `
       subfield_name: ${subfield.subfield_name}
       metric_1: ${subfield.metric_1}
@@ -205,34 +205,34 @@ async updateSubfieldMetrics(req, res) {
       metric_3: ${subfield.metric_3}
       rationale: ${subfield.rationale}
       metric_date: ${subfield.metric_date}`;
-  
+
     const dynamicPrompt = promptTemplate
       .replace("{FIELD_DATA}", subfieldData)
       .replace("{ARTICLES_DATA}", articlesData);
-  
+
     return { prompt: dynamicPrompt, articlesData };
   }
-  
+
   _parseSubfieldResponse(response, expectedSubfieldName) {
     const patterns = this.responsePatterns.subfield;
-    
+
     const subfieldNameMatch = response.match(patterns.name);
     const maturityMatch = response.match(patterns.maturity);
     const innovationMatch = response.match(patterns.innovation);
     const relevanceMatch = response.match(patterns.relevance);
     const rationaleMatch = response.match(patterns.rationale);
     const sourceMatch = response.match(patterns.source);
-  
-    if (!subfieldNameMatch || !maturityMatch || !innovationMatch || 
-        !relevanceMatch || !rationaleMatch || !sourceMatch) {
+
+    if (!subfieldNameMatch || !maturityMatch || !innovationMatch ||
+      !relevanceMatch || !rationaleMatch || !sourceMatch) {
       throw new Error('Invalid AI response format for subfield');
     }
-  
+
     const subfieldName = subfieldNameMatch[1].trim();
     if (subfieldName.toLowerCase() !== expectedSubfieldName.toLowerCase()) {
       throw new Error(`Subfield name mismatch: expected ${expectedSubfieldName}, got ${subfieldName}`);
     }
-  
+
     return {
       maturity: parseFloat(maturityMatch[1]),
       innovation: parseFloat(innovationMatch[1]),
@@ -257,13 +257,13 @@ async updateSubfieldMetrics(req, res) {
       AND t.subfield_id IS NULL
       AND f.field_id = $1
     `;
-    
+
     const result = await db.query(query, [fieldId]);
-    
+
     if (result.rowCount === 0) {
       throw new Error(`Field with ID ${fieldId} not found`);
     }
-    
+
     return result.rows[0];
   }
 
@@ -271,14 +271,14 @@ async updateSubfieldMetrics(req, res) {
     const result = await db.query(
       `SELECT * FROM ${constants.db.parametersTable} ORDER BY created_at DESC LIMIT 1`
     );
-    
+
     if (result.rowCount === 0) {
       return {
         temperature: constants.ai.defaultTemp,
         top_p: constants.ai.defaultTopP
       };
     }
-    
+
     return result.rows[0];
   }
 
@@ -316,7 +316,7 @@ async updateSubfieldMetrics(req, res) {
 
   _parseFieldResponse(response, expectedFieldName) {
     const patterns = this.responsePatterns.field;
-    
+
     const fieldNameMatch = response.match(patterns.name);
     const maturityMatch = response.match(patterns.maturity);
     const innovationMatch = response.match(patterns.innovation);
@@ -324,8 +324,8 @@ async updateSubfieldMetrics(req, res) {
     const rationaleMatch = response.match(patterns.rationale);
     const sourceMatch = response.match(patterns.source);
 
-    if (!fieldNameMatch || !maturityMatch || !innovationMatch || 
-        !relevanceMatch || !rationaleMatch || !sourceMatch) {
+    if (!fieldNameMatch || !maturityMatch || !innovationMatch ||
+      !relevanceMatch || !rationaleMatch || !sourceMatch) {
       throw new Error('Invalid AI response format');
     }
 
@@ -347,11 +347,12 @@ async updateSubfieldMetrics(req, res) {
   async handleNewField(req, res) {
     try {
       const aiResponse = await this._generateNewFieldResponse();
-      
+
       if (aiResponse === "NUH_UH") {
-        return res.status(200).json({ 
-          message: "AI could not suggest new fields at this time" 
+        return res.status(200).json({
+          message: "AI could not suggest new fields at this time"
         });
+
       }
 
       const fieldEntries = this._parseFieldEntries(aiResponse);
@@ -399,6 +400,10 @@ async updateSubfieldMetrics(req, res) {
       top_p: 1
     });
 
+    console.log('=== RAW AI RESPONSE ===');
+    console.log(response);
+    console.log('=======================');
+
     if (response === "NUH_UH") {
       return "NUH_UH";
     }
@@ -407,12 +412,26 @@ async updateSubfieldMetrics(req, res) {
   }
 
   _parseFieldEntries(response) {
-    const entries = response.split(/\n\s*\n/).filter(entry => 
+    // First normalize the response
+    const normalized = response
+      .replace(/"/g, '') // Remove quotes
+      .replace(/\r\n/g, '\n') // Normalize line endings
+      .trim();
+
+    // Split into entries (double newline separated)
+    const entries = normalized.split(/\n\s*\n/).filter(entry =>
       entry.trim().startsWith("field_name:")
     );
 
     if (entries.length === 0) {
-      throw new Error('No valid field entries found in AI response');
+      throw new Error('No valid field entries found. Expected format:\n' +
+        'field_name: Field Name\n' +
+        'description: Description text\n' +
+        'metric_1: 0.75\n' +
+        'metric_2: 0.85\n' +
+        'metric_3: 0.65\n' +
+        'rationale: Explanation text\n' +
+        'source: https://example.com');
     }
 
     return entries;
@@ -420,7 +439,7 @@ async updateSubfieldMetrics(req, res) {
 
   async _processFieldEntry(entry) {
     const patterns = this.responsePatterns.field;
-    
+
     const fieldNameMatch = entry.match(patterns.name);
     const descriptionMatch = entry.match(/description:\s*([\s\S]+?)\nmetric_1:/);
     const maturityMatch = entry.match(patterns.maturity);
@@ -429,8 +448,8 @@ async updateSubfieldMetrics(req, res) {
     const rationaleMatch = entry.match(patterns.rationale);
     const sourceMatch = entry.match(patterns.source);
 
-    if (!fieldNameMatch || !descriptionMatch || !maturityMatch || 
-        !innovationMatch || !relevanceMatch || !rationaleMatch || !sourceMatch) {
+    if (!fieldNameMatch || !descriptionMatch || !maturityMatch ||
+      !innovationMatch || !relevanceMatch || !rationaleMatch || !sourceMatch) {
       throw new Error('Invalid field entry format');
     }
 
@@ -489,25 +508,25 @@ async updateSubfieldMetrics(req, res) {
   // SUBFIELD GENERATION
   async handleNewSubfield(req, res) {
     const { fieldName, fieldId } = req.body;
-    
+
     if (!fieldName || !fieldId) {
       return res.status(400).json({
         error: "Field name and ID are required",
         details: `Received - fieldName: ${fieldName}, fieldId: ${fieldId}`
       });
     }
-  
+
     try {
       console.log(`Generating subfields for field: ${fieldName} (ID: ${fieldId})`);
-      
+
       const aiResponse = await this._generateSubfieldResponse(fieldName);
       console.log("AI Response:", aiResponse);
-      
+
       const subfieldEntries = this._parseSubfieldEntries(aiResponse);
       console.log("Parsed subfield entries:", subfieldEntries);
-      
+
       const results = [];
-  
+
       for (const entry of subfieldEntries) {
         try {
           const result = await this._processSubfieldEntry(entry, fieldId);
@@ -520,7 +539,7 @@ async updateSubfieldMetrics(req, res) {
           });
         }
       }
-  
+
       return res.status(200).json({
         message: "Subfields processed",
         fieldId,
@@ -528,7 +547,7 @@ async updateSubfieldMetrics(req, res) {
         results,
         count: results.filter(r => !r.error).length
       });
-  
+
     } catch (error) {
       console.error("Error in handleNewSubfield:", error);
       return res.status(500).json({
@@ -544,11 +563,11 @@ async updateSubfieldMetrics(req, res) {
        WHERE field_id = (SELECT field_id FROM ${constants.db.fieldTable} WHERE field_name = $1)`,
       [fieldName]
     );
-    
+
     const subfieldNames = subfieldQuery.rows.map(row => row.subfield_name).join(", ");
     const promptTemplatePath = path.join(constants.paths.prompts, "prompt_subfield.txt");
     const promptTemplate = await fsPromises.readFile(promptTemplatePath, 'utf8');
-    
+
     const dynamicPrompt = promptTemplate
       .replace("{FIELD_NAME}", fieldName)
       .replace("{SUBFIELDS}", subfieldNames);
@@ -561,7 +580,7 @@ async updateSubfieldMetrics(req, res) {
   }
 
   _parseSubfieldEntries(response) {
-    const entries = response.split(/\n\s*\n/).filter(entry => 
+    const entries = response.split(/\n\s*\n/).filter(entry =>
       entry.trim().startsWith("subfield_name:")
     );
 
@@ -574,7 +593,7 @@ async updateSubfieldMetrics(req, res) {
 
   async _processSubfieldEntry(entry, fieldId) {
     const patterns = this.responsePatterns.subfield;
-    
+
     const subfieldNameMatch = entry.match(patterns.name);
     const descriptionMatch = entry.match(/description:\s*([\s\S]+?)\nmetric_1:/);
     const maturityMatch = entry.match(patterns.maturity);
@@ -583,8 +602,8 @@ async updateSubfieldMetrics(req, res) {
     const rationaleMatch = entry.match(patterns.rationale);
     const sourceMatch = entry.match(patterns.source);
 
-    if (!subfieldNameMatch || !descriptionMatch || !maturityMatch || 
-        !innovationMatch || !relevanceMatch || !rationaleMatch || !sourceMatch) {
+    if (!subfieldNameMatch || !descriptionMatch || !maturityMatch ||
+      !innovationMatch || !relevanceMatch || !rationaleMatch || !sourceMatch) {
       throw new Error('Invalid subfield entry format');
     }
 
@@ -648,10 +667,10 @@ async updateSubfieldMetrics(req, res) {
   async handleGenerateInsight(req, res) {
     try {
       const insight = await this._generateFullInsight();
-      
+
       if (insight === "NO_METRICS") {
-        return res.status(200).json({ 
-          message: "No metrics available for insight generation" 
+        return res.status(200).json({
+          message: "No metrics available for insight generation"
         });
       }
 
@@ -743,7 +762,7 @@ async updateSubfieldMetrics(req, res) {
         if (previous === 0 || isNaN(previous)) return current > 0 ? 100 : 0;
         return parseFloat((((current - previous) / previous) * 100).toFixed(2));
       };
-      
+
       const growth_metric_1 = calculateGrowth(fieldMetrics[0].metric_1, fieldMetrics[1].metric_1);
       const growth_metric_2 = calculateGrowth(fieldMetrics[0].metric_2, fieldMetrics[1].metric_2);
       const growth_metric_3 = calculateGrowth(fieldMetrics[0].metric_3, fieldMetrics[1].metric_3);
@@ -771,7 +790,7 @@ async updateSubfieldMetrics(req, res) {
     // 4. Prepare prompt
     const promptTemplatePath = path.join(constants.paths.prompts, "full_radar_insight_generation.txt");
     const promptTemplate = await fsPromises.readFile(promptTemplatePath, 'utf8');
-    
+
     const growthDataFormatted = growthData.map(item => `
       Field Name: ${item.field_name}
       
@@ -806,7 +825,7 @@ async updateSubfieldMetrics(req, res) {
   // SUBFIELD INSIGHT GENERATION
   async handleGenerateSubInsight(req, res) {
     const { fieldId } = req.body;
-    
+
     if (!fieldId) {
       return res.status(400).json({
         error: "Field ID is required"
@@ -885,7 +904,7 @@ async updateSubfieldMetrics(req, res) {
     // 3. Prepare prompt
     const promptTemplatePath = path.join(constants.paths.prompts, "insight_subfield_gen.txt");
     const promptTemplate = await fsPromises.readFile(promptTemplatePath, 'utf8');
-    
+
     const metricsData = metricsQuery.rows.map(row => `
       subfield_name: ${row.subfield_name}
       Interest: ${row.metric_1}
