@@ -30,7 +30,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
       if (!field) {
         throw new Error("Field not found");
       }
-  
+
       const response = await axios.post('http://localhost:4000/api/ai/generate-subfield', {
         fieldName: field.field_name,
         fieldId: field.field_id
@@ -39,10 +39,16 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
           'Content-Type': 'application/json'
         }
       });
-  
+
       if (response.status === 200) {
+        // Refresh both the main data and subfield data
+        const radarResponse = await axios.get('http://localhost:4000/api/db/radar');
+        const filteredData = filterMostRecentData(radarResponse.data.data);
+        setData(filteredData);
+
         const subfieldResponse = await axios.get(`http://localhost:4000/api/db/fields/${field.field_id}/subfields`);
         setSubfieldData(subfieldResponse.data.data);
+        setSelectedFieldId(field.field_id); // Ensure the subfield chart is shown
       } else {
         throw new Error(response.data.error || "Failed to generate subfields");
       }
@@ -56,12 +62,18 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
 
   const handleFieldClick = async (fieldId) => {
     setSelectedFieldId(fieldId);
+    setIsLoading(true); // Add loading state
     try {
       const response = await axios.get(`http://localhost:4000/api/db/fields/${fieldId}/subfields`);
       setSubfieldData(response.data.data);
+      if (response.data.data.length === 0) {
+        // Optionally show a message if no subfields exist
+      }
     } catch (error) {
       console.error('Error fetching subfields:', error);
       alert(error.response?.data?.error || "Failed to fetch subfields");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -94,7 +106,8 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
     const mostRecentData = {};
 
     data.forEach(item => {
-      if (item.subfield_id === null && item.field_id !== 0) {
+      // Remove the subfield_id check to include all fields
+      if (item.field_id !== 0) {
         const fieldId = item.field_id;
         const currentDate = new Date(item.metric_date);
 
@@ -110,7 +123,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
 
     return Object.values(mostRecentData);
   };
-
   const handleFilterClick = (point) => {
     setSelectedSubfieldDetails(null);
     setSelectedSubfield(null);
@@ -578,14 +590,14 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
                 {articleSources[selectedTechnology] && articleSources[selectedTechnology].length > 0 ? (
                   articleSources[selectedTechnology].map((article, index) => (
                     <div key={index} style={{ marginBottom: "5px" }}>
-                      <span style={{ display: "inline-flex", alignItems: "center" }}> 
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
                         <Link color="#1E90FF" // Nicer blue (DodgerBlue)
                           strokeWidth={2} // Slightly thicker for visibility
-                        /> 
-                        <a 
-                          href={article.link} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
+                        />
+                        <a
+                          href={article.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           style={{ color: "blue", textDecoration: "underline", marginLeft: "5px", display: "inline" }}
                         >
                           {article.title}

@@ -535,7 +535,7 @@ class AIController {
           console.error("Error processing subfield entry:", entryError);
           results.push({
             error: entryError.message,
-            entry: entry.substring(0, 100) + '...'
+            entry: JSON.stringify(entry).substring(0, 100) + '...'
           });
         }
       }
@@ -580,57 +580,80 @@ class AIController {
   }
 
   _parseSubfieldEntries(response) {
-    const entries = response.split(/\n\s*\n/).filter(entry =>
-      entry.trim().startsWith("subfield_name:")
-    );
+    const entries = response.split(/\n\s*\n/).filter(entry => entry.trim().length > 0);
 
-    if (entries.length === 0) {
-      throw new Error('No valid subfield entries found in AI response');
-    }
+    const parsedEntries = entries.map(entry => {
+      const lines = entry.trim().split('\n').map(l => l.trim());
+      if (lines.length < 5) {
+        throw new Error(`Invalid subfield entry, too few lines: ${entry.substring(0, 100)}...`);
+      }
 
-    return entries;
+      const firstLineParts = lines[0].split(':');
+      const subfield_name = firstLineParts[0].trim();
+      const description = firstLineParts.slice(1).join(':').trim();  // Everything after first colon is description
+
+      const maturityMatch = lines.find(line => line.startsWith('metric_1:'));
+      const innovationMatch = lines.find(line => line.startsWith('metric_2:'));
+      const relevanceMatch = lines.find(line => line.startsWith('metric_3:'));
+      const rationaleMatch = lines.find(line => line.startsWith('rationale:'));
+      const sourceMatch = lines.find(line => line.startsWith('source:'));
+
+      if (!subfield_name || !description || !maturityMatch || !innovationMatch || !relevanceMatch || !rationaleMatch || !sourceMatch) {
+        throw new Error(`Missing required fields in subfield entry: ${entry.substring(0, 100)}...`);
+      }
+
+      return {
+        subfield_name,
+        description,
+        metric_1: maturityMatch.split(':').slice(1).join(':').trim(),
+        metric_2: innovationMatch.split(':').slice(1).join(':').trim(),
+        metric_3: relevanceMatch.split(':').slice(1).join(':').trim(),
+        rationale: rationaleMatch.split(':').slice(1).join(':').trim(),
+        source: sourceMatch.split(':').slice(1).join(':').trim()
+      };
+    });
+
+    return parsedEntries;
   }
 
   async _processSubfieldEntry(entry, fieldId) {
-    const patterns = this.responsePatterns.subfield;
+    const {
+      subfield_name,
+      description,
+      metric_1,
+      metric_2,
+      metric_3,
+      rationale,
+      source
+    } = entry;
 
-    const subfieldNameMatch = entry.match(patterns.name);
-    const descriptionMatch = entry.match(/description:\s*([\s\S]+?)\nmetric_1:/);
-    const maturityMatch = entry.match(patterns.maturity);
-    const innovationMatch = entry.match(patterns.innovation);
-    const relevanceMatch = entry.match(patterns.relevance);
-    const rationaleMatch = entry.match(patterns.rationale);
-    const sourceMatch = entry.match(patterns.source);
-
-    if (!subfieldNameMatch || !descriptionMatch || !maturityMatch ||
-      !innovationMatch || !relevanceMatch || !rationaleMatch || !sourceMatch) {
-      throw new Error('Invalid subfield entry format');
+    if (!subfield_name || !description || !metric_1 || !metric_2 || !metric_3 || !rationale || !source) {
+      throw new Error('Missing required subfield fields');
     }
 
-    const subfieldName = subfieldNameMatch[1].trim();
-    const description = descriptionMatch[1].trim();
-    const maturity = parseFloat(maturityMatch[1]);
-    const innovation = parseFloat(innovationMatch[1]);
-    const relevance = parseFloat(relevanceMatch[1]);
-    const rationale = rationaleMatch[1].trim();
-    const source = sourceMatch[1].trim();
+    const maturity = parseFloat(metric_1);
+    const innovation = parseFloat(metric_2);
+    const relevance = parseFloat(metric_3);
+
+    if (isNaN(maturity) || isNaN(innovation) || isNaN(relevance)) {
+      throw new Error('Invalid metric values');
+    }
 
     // Check if subfield exists
     let subfieldId;
     const existingSubfield = await db.query(
       `SELECT subfield_id FROM ${constants.db.subfieldTable} 
        WHERE subfield_name = $1 AND field_id = $2`,
-      [subfieldName, fieldId]
+      [subfield_name.trim(), fieldId]
     );
 
     if (existingSubfield.rowCount === 0) {
-      // Create new subfield
       const subfieldResult = await db.query(
         `INSERT INTO ${constants.db.subfieldTable} 
          (field_id, subfield_name, description)
          VALUES ($1, $2, $3) 
          RETURNING subfield_id`,
-        [fieldId, subfieldName, description]
+        [fieldId, subfield_name.trim(), description.trim()]
       );
       subfieldId = subfieldResult.rows[0].subfield_id;
     } else {
@@ -651,17 +674,18 @@ class AIController {
         new Date().toISOString(),
         fieldId,
         subfieldId,
-        rationale,
-        source
+        rationale.trim(),
+        source.trim()
       ]
     );
 
     return {
       subfieldId,
-      subfieldName,
+      subfieldName: subfield_name,
       metrics: metricsResult.rows[0]
     };
   }
+
 
   // INSIGHT GENERATION
   async handleGenerateInsight(req, res) {

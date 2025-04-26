@@ -43,19 +43,16 @@ class ScraperController {
     try {
       const { stdout, stderr } = await this._executeScraper('subfield');
 
-      return res.json({
-        success: true,
-        message: "Subfield scraper executed successfully",
-        output: stdout,
-        warnings: stderr ? [stderr] : []
-      });
+      console.log('Scraper output:', stdout); // Debug log
+
+      return res.json({ success: true, message: "Main scraper executed successfully" });
     } catch (error) {
+      console.error('Scraper failed:', error); // Debug log
       return res.status(500).json({
         success: false,
         error: "Subfield scraper failed",
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
-        output: error.stdout,
-        errors: error.stderr ? [error.stderr] : []
+        details: error.message, // Always show the error in development
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
       });
     }
   }

@@ -53,6 +53,10 @@ router.get('/fields/:id', async (req, res) => {
 // Subfield Endpoints
 router.get('/fields/:fieldId/subfields', async (req, res) => {
   try {
+    console.log("_____________________________")
+    console.log(req.params.fieldId)
+    console.log("_____________________________")
+
     const subfields = await dbController.getSubfieldsByFieldId(req.params.fieldId);
     res.json({
       success: true,
@@ -136,21 +140,21 @@ router.get('/metrics/subfield/:subfieldId', async (req, res) => {
 });
 // Radar Data Endpoint
 router.get('/radar-data', async (req, res) => {
-    try {
-      const radarData = await dbController.getRadarData();
-      res.json({
-        success: true,
-        count: radarData.length,
-        data: radarData
-      });
-    } catch (error) {
-      console.error('GET /radar-data error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to retrieve radar data'
-      });
-    }
-  });
+  try {
+    const radarData = await dbController.getRadarData();
+    res.json({
+      success: true,
+      count: radarData.length,
+      data: radarData
+    });
+  } catch (error) {
+    console.error('GET /radar-data error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to retrieve radar data'
+    });
+  }
+});
 
 // Insights Endpoints
 router.get('/insights', async (req, res) => {
@@ -188,7 +192,7 @@ router.post('/feedback', async (req, res) => {
   try {
     const { insight_id, feedback_text, rating } = req.body;
     const feedback = await dbController.createFeedback(insight_id, feedback_text, rating);
-    
+
     res.status(201).json({
       success: true,
       data: feedback
@@ -204,27 +208,27 @@ router.post('/feedback', async (req, res) => {
 
 // Model Parameters Endpoints
 router.get('/model-parameters', async (req, res) => {
-    try {
-      const parameters = await dbController.getModelParameters();
-      res.json({
-        success: true,
-        count: parameters.length,
-        data: parameters
-      });
-    } catch (error) {
-      console.error('GET /model-parameters error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to retrieve model parameters'
-      });
-    }
-  });
+  try {
+    const parameters = await dbController.getModelParameters();
+    res.json({
+      success: true,
+      count: parameters.length,
+      data: parameters
+    });
+  } catch (error) {
+    console.error('GET /model-parameters error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to retrieve model parameters'
+    });
+  }
+});
 
 router.put('/model-parameters', async (req, res) => {
   try {
     const { temperature, top_p, parameter_id } = req.body;
     const updated = await dbController.updateModelParameters(parameter_id, temperature, top_p);
-    
+
     res.json({
       success: true,
       data: updated
