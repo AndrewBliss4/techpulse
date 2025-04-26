@@ -233,6 +233,7 @@ const SubfieldChart = ({
         fieldId: selectedFieldId
       });
       setInsight(insightResponse.data.insight);
+      
 
     } catch (error) {
       console.error('Error generating insight:', error);
