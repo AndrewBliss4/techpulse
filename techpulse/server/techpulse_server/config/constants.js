@@ -25,7 +25,7 @@ const constants = {
   },
 
   ai: {
-    defaultModel: 'gpt-4.1-nano',
+    defaultModel: 'gpt-4.1-mini',
     fallbackModel: 'gpt-4.1-mini',
     maxTokens: 2048,
     defaultTemp: 0.7,
