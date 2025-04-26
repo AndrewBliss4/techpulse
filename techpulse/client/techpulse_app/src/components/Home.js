@@ -3,12 +3,12 @@ import axios from 'axios';
 import '../styles/globals.css';
 import rbcLogo from '../assets/Royal-Bank-of-Canada-Logo.png';
 import { Bell, Search, TrendingUp, Zap, Shovel, Globe, BarChart, Lightbulb, Clock, MessageSquareReplyIcon, ChevronDown, ArrowRight, Info, CircleAlert } from 'lucide-react'
-import parse from 'html-react-parser';
 import Radar from './Radar.js';
 import Rating from './Rating.js';
 import AIPromptFieldButton from './AIPromptButton.js';
 import recentInsight from './Insights/MostRecentInsight.txt';
 import ReactMarkdown from 'react-markdown';
+
 //Loaders
 import { tailChase } from 'ldrs';
 import { quantum } from 'ldrs'
@@ -23,18 +23,6 @@ grid.register();
 helix.register();
 
 const Home = () => {
-
-  // const trendingTopics = [
-  //   { title: "AI Advances", sources: "BCG, Mckinsey", trend: "+24%" },
-  //   { title: "Web3 Updates", sources: "Bloomberg", trend: "+15%" },
-  //   { title: "Cloud Computing", sources: "JPMorgan, Web of Science", trend: "+18%" }
-  // ];
-
-  // const latestInsights = [
-  //   { title: "The Future of Quantum Computing", category: "Emerging Tech", readTime: "5 min" },
-  //   { title: "AI in Healthcare: 2024 Trends", category: "AI & ML", readTime: "8 min" },
-  //   { title: "Cybersecurity Best Practices", category: "Security", readTime: "6 min" }
-  // ];
 
   //useStates for GPT output
   const [searchTerm, setSearchTerm] = useState("");
@@ -103,7 +91,6 @@ const Home = () => {
   ]
 
 
-
   useEffect(() => {
     // Set up interval to rotate loaders every 3 seconds
     const intervalId = setInterval(() => {
@@ -136,8 +123,6 @@ const Home = () => {
   const currentLoaderText = loaders[currentLoaderIndex].text;
 
   //function to fetch gpt data from server
-
-  
 
   const [finalRating, setFinalRating] = useState(0);
   const [feedbackText, setFeedbackText] = useState(""); // State to hold feedback text
