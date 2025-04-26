@@ -118,7 +118,7 @@ const SubfieldChart = ({
 
       return () => clearInterval(intervalId);
     }
-  }, [loading]);
+  }, [loading, loaders.length]);
 
   // Find the most recent metric for each subfield
   const latestMetricsBySubfield = subfieldData.reduce((acc, point) => {
