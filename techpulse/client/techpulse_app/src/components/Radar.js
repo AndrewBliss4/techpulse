@@ -34,18 +34,21 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
       const response = await axios.post('http://localhost:4000/api/ai/generate-subfield', {
         fieldName: field.field_name,
         fieldId: field.field_id
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
       if (response.status === 200) {
-        // Refresh radar data
-        await fetchRadarData();
+        // Refresh both the main data and subfield data
+        const radarResponse = await axios.get('http://localhost:4000/api/db/radar');
+        const filteredData = filterMostRecentData(radarResponse.data.data);
+        setData(filteredData);
 
-        // Refresh subfield data
         const subfieldResponse = await axios.get(`http://localhost:4000/api/db/fields/${field.field_id}/subfields`);
         setSubfieldData(subfieldResponse.data.data);
-
-        // Force UI update
-        setSelectedFieldId(field.field_id);
+        setSelectedFieldId(field.field_id); // Ensure the subfield chart is shown
       } else {
         throw new Error(response.data.error || "Failed to generate subfields");
       }
