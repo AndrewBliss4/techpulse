@@ -711,6 +711,23 @@ class AIController {
         [null, insight, confidenceScore]
       );
 
+      //This is the section where we are storing the most recent insight, ideally fix to store in backend - Miruo
+      
+      // Define the relative path to the Insights directory
+      const insightsDir = path.resolve(
+        process.cwd(),
+        "../../client/techpulse_app/src/components/Insights"
+      );
+
+      // Define the file name based on field_id
+      let fileName = "MostRecentInsight.txt";
+
+      const filePath = path.join(insightsDir, fileName);
+
+      // Write the insight to the file
+      await fsPromises.writeFile(filePath, savedInsight.rows[0].insight_text, 'utf8');
+      console.log(`Insight written to ${filePath}`);
+
       return res.status(200).json({
         success: true,
         insight: savedInsight.rows[0].insight_text,
