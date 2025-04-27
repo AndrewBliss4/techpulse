@@ -880,6 +880,28 @@ class AIController {
         [fieldId, insight, confidenceScore]
       );
 
+      // Define the relative path to the Insights directory
+      const insightsDir = path.resolve(
+        process.cwd(),
+        "../../client/techpulse_app/src/components/Insights"
+      );
+
+      // Define the file name based on field_id
+      let fileName;
+      if (fieldId === 0) {
+        fileName = "MostRecentInsight.txt";
+      } else {
+        // Use the field_name to create the file name
+        fileName = `MostRecent${fieldName}Insight.txt`;
+      }
+      const filePath = path.join(insightsDir, fileName);
+
+      // Write the insight to the file
+      if (type === "insight") {
+        await fsPromises.writeFile(filePath, generatedInsight, 'utf8');
+        console.log(`Insight written to ${filePath}`);
+      }
+
       return res.status(200).json({
         success: true,
         insight: savedInsight.rows[0].insight_text,
