@@ -23,7 +23,6 @@ grid.register();
 helix.register();
 
 const SubfieldChart = ({
-  radarData,
   selectedFieldId,
   fieldName,
   useColorMode,
@@ -32,6 +31,7 @@ const SubfieldChart = ({
   selectedSubfield,
   setSelectedSubfield
 }) => {
+  const [radarData, setRadarData] = useState([]);
   const [historicalData, setHistoricalData] = useState([]);
   const [selectedTab, setSelectedTab] = useState('scatter');
   const [clickedTimelinePoint, setClickedTimelinePoint] = useState(null);
@@ -40,7 +40,6 @@ const SubfieldChart = ({
   const [loading, setLoading] = useState(false);
   const [currentLoaderIndex, setCurrentLoaderIndex] = useState(0);
 
-  // Loaders configuration
   const loaders = [
     {
       loader: <l-quantum size="30" stroke="3" bg-opacity="0" speed="2" color="#2466e0"></l-quantum>,
@@ -60,7 +59,21 @@ const SubfieldChart = ({
     }
   ];
 
-  // Dynamically import the most recent insight file
+  useEffect(() => {
+    const fetchRadarData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/api/db/radar-data?fieldId=${selectedFieldId}`);
+        setRadarData(response.data.data || []);
+      } catch (error) {
+        console.error('Failed to fetch radar data:', error);
+      }
+    };
+
+    if (selectedFieldId) {
+      fetchRadarData();
+    }
+  }, [selectedFieldId]);
+
   useEffect(() => {
     const fetchMostRecentInsight = async () => {
       try {
@@ -77,14 +90,13 @@ const SubfieldChart = ({
     fetchMostRecentInsight();
   }, [fieldName]);
 
-  // Fetch subfield articles
   useEffect(() => {
     const fetchSFArticles = async () => {
       try {
         const response = await axios.get("http://localhost:4000/api/scraper/arxiv-papers-sf");
         const articles = response.data;
-
         const sourcesMap = {};
+
         articles.forEach(article => {
           if (!sourcesMap[article.subfield_name]) {
             sourcesMap[article.subfield_name] = [];
@@ -104,12 +116,6 @@ const SubfieldChart = ({
     fetchSFArticles();
   }, []);
 
-  // Filter radarData to only include subfields for the selected field
-  const subfieldData = radarData.filter(
-    (point) => point.field_id === selectedFieldId && point.subfield_id !== null
-  );
-
-  // Handle loader rotation
   useEffect(() => {
     if (loading) {
       const intervalId = setInterval(() => {
@@ -120,8 +126,7 @@ const SubfieldChart = ({
     }
   }, [loading]);
 
-  // Find the most recent metric for each subfield
-  const latestMetricsBySubfield = subfieldData.reduce((acc, point) => {
+  const latestMetricsBySubfield = radarData.reduce((acc, point) => {
     if (
       !acc[point.subfield_id] ||
       new Date(point.metric_date) > new Date(acc[point.subfield_id].metric_date)
@@ -136,10 +141,9 @@ const SubfieldChart = ({
 
   const filteredData = Object.values(latestMetricsBySubfield);
 
-  // Generate distinct colors for the data points
   const generateDistinctColors = (numColors) => {
     if (!useColorMode) return Array(numColors).fill('#2466e0');
-    
+
     const colors = [];
     const hueStep = 360 / numColors;
     const saturation = 70;
@@ -155,7 +159,6 @@ const SubfieldChart = ({
 
   const colors = generateDistinctColors(filteredData.length);
 
-  // Handle subfield selection
   const handleSubfieldClick = (subfieldId) => {
     const isCurrentlySelected = selectedSubfield === subfieldId;
     const selected = isCurrentlySelected ? null : filteredData.find(point => point.subfield_id === subfieldId);
@@ -180,19 +183,16 @@ const SubfieldChart = ({
     setHistoricalData(subfieldHistoricalData);
   };
 
-  // Format date for display
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   };
 
-  // Generate insight for the selected field
   const handleGenerateInsight = async () => {
     setLoading(true);
     setCurrentLoaderIndex(0);
 
     try {
-      // Step 1: Fetch subfields for the selected field
       const subfieldsResponse = await axios.get(`http://localhost:4000/api/db/fields/${selectedFieldId}/subfields`);
       const subfields = subfieldsResponse.data.data;
 
@@ -200,7 +200,6 @@ const SubfieldChart = ({
         throw new Error('No subfields found for the selected field.');
       }
 
-      // Step 2: Update metrics for each subfield
       let successfulUpdates = 0;
       let failedUpdates = 0;
 
@@ -221,14 +220,12 @@ const SubfieldChart = ({
 
       console.log(`Subfields updated: ${successfulUpdates} success, ${failedUpdates} failures`);
 
-      // Step 3: Generate new subfield
       const newSubfieldResponse = await axios.post('http://localhost:4000/api/ai/generate-subfield', {
         fieldId: selectedFieldId,
         fieldName: fieldName
       });
       console.log('New subfield generated:', newSubfieldResponse.data);
 
-      // Step 4: Generate insights
       const insightResponse = await axios.post('http://localhost:4000/api/ai/generate-sub-insight', {
         fieldId: selectedFieldId
       });
@@ -260,13 +257,11 @@ const SubfieldChart = ({
 
   return (
     <div style={{ marginTop: '20px' }}>
-      {/* Header */}
       <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b pb-2 flex items-center">
         <ChartScatter className="w-6 h-6 text-blue-600 mr-2" />
         Subfields for <span className="text-blue-600 ml-1">{fieldName}</span>
       </h2>
 
-      {/* Insight Generation Button */}
       <button
         onClick={handleGenerateInsight}
         style={{
@@ -294,7 +289,6 @@ const SubfieldChart = ({
         )}
       </button>
 
-      {/* Display Insight */}
       {insight && (
         <div style={{
           padding: '15px',
@@ -309,7 +303,6 @@ const SubfieldChart = ({
         </div>
       )}
 
-      {/* Subfield Filter Buttons */}
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',

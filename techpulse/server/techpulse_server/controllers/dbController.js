@@ -278,52 +278,87 @@ class DBController {
   }
 
   // COMPLEX QUERIES
-  async getRadarData() {
+  async getRadarData(fieldId = null) {
     try {
-      const query = `
-        WITH latest_metrics AS (
+      if (fieldId) {
+        const query = `
+          WITH latest_subfield_metrics AS (
+            SELECT 
+              subfield_id,
+              MAX(metric_date) AS latest_date
+            FROM ${this.tableNames.metricsTable}
+            WHERE field_id = $1 AND subfield_id IS NOT NULL
+            GROUP BY subfield_id
+          )
           SELECT 
-            field_id,
-            subfield_id,
-            MAX(metric_date) as latest_date
-          FROM ${this.tableNames.metricsTable}
-          GROUP BY field_id, subfield_id
-        )
-        SELECT 
-          f.field_id,
-          f.field_name,
-          f.description AS field_description,
-          s.subfield_id,
-          s.subfield_name,
-          s.description AS subfield_description,
-          m.metric_1,
-          m.metric_2,
-          m.metric_3,
-          m.rationale,
-          m.metric_date,
-          m.source
-        FROM ${this.tableNames.fieldTable} f
-        LEFT JOIN latest_metrics lm ON f.field_id = lm.field_id AND lm.subfield_id IS NULL
-        LEFT JOIN ${this.tableNames.metricsTable} m ON 
-          m.field_id = lm.field_id AND 
-          m.metric_date = lm.latest_date AND
-          m.subfield_id IS NULL
-        LEFT JOIN ${this.tableNames.subfieldTable} s ON f.field_id = s.field_id
-        LEFT JOIN latest_metrics lms ON 
-          s.subfield_id = lms.subfield_id AND 
-          lms.field_id = f.field_id
-        LEFT JOIN ${this.tableNames.metricsTable} ms ON 
-          ms.subfield_id = lms.subfield_id AND 
-          ms.metric_date = lms.latest_date
-        ORDER BY f.field_name, s.subfield_name
-      `;
-      
-      const result = await db.query(query);
-      return result.rows; // This already returns an array
+            f.field_id,
+            f.field_name,
+            f.description AS field_description,
+            s.subfield_id,
+            s.subfield_name,
+            s.description AS subfield_description,
+            tm.metric_1,
+            tm.metric_2,
+            tm.metric_3,
+            tm.rationale,
+            tm.metric_date,
+            tm.source
+          FROM latest_subfield_metrics lsm
+          JOIN ${this.tableNames.metricsTable} tm 
+            ON tm.subfield_id = lsm.subfield_id AND tm.metric_date = lsm.latest_date
+          JOIN ${this.tableNames.subfieldTable} s ON s.subfield_id = lsm.subfield_id
+          JOIN ${this.tableNames.fieldTable} f ON f.field_id = s.field_id
+          WHERE f.field_id = $1
+          ORDER BY s.subfield_name
+        `;
+        const result = await db.query(query, [fieldId]);
+        return result.rows;
+      } else {
+        const query = `
+          WITH latest_metrics AS (
+            SELECT 
+              field_id,
+              subfield_id,
+              MAX(metric_date) as latest_date
+            FROM ${this.tableNames.metricsTable}
+            GROUP BY field_id, subfield_id
+          )
+          SELECT 
+            f.field_id,
+            f.field_name,
+            f.description AS field_description,
+            s.subfield_id,
+            s.subfield_name,
+            s.description AS subfield_description,
+            COALESCE(ms.metric_1, m.metric_1) AS metric_1,
+            COALESCE(ms.metric_2, m.metric_2) AS metric_2,
+            COALESCE(ms.metric_3, m.metric_3) AS metric_3,
+            COALESCE(ms.rationale, m.rationale) AS rationale,
+            COALESCE(ms.metric_date, m.metric_date) AS metric_date,
+            COALESCE(ms.source, m.source) AS source
+          FROM ${this.tableNames.fieldTable} f
+          LEFT JOIN latest_metrics lm ON f.field_id = lm.field_id AND lm.subfield_id IS NULL
+          LEFT JOIN ${this.tableNames.metricsTable} m ON 
+            m.field_id = lm.field_id AND 
+            m.metric_date = lm.latest_date AND
+            m.subfield_id IS NULL
+          LEFT JOIN ${this.tableNames.subfieldTable} s ON f.field_id = s.field_id
+          LEFT JOIN latest_metrics lms ON 
+            s.subfield_id = lms.subfield_id AND 
+            lms.field_id = f.field_id
+          LEFT JOIN ${this.tableNames.metricsTable} ms ON 
+            ms.subfield_id = lms.subfield_id AND 
+            ms.metric_date = lms.latest_date
+          ORDER BY f.field_name, s.subfield_name
+        `;
+        const result = await db.query(query);
+        return result.rows;
+      }
     } catch (error) {
       throw new Error('Failed to fetch radar data');
     }
   }
+  
 
   async getFieldGrowthMetrics(fieldId) {
     try {

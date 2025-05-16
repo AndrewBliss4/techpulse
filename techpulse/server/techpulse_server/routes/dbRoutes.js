@@ -141,7 +141,8 @@ router.get('/metrics/subfield/:subfieldId', async (req, res) => {
 // Radar Data Endpoint
 router.get('/radar-data', async (req, res) => {
   try {
-    const radarData = await dbController.getRadarData();
+    const fieldId = req.query.fieldId ? parseInt(req.query.fieldId) : null;
+    const radarData = await dbController.getRadarData(fieldId);
     res.json({
       success: true,
       count: radarData.length,
