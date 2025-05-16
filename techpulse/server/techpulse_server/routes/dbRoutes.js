@@ -242,5 +242,21 @@ router.put('/model-parameters', async (req, res) => {
     });
   }
 });
+router.get('/metrics/field/:fieldId/all', async (req, res) => {
+  try {
+    const metrics = await dbController.getAllFieldMetrics(req.params.fieldId);
+    res.json({
+      success: true,
+      count: metrics.length,
+      data: metrics
+    });
+  } catch (error) {
+    console.error(`GET /metrics/field/${req.params.fieldId}/all error:`, error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to retrieve full field metrics history'
+    });
+  }
+});
 
 module.exports = router;

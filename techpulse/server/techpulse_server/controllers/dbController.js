@@ -359,7 +359,20 @@ class DBController {
     }
   }
   
-
+  async getAllFieldMetrics(fieldId) {
+    try {
+      const query = `
+        SELECT * FROM ${this.tableNames.metricsTable}
+        WHERE field_id = $1 AND subfield_id IS NULL
+        ORDER BY metric_date ASC
+      `;
+      const result = await db.query(query, [fieldId]);
+      return result.rows;
+    } catch (error) {
+      throw new Error('Failed to fetch all field-level metrics');
+    }
+  }
+  
   async getFieldGrowthMetrics(fieldId) {
     try {
       const query = `

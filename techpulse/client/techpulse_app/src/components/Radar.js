@@ -120,7 +120,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
 
     return Object.values(mostRecentData);
   };
-  const handleFilterClick = (point) => {
+  const handleFilterClick = async (point) => {
     setSelectedSubfieldDetails(null);
     setSelectedSubfield(null);
 
@@ -145,13 +145,18 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
         ...d,
         fillOpacity: d.field_id === point.field_id ? 0.7 : 0.1,
       })));
-      const fieldHistoricalData = radarData
-        .filter(d => d.field_id === point.field_id && d.subfield_id === null)
-        .map(d => ({
+      try {
+        const response = await axios.get(`http://localhost:4000/api/db/metrics/field/${point.field_id}/all`);
+        const historical = response.data.data.map(d => ({
           ...d,
           metric_date: Date.parse(d.metric_date),
         }));
-      setHistoricalData(fieldHistoricalData);
+        setHistoricalData(historical);
+      } catch (error) {
+        console.error("Error fetching historical metrics:", error);
+        setHistoricalData([]); // fallback to empty
+      }
+      
     }
     setClickedDataPoint(null);
   };
