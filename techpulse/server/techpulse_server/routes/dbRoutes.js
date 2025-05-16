@@ -258,5 +258,21 @@ router.get('/metrics/field/:fieldId/all', async (req, res) => {
     });
   }
 });
+router.get('/metrics/subfield/:subfieldId/all', async (req, res) => {
+  try {
+    const metrics = await dbController.getAllSubfieldMetrics(req.params.subfieldId);
+    res.json({
+      success: true,
+      count: metrics.length,
+      data: metrics
+    });
+  } catch (error) {
+    console.error(`GET /metrics/subfield/${req.params.subfieldId}/all error:`, error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to retrieve full subfield metrics history'
+    });
+  }
+});
 
 module.exports = router;

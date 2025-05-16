@@ -159,7 +159,7 @@ const SubfieldChart = ({
 
   const colors = generateDistinctColors(filteredData.length);
 
-  const handleSubfieldClick = (subfieldId) => {
+  const handleSubfieldClick = async (subfieldId) => {
     const isCurrentlySelected = selectedSubfield === subfieldId;
     const selected = isCurrentlySelected ? null : filteredData.find(point => point.subfield_id === subfieldId);
 
@@ -171,16 +171,23 @@ const SubfieldChart = ({
       setSelectedTab('scatter');
     }
 
-    const subfieldHistoricalData = isCurrentlySelected
-      ? []
-      : radarData
-          .filter((point) => point.subfield_id === subfieldId)
-          .map((point) => ({
-            ...point,
-            metric_date: new Date(point.metric_date).getTime(),
-            metric_3_scaled: Math.pow(point.metric_3, 5),
-          }));
-    setHistoricalData(subfieldHistoricalData);
+    if (isCurrentlySelected) {
+      setHistoricalData([]);
+    } else {
+      try {
+        const response = await axios.get(`http://localhost:4000/api/db/metrics/subfield/${subfieldId}/all`);
+        const historical = response.data.data.map((point) => ({
+          ...point,
+          metric_date: new Date(point.metric_date).getTime(),
+          metric_3_scaled: Math.pow(point.metric_3, 5),
+        }));
+        setHistoricalData(historical);
+      } catch (error) {
+        console.error("Error fetching subfield historical metrics:", error);
+        setHistoricalData([]);
+      }
+    }
+    
   };
 
   const formatDate = (timestamp) => {

@@ -358,6 +358,19 @@ class DBController {
       throw new Error('Failed to fetch radar data');
     }
   }
+  async getAllSubfieldMetrics(subfieldId) {
+    try {
+      const query = `
+        SELECT * FROM ${this.tableNames.metricsTable}
+        WHERE subfield_id = $1
+        ORDER BY metric_date ASC
+      `;
+      const result = await db.query(query, [subfieldId]);
+      return result.rows;
+    } catch (error) {
+      throw new Error('Failed to fetch all subfield-level metrics');
+    }
+  }
   
   async getAllFieldMetrics(fieldId) {
     try {
