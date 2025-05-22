@@ -3,12 +3,12 @@ import axios from 'axios';
 import '../styles/globals.css';
 import rbcLogo from '../assets/Royal-Bank-of-Canada-Logo.png';
 import { Bell, Search, TrendingUp, Zap, Shovel, Globe, BarChart, Lightbulb, Clock, MessageSquareReplyIcon, ChevronDown, ArrowRight, Info, CircleAlert } from 'lucide-react'
-import parse from 'html-react-parser';
 import Radar from './Radar.js';
 import Rating from './Rating.js';
 import AIPromptFieldButton from './AIPromptButton.js';
 import recentInsight from './Insights/MostRecentInsight.txt';
 import ReactMarkdown from 'react-markdown';
+
 //Loaders
 import { tailChase } from 'ldrs';
 import { quantum } from 'ldrs'
@@ -23,18 +23,6 @@ grid.register();
 helix.register();
 
 const Home = () => {
-
-  // const trendingTopics = [
-  //   { title: "AI Advances", sources: "BCG, Mckinsey", trend: "+24%" },
-  //   { title: "Web3 Updates", sources: "Bloomberg", trend: "+15%" },
-  //   { title: "Cloud Computing", sources: "JPMorgan, Web of Science", trend: "+18%" }
-  // ];
-
-  // const latestInsights = [
-  //   { title: "The Future of Quantum Computing", category: "Emerging Tech", readTime: "5 min" },
-  //   { title: "AI in Healthcare: 2024 Trends", category: "AI & ML", readTime: "8 min" },
-  //   { title: "Cybersecurity Best Practices", category: "Security", readTime: "6 min" }
-  // ];
 
   //useStates for GPT output
   const [searchTerm, setSearchTerm] = useState("");
@@ -103,7 +91,6 @@ const Home = () => {
   ]
 
 
-
   useEffect(() => {
     // Set up interval to rotate loaders every 3 seconds
     const intervalId = setInterval(() => {
@@ -136,126 +123,6 @@ const Home = () => {
   const currentLoaderText = loaders[currentLoaderIndex].text;
 
   //function to fetch gpt data from server
-
-  const radarSearch = (radarTerm) => {
-    setSearchTerm(radarTerm);
-    handleRadarSubmit(radarTerm);
-  };
-
-  const handleSubmit = async () => {
-
-    //display loading sign
-    setLoading(true);
-    //Reset loader cycle
-    setCurrentLoaderIndex(0);
-    //Reset error state
-    setError(false);
-    //reset the old output
-    setRenderText(false);
-    //reset trends
-    setRenderTrends(false);
-
-    axios.post('http://localhost:4000/gpt', { prompt: searchTerm }).then((resp) => {
-
-      let resultArr = resp.data.split("***");
-
-      setTextResult(resultArr[0]);
-
-      //Handle trends
-      let tempTrendingTopics = [];
-      for (const entry of resultArr[1].split("/")) {
-        tempTrendingTopics.push(JSON.parse(entry));
-      };
-
-      setTrendingTopics(tempTrendingTopics);
-
-      //Handle Top Insights
-      let tempInsights = [];
-      for (const entry of resultArr[2].split("/")) {
-        tempInsights.push(JSON.parse(entry));
-      };
-
-      setLatestInsights(tempInsights);
-
-      //console.log(resp.data);
-
-      //Render the output
-      setRenderText(true);
-      setRenderTrends(true);
-
-    }).catch((err) => {
-      console.log(err);
-      //Set error state
-      setError(true);
-
-    }).finally(() => {
-      //Remove loading sign
-      setLoading(false);
-    })
-
-  };
-
-  const handleRadarSubmit = async (radarTerm) => {
-
-    //display loading sign
-    setLoading(true);
-    //Reset loader cycle
-    setCurrentLoaderIndex(0);
-    //Reset error state
-    setError(false);
-    //reset the old output
-    setRenderText(false);
-    //reset trends
-    setRenderTrends(false);
-
-    axios.post('http://localhost:4000/gpt', { prompt: radarTerm }).then((resp) => {
-
-      let resultArr = resp.data.split("***");
-
-      setTextResult(resultArr[0]);
-
-      //Handle trends
-      let tempTrendingTopics = [];
-      for (const entry of resultArr[1].split("/")) {
-        tempTrendingTopics.push(JSON.parse(entry));
-      };
-
-      setTrendingTopics(tempTrendingTopics);
-
-      //Handle Top Insights
-      let tempInsights = [];
-      for (const entry of resultArr[2].split("/")) {
-        tempInsights.push(JSON.parse(entry));
-      };
-
-      setLatestInsights(tempInsights);
-
-      //console.log(resp.data);
-
-      //Render the output
-      setRenderText(true);
-      setRenderTrends(true);
-
-    }).catch((err) => {
-      console.log(err);
-      //Set error state
-      setError(true);
-
-    }).finally(() => {
-      //Remove loading sign
-      setLoading(false);
-    })
-
-  };
-
-  // const [feedBackText, setFeedBackText] = useState("");
-  // const [finalRating, setFinalRating] = useState(0);
-
-  // //Get rating method
-  // const handleRatingSelect = (rating) => {
-  //   setFinalRating(Number(rating));
-  //   console.log("Selected Rating:", rating);
-  // };
 
   const [finalRating, setFinalRating] = useState(0);
   const [feedbackText, setFeedbackText] = useState(""); // State to hold feedback text
@@ -320,68 +187,68 @@ const Home = () => {
   axios.defaults.headers.post['Content-Type'] = 'application/json';
   const [radarData, setRadarData] = useState([]);
 
-  useEffect(() => {
-    axios.get('http://localhost:4000/api/data')
-      .then(response => {
-        console.log('Fetched data:', response.data);
-        setTemperature(response.data[0].temperature);
-        setTopP(response.data[0].top_p);
-      })
-      .catch(error => console.error('Error fetching data:', error));
-  }, []);
-
-  useEffect(() => {
-    axios.get('http://localhost:4000/api/radar')
-      .then(response => {
-        console.log('Fetched data:', response.data);
-        setRadarData(response.data);
-      })
-      .catch(error => console.error('Error fetching data:', error));
-  }, []);
-
-  //Function to avoid manual refresh
-  const fetchRadarData = () => {
-    axios.get('http://localhost:4000/api/radar')
-      .then(response => {
-        console.log('Fetched data:', response.data);
-        setRadarData(response.data);
-      })
-      .catch(error => console.error('Error fetching data:', error));
-  };
-
-  async function addData() {
-    try {
-      // First, wait for the GET request to finish
-      const response = await axios.get('http://localhost:4000/api/latest-id');
-      console.log("Latest ID:", response.data.latestId);
-      console.log(`new temp value ${temperature}`);
-      console.log(`new topP value ${topP}`);
-
-
-      const latestId = response.data.latestId; // Get the latestId directly
-
-      if (latestId !== undefined && latestId !== null) {
-        // Now, wait for the POST request to finish
-        await axios.post('http://localhost:4000/api/data1', {
-          insight_id: latestId,
-          feedback_text: `${feedbackText}`,
-          rating: finalRating
-        });
-
-        await axios.post('http://localhost:4000/api/data2', {
-          temperature: temperature,
-          top_p: topP,
-          parameter_id: 1
-        });
-
-        alert('Data added successfully');
-      } else {
-        console.error("Invalid ID fetched");
+  // Model parameters
+useEffect(() => {
+  axios.get('http://localhost:4000/api/db/model-parameters')
+    .then(response => {
+      console.log('Model params:', response.data);
+      if (response.data.success && response.data.data.length > 0) {
+        setTemperature(response.data.data[0].temperature);
+        setTopP(response.data.data[0].top_p);
       }
-    } catch (error) {
-      console.error("Error in addData:", error);
+    })
+    .catch(error => console.error('Error fetching model params:', error));
+}, []);
+
+// Radar data
+useEffect(() => {
+  axios.get('http://localhost:4000/api/db/radar-data')
+    .then(response => {
+      console.log('Radar data:', response.data);
+      if (response.data.success) {
+        setRadarData(response.data.data);
+      }
+    })
+    .catch(error => console.error('Error fetching radar data:', error));
+}, []);
+
+// Fetch radar data function
+const fetchRadarData = () => {
+  axios.get('http://localhost:4000/api/db/radar-data')
+    .then(response => {
+      if (response.data.success) {
+        setRadarData(response.data.data);
+      }
+    })
+    .catch(error => console.error('Error fetching radar data:', error));
+};
+
+// Feedback submission
+async function addData() {
+  try {
+    const idResponse = await axios.get('http://localhost:4000/db/insights/latest-id');
+    const latestId = idResponse.data.data.latestId;
+
+    if (latestId) {
+      await axios.post('http://localhost:4000/db/feedback', {
+        insight_id: latestId,
+        feedback_text: feedbackText,
+        rating: finalRating
+      });
+
+      await axios.put('http://localhost:4000/db/model-parameters', {
+        temperature: temperature,
+        top_p: topP,
+        parameter_id: 1
+      });
+
+      alert('Feedback submitted successfully');
     }
+  } catch (error) {
+    console.error("Error submitting feedback:", error);
+    alert('Error submitting feedback');
   }
+}
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -620,7 +487,7 @@ const Home = () => {
             </div>
 
             {/* Industry Radar */}
-            <Radar radarData={radarData} radarSearch={radarSearch} homePage={true} fetchRadarData={fetchRadarData}></Radar>
+            <Radar radarData={radarData} homePage={true} fetchRadarData={fetchRadarData}></Radar>
 
             {/* Understanding the Radar */}
             <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">

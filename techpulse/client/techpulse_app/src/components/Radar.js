@@ -2,26 +2,23 @@ import React from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { ArrowDown, Link, RadarIcon, TrendingUp, link } from 'lucide-react';
+import { ArrowDown, Link, RadarIcon, TrendingUp } from 'lucide-react';
 import SubfieldChart from './SubfieldChart';
 import { tailChase } from 'ldrs';
 
 const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData }) => {
   const [data, setData] = useState([]);
-  const [historicalData, setHistoricalData] = useState([]); // State for historical data
-  const [selectedField, setSelectedField] = useState('radar'); // Track the selected field
-  const [clickedDataPoint, setClickedDataPoint] = useState(null); // State for clicked data point
-  const [selectedTechnology, setSelectedTechnology] = useState(null); // State for selected technology
+  const [historicalData, setHistoricalData] = useState([]);
+  const [selectedField, setSelectedField] = useState('radar');
+  const [clickedDataPoint, setClickedDataPoint] = useState(null);
+  const [selectedTechnology, setSelectedTechnology] = useState(null);
   const [articleSources, setArticleSources] = useState({});
   const [useColorMode, setUseColorMode] = useState(false);
-  const [subfieldData, setSubfieldData] = useState([]); // State for subfield data
-  const [selectedFieldId, setSelectedFieldId] = useState(null); // Track the selected field ID for
+  const [subfieldData, setSubfieldData] = useState([]);
+  const [selectedFieldId, setSelectedFieldId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  //State for subfield details
   const [selectedSubfieldDetails, setSelectedSubfieldDetails] = useState(null);
   const [selectedSubfield, setSelectedSubfield] = useState(null);
-
   const [showAllTechnologies, setShowAllTechnologies] = useState(false);
 
   tailChase.register();
@@ -31,77 +28,74 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
     try {
       const field = data.find(d => d.field_name === fieldName);
       if (!field) {
-        console.error("Field not found.");
-        return;
+        throw new Error("Field not found");
       }
 
-      const response = await axios.post('http://localhost:4000/gpt-subfield', {
+      const response = await axios.post('http://localhost:4000/api/ai/generate-subfield', {
         fieldName: field.field_name,
         fieldId: field.field_id
       });
 
       if (response.status === 200) {
-        // Optionally, you can refresh the subfield data here
-        const subfieldResponse = await axios.post('http://localhost:4000/api/subfields', { fieldId: field.field_id });
-        setSubfieldData(subfieldResponse.data.metrics);
+        // Refresh radar data
+        await fetchRadarData();
+
+        // Refresh subfield data
+        const subfieldResponse = await axios.get(`http://localhost:4000/api/db/fields/${field.field_id}/subfields`);
+        setSubfieldData(subfieldResponse.data.data);
+
+        // Force UI update
+        setSelectedFieldId(field.field_id);
       } else {
-        alert("Failed to generate subfields.");
-        setIsLoading(false);
+        throw new Error(response.data.error || "Failed to generate subfields");
       }
     } catch (error) {
       console.error("Error generating subfields:", error);
-      alert("Error generating subfields.");
-      setIsLoading(false);
+      alert(error.message || "Error generating subfields");
     } finally {
-      fetchRadarData();
       setIsLoading(false);
     }
-
   };
+
   const handleFieldClick = async (fieldId) => {
     setSelectedFieldId(fieldId);
+    setIsLoading(true); // Add loading state
     try {
-      const response = await axios.post('http://localhost:4000/api/subfields', { fieldId });
-      setSubfieldData(response.data.metrics);
+      const response = await axios.get(`http://localhost:4000/api/db/fields/${fieldId}/subfields`);
+      setSubfieldData(response.data.data);
+      if (response.data.data.length === 0) {
+        // Optionally show a message if no subfields exist
+      }
     } catch (error) {
       console.error('Error fetching subfields:', error);
+      alert(error.response?.data?.error || "Failed to fetch subfields");
+    } finally {
+      setIsLoading(false);
     }
   };
-  const normalize = (value, min, max, newMin, newMax) => {
-    return ((value - min) / (max - min)) * (newMax - newMin) + newMin;
-  };
-  // Function to generate distinct colors using HSL
+
   const generateDistinctColors = (numColors) => {
     const colors = [];
-    const hueStep = 360 / numColors; // Use 360 degrees for full hue spectrum
-    const saturation = 70; // 90% saturation
-    const lightness = 50; // 45% lightness
-
-    // If color mode is off, return array of blue colors
     if (!useColorMode) {
-      for (let i = 0; i < numColors; i++) {
-        colors.push('#2466e0'); // Use the same blue color for all points
-      }
-      return colors;
+      return Array(numColors).fill('#2466e0');
     }
 
-    // Generate distinct colors when color mode is on
+    const hueStep = 360 / numColors;
+    const saturation = 70;
+    const lightness = 50;
+
     for (let i = 0; i < numColors; i++) {
-      // Multiply by a larger step to spread colors more evenly around the color wheel
-      const hue = (i * hueStep * 5) % 360; // Use modulo 360 to keep within valid hue range
+      const hue = (i * hueStep * 5) % 360;
       colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
     }
 
     return colors;
   };
 
-  // Generate colors for the data points
   const colors = generateDistinctColors(radarData.length);
 
   useEffect(() => {
-    let rawData = radarData;
-    // Filter data to include only the most recent entries for each field
-    const filteredData = filterMostRecentData(rawData);
+    const filteredData = filterMostRecentData(radarData);
     setData(filteredData);
   }, [technology, homePage, radarData]);
 
@@ -109,18 +103,16 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
     const mostRecentData = {};
 
     data.forEach(item => {
-      // Exclude entries with field_id: 0
-      if (item.subfield_id === null && item.field_id !== 0) {  // Only process if subfield_id is null and field_id is not 0
+      // Remove the subfield_id check to include all fields
+      if (item.field_id !== 0) {
         const fieldId = item.field_id;
         const currentDate = new Date(item.metric_date);
 
         if (!mostRecentData[fieldId] || new Date(mostRecentData[fieldId].metric_date) < currentDate) {
           mostRecentData[fieldId] = {
             ...item,
-            description: item.field_description, // Include the field description
-            metric_3_scaled: Math.pow(item.metric_3, 5
-
-            ), // Add the cubed value of metric_3
+            description: item.field_description,
+            metric_3_scaled: Math.pow(item.metric_3, 5),
           };
         }
       }
@@ -128,53 +120,47 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
 
     return Object.values(mostRecentData);
   };
-
-  const handleFilterClick = (point) => {
-    
-    //Clear the selected subfield details and subfield
+  const handleFilterClick = async (point) => {
     setSelectedSubfieldDetails(null);
     setSelectedSubfield(null);
 
-    // Check if this point is currently selected
     const isCurrentlySelected = selectedTechnology === point.field_name;
     if (isCurrentlySelected) {
-      // If clicking the already selected technology, deselect it
       setSelectedTechnology(null);
-      setSelectedFieldId(null); // Clear the selected field ID
-      // Show all technologies again
-      const allHistoricalData = radarData
-        .filter(d => d.subfield_id === null) // Filter for null subfield_id
+      setSelectedFieldId(null);
+      setData(data.map(d => ({
+        ...d,
+        fillOpacity: 0.7,
+      })));
+      setHistoricalData(radarData
+        .filter(d => d.subfield_id === null)
         .map(d => ({
           ...d,
           metric_date: Date.parse(d.metric_date),
-        }));
-      setData(data.map(d => ({
-        ...d,
-        fillOpacity: 0.7, // Set all to normal opacity when deselecting
-      })));
-      setHistoricalData(allHistoricalData);
-      setSelectedField('radar'); // Reset to Scatter Chart
+        })));
     } else {
-      // If selecting a different technology (or first selection)
       setSelectedTechnology(point.field_name);
-      setSelectedFieldId(point.field_id); // Set the selected field ID
+      setSelectedFieldId(point.field_id);
       setData(data.map(d => ({
         ...d,
         fillOpacity: d.field_id === point.field_id ? 0.7 : 0.1,
       })));
-      // Filter historical data for the selected technology and null subfield_id
-      const fieldHistoricalData = radarData
-        .filter(d => d.field_id === point.field_id && d.subfield_id === null) // Filter for null subfield_id
-        .map(d => ({
+      try {
+        const response = await axios.get(`http://localhost:4000/api/db/metrics/field/${point.field_id}/all`);
+        const historical = response.data.data.map(d => ({
           ...d,
           metric_date: Date.parse(d.metric_date),
         }));
-      setHistoricalData(fieldHistoricalData);
+        setHistoricalData(historical);
+      } catch (error) {
+        console.error("Error fetching historical metrics:", error);
+        setHistoricalData([]); // fallback to empty
+      }
+      
     }
     setClickedDataPoint(null);
   };
 
-  // Format timestamp to readable date (YYYY-MM-DD)
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
@@ -187,16 +173,14 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/arxiv-papers"); // Fetch from the API
+        const response = await axios.get("http://localhost:4000/api/scraper/arxiv-papers");
         const articles = response.data;
 
-        // Transform articles into an object for quick lookup by field name
         const sourcesMap = {};
         articles.forEach(article => {
           if (!sourcesMap[article.field]) {
             sourcesMap[article.field] = [];
           }
-          // Store both title and link
           sourcesMap[article.field].push({
             title: article.title || "No Title Available",
             link: article.link || "#"
@@ -204,9 +188,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
         });
 
         setArticleSources(sourcesMap);
-
-        // Debugging: Print available field names in the JSON
-        console.log("Available fields in JSON:", Object.keys(sourcesMap));
       } catch (error) {
         console.error("Error fetching articles:", error);
       }
@@ -611,14 +592,14 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
                 {articleSources[selectedTechnology] && articleSources[selectedTechnology].length > 0 ? (
                   articleSources[selectedTechnology].map((article, index) => (
                     <div key={index} style={{ marginBottom: "5px" }}>
-                      <span style={{ display: "inline-flex", alignItems: "center" }}> 
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
                         <Link color="#1E90FF" // Nicer blue (DodgerBlue)
                           strokeWidth={2} // Slightly thicker for visibility
-                        /> 
-                        <a 
-                          href={article.link} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
+                        />
+                        <a
+                          href={article.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           style={{ color: "blue", textDecoration: "underline", marginLeft: "5px", display: "inline" }}
                         >
                           {article.title}

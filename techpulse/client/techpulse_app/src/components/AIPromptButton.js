@@ -19,34 +19,39 @@ const AIPromptFieldButton = ({
   // Fetch all field IDs from the backend
   const fetchAllFieldIds = async () => {
     try {
-      const response = await fetch('http://localhost:4000/get-all-field-ids', {
+      const response = await fetch('http://localhost:4000/api/db/fields', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
+
       if (!response.ok) {
-        throw new Error(`Failed to fetch field IDs: ${response.statusText}`);
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to fetch fields: ${response.statusText}`);
       }
+
       const data = await response.json();
-      return data.fieldIds;
+      console.log(data)
+      return data.data.map(field => field.field_id); // Assuming the response has a data array with field objects
     } catch (error) {
       console.error('Error fetching field IDs:', error);
+      setError(error.message);
       return [];
     }
   };
+  
 
   // Function to trigger the scraper (used by other buttons)
   const runScraper = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/run-scraper', {
+      const response = await fetch('http://localhost:4000/api/scraper/run-scraper', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
 
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('Scraper error details:', errorData);
-        throw new Error(`Scraper failed: ${response.statusText}`);
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Scraper failed: ${response.statusText}`);
       }
 
       const data = await response.json();
@@ -78,7 +83,7 @@ const AIPromptFieldButton = ({
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-      const insightResponse = await fetch('http://localhost:4000/generate-insight', {
+      const insightResponse = await fetch('http://localhost:4000/api/ai/generate-insight', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         signal: controller.signal
@@ -89,8 +94,7 @@ const AIPromptFieldButton = ({
       if (!insightResponse.ok) {
         const errorData = await insightResponse.json().catch(() => ({}));
         throw new Error(
-          `Insight generation failed: ${insightResponse.status} - ${insightResponse.statusText}\n${errorData.message || 'No additional error information'
-          }`
+          errorData.error || `Insight generation failed: ${insightResponse.statusText}`
         );
       }
 
@@ -130,16 +134,18 @@ const AIPromptFieldButton = ({
 
     try {
       console.log("Generating new fields only...");
-      const response = await fetch('http://localhost:4000/gpt-field', {
+      const response = await fetch('http://localhost:4000/api/ai/generate-field', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
 
       if (!response.ok) {
-        throw new Error(`Field generation failed: ${response.statusText}`);
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Field generation failed: ${response.statusText}`);
       }
 
-      setGeneratedText("New fields generated successfully");
+      const result = await response.json();
+      setGeneratedText(result.message || "New fields generated successfully");
     } catch (error) {
       console.error('Error generating new fields:', error);
       setGeneratedText(`Error: ${error.message}`);
@@ -168,8 +174,8 @@ const AIPromptFieldButton = ({
 
     try {
       console.log("Triggering scraper...");
-      // 
-      console.log("Proceeding to field operations...");
+
+      console.log("Scraper executed successfully. Proceeding to metric reevaluation...");
       const fieldIds = await fetchAllFieldIds();
 
       let successfulUpdates = 0;
@@ -184,16 +190,19 @@ const AIPromptFieldButton = ({
 
         await new Promise(resolve => setTimeout(resolve, 1000));
 
+
+
         for (const fieldId of fieldIds) {
           try {
-            const reevaluateResponse = await fetch('http://localhost:4000/gpt-update-metrics', {
+            const reevaluateResponse = await fetch('http://localhost:4000/api/ai/update-metrics', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ field_id: fieldId }),
             });
 
             if (!reevaluateResponse.ok) {
-              throw new Error(`Reevaluation failed for field ID: ${fieldId}`);
+              const errorData = await reevaluateResponse.json();
+              throw new Error(errorData.error || `Reevaluation failed for field ID: ${fieldId}`);
             }
             successfulUpdates++;
           } catch (error) {
@@ -203,36 +212,38 @@ const AIPromptFieldButton = ({
         }
       }
 
+
       console.log(`Metrics updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
 
       console.log("Proceeding to new field generation...");
-      const fieldResponse = await fetch('http://localhost:4000/gpt-field', {
+      const fieldResponse = await fetch('http://localhost:4000/api/ai/generate-field', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
 
       if (!fieldResponse.ok) {
-        const errorBody = await fieldResponse.text(); // or .json() if it returns JSON
-        console.error('Field generation failed:', fieldResponse.status, errorBody);
-        throw new Error(`Field generation failed: ${fieldResponse.status} - ${errorBody}`);
+        const errorData = await fieldResponse.json();
+        throw new Error(errorData.error || `Field generation failed: ${fieldResponse.statusText}`);
       }
       console.log("Fields generated successfully. Proceeding to insight generation...");
-      const insightResponse = await fetch('http://localhost:4000/generate-insight', {
+      const insightResponse = await fetch('http://localhost:4000/api/ai/generate-insight', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
 
       if (!insightResponse.ok) {
-        throw new Error(`Insight generation failed: ${insightResponse.statusText}`);
+        const errorData = await insightResponse.json();
+        throw new Error(errorData.error || `Insight generation failed: ${insightResponse.statusText}`);
       }
 
       const insightData = await insightResponse.json();
-      console.log("Insight generated successfully:", insightData.insight);
+      console.log("Insight generated successfully:", insightData);
       setTextResult(insightData.insight);
       setGeneratedText(`Fields updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
     } catch (error) {
       console.error('Error:', error);
       setGeneratedText(`Error: ${error.message}`);
+      setError(true);
     } finally {
       setRenderText(true);
       setIsLoading(false);

@@ -11,23 +11,30 @@ const ScrapeFieldsButton = ({ setError, setSuccess }) => {
     
     setError(false);
     setSuccess(false);
+    setIsLoading(true);
 
     try {
       console.log("Triggering scraper...");
 
-      const response = await fetch("http://localhost:4000/api/run-scraper", {
+      const response = await fetch("http://localhost:4000/api/scraper/run-scraper", {
         method: "GET",
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
       if (!response.ok) {
-        throw new Error(`Scraper failed: ${response.statusText}`);
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Scraper failed: ${response.statusText}`);
       }
 
       console.log("Scraper ran successfully.");
-      setSuccess(true);  // Set success to true if scraping is successful
+      setSuccess(true);
     } catch (error) {
       console.error("Error running scraper:", error);
-      setError(true); // Set error to true if there's an issue
+      setError(error.message || "Failed to run scraper");
+    } finally {
+      setIsLoading(false);
     }
   };
 
