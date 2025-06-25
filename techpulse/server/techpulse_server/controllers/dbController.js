@@ -1,16 +1,26 @@
-const db = require('../config/db');
-const constants = require('../config/constants');
-const fs = require('fs');
-const path = require('path');
-const { promisify } = require('util');
-const fsPromises = fs.promises;
+// Import required modules and configurations
+const db = require('../config/db');               // Database connection module
+const constants = require('../config/constants'); // Application constants
+const fs = require('fs');                         // File system module
+const path = require('path');                     // Path manipulation module
+const { promisify } = require('util');           // Utility for promisifying functions
+const fsPromises = fs.promises;                   // Promisified version of fs
 
 class DBController {
   constructor() {
+    // Initialize table names from constants
     this.tableNames = constants.db;
   }
 
+  // ==============================================
   // FIELD OPERATIONS
+  // ==============================================
+
+  /**
+   * Retrieves all fields from the database
+   * @returns {Promise<Array>} Array of field objects
+   * @throws {Error} If database query fails
+   */
   async getAllFields() {
     try {
       const query = `SELECT * FROM ${this.tableNames.fieldTable} ORDER BY field_name`;
@@ -21,6 +31,12 @@ class DBController {
     }
   }
 
+  /**
+   * Retrieves a single field by its ID
+   * @param {number} fieldId - The ID of the field to retrieve
+   * @returns {Promise<Object>} Field object
+   * @throws {Error} If field not found or query fails
+   */
   async getFieldById(fieldId) {
     try {
       const query = `SELECT * FROM ${this.tableNames.fieldTable} WHERE field_id = $1`;
@@ -36,6 +52,13 @@ class DBController {
     }
   }
 
+  /**
+   * Creates a new field in the database
+   * @param {string} fieldName - Name of the new field
+   * @param {string} description - Description of the new field
+   * @returns {Promise<Object>} The created field object
+   * @throws {Error} If creation fails
+   */
   async createField(fieldName, description) {
     try {
       const query = `
@@ -50,7 +73,16 @@ class DBController {
     }
   }
 
+  // ==============================================
   // SUBFIELD OPERATIONS
+  // ==============================================
+
+  /**
+   * Retrieves all subfields for a given field ID
+   * @param {number} fieldId - The parent field ID
+   * @returns {Promise<Array>} Array of subfield objects
+   * @throws {Error} If query fails
+   */
   async getSubfieldsByFieldId(fieldId) {
     try {
       const query = `
@@ -65,6 +97,14 @@ class DBController {
     }
   }
 
+  /**
+   * Creates a new subfield under a specific field
+   * @param {number} fieldId - Parent field ID
+   * @param {string} subfieldName - Name of the new subfield
+   * @param {string} description - Description of the subfield
+   * @returns {Promise<Object>} The created subfield object
+   * @throws {Error} If creation fails
+   */
   async createSubfield(fieldId, subfieldName, description) {
     try {
       const query = `
@@ -80,7 +120,17 @@ class DBController {
     }
   }
 
+  // ==============================================
   // METRICS OPERATIONS
+  // ==============================================
+
+  /**
+   * Retrieves the latest metrics for a field or subfield
+   * @param {number} fieldId - Field ID
+   * @param {number|null} subfieldId - Optional subfield ID
+   * @returns {Promise<Object|null>} Metrics object or null if none found
+   * @throws {Error} If query fails
+   */
   async getLatestMetrics(fieldId, subfieldId = null) {
     try {
       let query, params;
@@ -110,6 +160,12 @@ class DBController {
     }
   }
 
+  /**
+   * Creates new metrics record
+   * @param {Object} metricsData - Metrics data object
+   * @returns {Promise<Object>} The created metrics record
+   * @throws {Error} If creation fails
+   */
   async createMetrics(metricsData) {
     try {
       const {
@@ -148,7 +204,16 @@ class DBController {
     }
   }
 
+  // ==============================================
   // INSIGHT OPERATIONS
+  // ==============================================
+
+  /**
+   * Retrieves the latest insight for a field or global
+   * @param {number|null} fieldId - Optional field ID
+   * @returns {Promise<Object|null>} Insight object or null if none found
+   * @throws {Error} If query fails
+   */
   async getLatestInsight(fieldId = null) {
     try {
       let query, params;
@@ -178,6 +243,14 @@ class DBController {
     }
   }
 
+  /**
+   * Creates a new insight record
+   * @param {number|null} fieldId - Associated field ID (null for global)
+   * @param {string} insightText - The insight content
+   * @param {number} confidenceScore - Confidence score (0-1)
+   * @returns {Promise<Object>} The created insight record
+   * @throws {Error} If creation fails
+   */
   async createInsight(fieldId, insightText, confidenceScore) {
     try {
       const query = `
@@ -194,7 +267,7 @@ class DBController {
         confidenceScore
       ]);
 
-      // Save to file system
+      // Save to file system as backup
       if (insightText) {
         await this.saveInsightToFile(fieldId, insightText);
       }
@@ -205,6 +278,12 @@ class DBController {
     }
   }
 
+  /**
+   * Saves insight text to a file for backup
+   * @param {number|null} fieldId - Associated field ID
+   * @param {string} content - Insight content to save
+   * @throws {Error} If file operation fails
+   */
   async saveInsightToFile(fieldId, content) {
     try {
       const fileName = fieldId 
@@ -218,7 +297,18 @@ class DBController {
     }
   }
 
+  // ==============================================
   // FEEDBACK OPERATIONS
+  // ==============================================
+
+  /**
+   * Creates new feedback record
+   * @param {number} insightId - The insight ID being feedback on
+   * @param {string} feedbackText - Feedback content
+   * @param {number} rating - Numeric rating
+   * @returns {Promise<Object>} The created feedback record
+   * @throws {Error} If creation fails
+   */
   async createFeedback(insightId, feedbackText, rating) {
     try {
       const query = `
@@ -241,7 +331,15 @@ class DBController {
     }
   }
 
+  // ==============================================
   // MODEL PARAMETERS OPERATIONS
+  // ==============================================
+
+  /**
+   * Retrieves the latest model parameters
+   * @returns {Promise<Array>} Array containing the latest parameters
+   * @throws {Error} If query fails
+   */
   async getModelParameters() {
     try {
       const query = `
@@ -256,6 +354,14 @@ class DBController {
     }
   }
 
+  /**
+   * Updates model parameters
+   * @param {number} parameterId - ID of parameters to update
+   * @param {number} temperature - New temperature value
+   * @param {number} topP - New top_p value
+   * @returns {Promise<Object>} The updated parameters
+   * @throws {Error} If update fails
+   */
   async updateModelParameters(parameterId, temperature, topP) {
     try {
       const query = `
@@ -277,7 +383,16 @@ class DBController {
     }
   }
 
+  // ==============================================
   // COMPLEX QUERIES
+  // ==============================================
+
+  /**
+   * Retrieves radar chart data for visualization
+   * @param {number|null} fieldId - Optional field ID to filter
+   * @returns {Promise<Array>} Array of data points for radar chart
+   * @throws {Error} If query fails
+   */
   async getRadarData(fieldId = null) {
     try {
       if (fieldId) {
@@ -358,6 +473,13 @@ class DBController {
       throw new Error('Failed to fetch radar data');
     }
   }
+
+  /**
+   * Retrieves all historical metrics for a subfield
+   * @param {number} subfieldId - Subfield ID
+   * @returns {Promise<Array>} Array of all metrics for the subfield
+   * @throws {Error} If query fails
+   */
   async getAllSubfieldMetrics(subfieldId) {
     try {
       const query = `
@@ -372,6 +494,12 @@ class DBController {
     }
   }
   
+  /**
+   * Retrieves all historical metrics for a field
+   * @param {number} fieldId - Field ID
+   * @returns {Promise<Array>} Array of all metrics for the field
+   * @throws {Error} If query fails
+   */
   async getAllFieldMetrics(fieldId) {
     try {
       const query = `
@@ -386,6 +514,12 @@ class DBController {
     }
   }
   
+  /**
+   * Calculates growth metrics between current and previous data points
+   * @param {number} fieldId - Field ID
+   * @returns {Promise<Object|null>} Growth metrics or null if insufficient data
+   * @throws {Error} If query fails
+   */
   async getFieldGrowthMetrics(fieldId) {
     try {
       const query = `
@@ -433,4 +567,5 @@ class DBController {
   }
 }
 
+// Export singleton instance of the controller
 module.exports = new DBController();
