@@ -5,7 +5,7 @@ import React, { useState } from 'react';
  * - Full update (scrape, update metrics, generate fields, generate insights)
  * - Generate insights only
  * - Generate new fields only
- * 
+ * - in short this is the top 3 buttons, the blue one is TechPulse, the green and purple buttons are helpful for testing
  * @param {Object} props - Component props
  * @param {Function} props.setTextResult - Sets the text result state in parent
  * @param {Function} props.setTrendingTopics - Sets trending topics state in parent
