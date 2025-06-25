@@ -1,5 +1,22 @@
 import React, { useState } from 'react';
 
+/**
+ * AIPromptFieldButton component provides buttons for various AI-powered operations:
+ * - Full update (scrape, update metrics, generate fields, generate insights)
+ * - Generate insights only
+ * - Generate new fields only
+ * 
+ * @param {Object} props - Component props
+ * @param {Function} props.setTextResult - Sets the text result state in parent
+ * @param {Function} props.setTrendingTopics - Sets trending topics state in parent
+ * @param {Function} props.setLatestInsights - Sets latest insights state in parent
+ * @param {Function} props.setLoading - Sets loading state in parent
+ * @param {Function} props.setCurrentLoaderIndex - Sets loader index state in parent
+ * @param {Function} props.setError - Sets error state in parent
+ * @param {Function} props.setRenderText - Sets render text state in parent
+ * @param {Function} props.setRenderTrends - Sets render trends state in parent
+ * @param {Function} props.fetchRadarData - Fetches radar data in parent
+ */
 const AIPromptFieldButton = ({
   setTextResult,
   setTrendingTopics,
@@ -11,12 +28,16 @@ const AIPromptFieldButton = ({
   setRenderTrends,
   fetchRadarData,
 }) => {
+  // State for tracking generated text and loading states
   const [generatedText, setGeneratedText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingInsightsOnly, setIsLoadingInsightsOnly] = useState(false);
   const [isLoadingNewFieldsOnly, setIsLoadingNewFieldsOnly] = useState(false);
 
-  // Fetch all field IDs from the backend
+  /**
+   * Fetches all field IDs from the backend
+   * @returns {Promise<Array>} Array of field IDs
+   */
   const fetchAllFieldIds = async () => {
     try {
       const response = await fetch('http://localhost:4000/api/db/fields', {
@@ -31,23 +52,24 @@ const AIPromptFieldButton = ({
 
       const data = await response.json();
       console.log(data)
-      return data.data.map(field => field.field_id); // Assuming the response has a data array with field objects
+      return data.data.map(field => field.field_id); // Extract field IDs from response
     } catch (error) {
       console.error('Error fetching field IDs:', error);
       setError(error.message);
-      return [];
+      return []; // Return empty array on error
     }
   };
   
-
-  // Function to trigger the scraper (used by other buttons)
+  /**
+   * Triggers the scraper to fetch new data
+   * @returns {Promise<boolean>} Whether scraping was successful
+   */
   const runScraper = async () => {
     try {
       const response = await fetch('http://localhost:4000/api/scraper/run-scraper', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
-
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -62,13 +84,17 @@ const AIPromptFieldButton = ({
     }
   };
 
-
+  /**
+   * Handles generating insights only (no field updates)
+   */
   const handleGenerateInsightsOnly = async () => {
+    // Confirm user action
     const isConfirmed = window.confirm(
       "Are you sure you want to generate insights without updating fields?"
     );
     if (!isConfirmed) return;
 
+    // Set loading states
     setIsLoadingInsightsOnly(true);
     setGeneratedText("");
     setLoading(true);
@@ -80,9 +106,11 @@ const AIPromptFieldButton = ({
     try {
       console.log("Proceeding to insight generation...");
 
+      // Set up timeout and abort controller for the request
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
 
+      // Fetch insights from API
       const insightResponse = await fetch('http://localhost:4000/api/ai/generate-insight', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -105,6 +133,7 @@ const AIPromptFieldButton = ({
         throw new Error("Received empty insight from server");
       }
 
+      // Update states with the received insight
       setTextResult(insightData.insight);
       setGeneratedText("Insights generated successfully");
 
@@ -113,6 +142,7 @@ const AIPromptFieldButton = ({
       setGeneratedText(`Error: ${error.message}`);
       setError(true);
     } finally {
+      // Reset states and fetch updated data
       setRenderText(true);
       setIsLoadingInsightsOnly(false);
       setLoading(false);
@@ -120,12 +150,17 @@ const AIPromptFieldButton = ({
     }
   };
 
+  /**
+   * Handles generating new fields only (no scraping or metric updates)
+   */
   const handleGenerateNewFieldsOnly = async () => {
+    // Confirm user action
     const isConfirmed = window.confirm(
       "Are you sure you want to generate new fields only? (No scraping or metric updates)"
     );
     if (!isConfirmed) return;
 
+    // Set loading states
     setIsLoadingNewFieldsOnly(true);
     setGeneratedText("");
     setLoading(true);
@@ -151,6 +186,7 @@ const AIPromptFieldButton = ({
       setGeneratedText(`Error: ${error.message}`);
       setError(true);
     } finally {
+      // Reset states and fetch updated data
       setRenderText(true);
       setIsLoadingNewFieldsOnly(false);
       setLoading(false);
@@ -158,12 +194,21 @@ const AIPromptFieldButton = ({
     }
   };
 
+  /**
+   * Handles the full update process:
+   * 1. Scrapes new data
+   * 2. Updates metrics for all fields
+   * 3. Generates new fields
+   * 4. Generates insights
+   */
   const handleButtonClick = async () => {
+    // Confirm user action
     const isConfirmed = window.confirm(
       "Are you sure you want to update fields and generate insights?"
     );
     if (!isConfirmed) return;
 
+    // Set loading states
     setIsLoading(true);
     setGeneratedText("");
     setLoading(true);
@@ -174,24 +219,26 @@ const AIPromptFieldButton = ({
 
     try {
       console.log("Triggering scraper...");
-
       console.log("Scraper executed successfully. Proceeding to metric reevaluation...");
+      
+      // Get all field IDs to update
       const fieldIds = await fetchAllFieldIds();
 
       let successfulUpdates = 0;
       let failedUpdates = 0;
 
       if (fieldIds.length > 0) {
+        // Run scraper first
         const scraperSuccess = await runScraper();
         if (!scraperSuccess) {
           console.warn("Scraper failed or returned no data - proceeding anyway");
           // Continue execution even if scraper fails
         }
 
+        // Small delay before proceeding
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-
-
+        // Update metrics for each field
         for (const fieldId of fieldIds) {
           try {
             const reevaluateResponse = await fetch('http://localhost:4000/api/ai/update-metrics', {
@@ -212,9 +259,9 @@ const AIPromptFieldButton = ({
         }
       }
 
-
       console.log(`Metrics updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
 
+      // Generate new fields
       console.log("Proceeding to new field generation...");
       const fieldResponse = await fetch('http://localhost:4000/api/ai/generate-field', {
         method: 'POST',
@@ -225,6 +272,8 @@ const AIPromptFieldButton = ({
         const errorData = await fieldResponse.json();
         throw new Error(errorData.error || `Field generation failed: ${fieldResponse.statusText}`);
       }
+
+      // Generate insights
       console.log("Fields generated successfully. Proceeding to insight generation...");
       const insightResponse = await fetch('http://localhost:4000/api/ai/generate-insight', {
         method: 'POST',
@@ -238,6 +287,8 @@ const AIPromptFieldButton = ({
 
       const insightData = await insightResponse.json();
       console.log("Insight generated successfully:", insightData);
+      
+      // Update states with results
       setTextResult(insightData.insight);
       setGeneratedText(`Fields updated successfully. Successfully updated: ${successfulUpdates}, Failed: ${failedUpdates}`);
     } catch (error) {
@@ -245,6 +296,7 @@ const AIPromptFieldButton = ({
       setGeneratedText(`Error: ${error.message}`);
       setError(true);
     } finally {
+      // Reset states and fetch updated data
       setRenderText(true);
       setIsLoading(false);
       setLoading(false);
@@ -254,6 +306,7 @@ const AIPromptFieldButton = ({
 
   return (
     <div className="flex flex-col sm:flex-row gap-2">
+      {/* Full update button */}
       <button
         type="submit"
         className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white font-medium 
@@ -265,6 +318,8 @@ const AIPromptFieldButton = ({
       >
         {isLoading ? 'Processing...' : 'Update Fields & View Insights'}
       </button>
+      
+      {/* Insights only button */}
       <button
         type="submit"
         className="w-full sm:w-auto px-6 py-2 bg-green-600 text-white font-medium 
@@ -276,6 +331,8 @@ const AIPromptFieldButton = ({
       >
         {isLoadingInsightsOnly ? 'Processing...' : 'View Insights Only'}
       </button>
+      
+      {/* New fields only button */}
       <button
         type="submit"
         className="w-full sm:w-auto px-6 py-2 bg-purple-600 text-white font-medium 

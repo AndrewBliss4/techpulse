@@ -6,23 +6,27 @@ import { ArrowDown, Link, RadarIcon, TrendingUp } from 'lucide-react';
 import SubfieldChart from './SubfieldChart';
 import { tailChase } from 'ldrs';
 
+// Main Radar component that displays technology radar and timeline charts
 const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData }) => {
-  const [data, setData] = useState([]);
-  const [historicalData, setHistoricalData] = useState([]);
-  const [selectedField, setSelectedField] = useState('radar');
-  const [clickedDataPoint, setClickedDataPoint] = useState(null);
-  const [selectedTechnology, setSelectedTechnology] = useState(null);
-  const [articleSources, setArticleSources] = useState({});
-  const [useColorMode, setUseColorMode] = useState(false);
-  const [subfieldData, setSubfieldData] = useState([]);
-  const [selectedFieldId, setSelectedFieldId] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedSubfieldDetails, setSelectedSubfieldDetails] = useState(null);
-  const [selectedSubfield, setSelectedSubfield] = useState(null);
-  const [showAllTechnologies, setShowAllTechnologies] = useState(false);
+  // State variables
+  const [data, setData] = useState([]); // Stores filtered radar data
+  const [historicalData, setHistoricalData] = useState([]); // Stores historical data for timeline
+  const [selectedField, setSelectedField] = useState('radar'); // Tracks which tab is selected ('radar' or 'timeline')
+  const [clickedDataPoint, setClickedDataPoint] = useState(null); // Stores clicked data point details
+  const [selectedTechnology, setSelectedTechnology] = useState(null); // Currently selected technology
+  const [articleSources, setArticleSources] = useState({}); // Stores article sources for technologies
+  const [useColorMode, setUseColorMode] = useState(false); // Toggles color mode for visualization
+  const [subfieldData, setSubfieldData] = useState([]); // Stores subfield data
+  const [selectedFieldId, setSelectedFieldId] = useState(null); // ID of selected field
+  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [selectedSubfieldDetails, setSelectedSubfieldDetails] = useState(null); // Details of selected subfield
+  const [selectedSubfield, setSelectedSubfield] = useState(null); // Selected subfield
+  const [showAllTechnologies, setShowAllTechnologies] = useState(false); // Controls display of all technologies
 
+  // Register loading animation component
   tailChase.register();
 
+  // Generates subfields for a given field using AI
   const handleGenerateSubfields = async (fieldName) => {
     setIsLoading(true);
     try {
@@ -31,20 +35,21 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
         throw new Error("Field not found");
       }
 
+      // Call API to generate subfields
       const response = await axios.post('http://localhost:4000/api/ai/generate-subfield', {
         fieldName: field.field_name,
         fieldId: field.field_id
       });
 
       if (response.status === 200) {
-        // Refresh radar data
+        // Refresh data after generation
         await fetchRadarData();
 
-        // Refresh subfield data
+        // Fetch updated subfield data
         const subfieldResponse = await axios.get(`http://localhost:4000/api/db/fields/${field.field_id}/subfields`);
         setSubfieldData(subfieldResponse.data.data);
 
-        // Force UI update
+        // Update UI
         setSelectedFieldId(field.field_id);
       } else {
         throw new Error(response.data.error || "Failed to generate subfields");
@@ -57,15 +62,14 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
     }
   };
 
+  // Handles clicking on a field to show its subfields
   const handleFieldClick = async (fieldId) => {
     setSelectedFieldId(fieldId);
-    setIsLoading(true); // Add loading state
+    setIsLoading(true);
     try {
+      // Fetch subfields for the selected field
       const response = await axios.get(`http://localhost:4000/api/db/fields/${fieldId}/subfields`);
       setSubfieldData(response.data.data);
-      if (response.data.data.length === 0) {
-        // Optionally show a message if no subfields exist
-      }
     } catch (error) {
       console.error('Error fetching subfields:', error);
       alert(error.response?.data?.error || "Failed to fetch subfields");
@@ -74,12 +78,14 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
     }
   };
 
+  // Generates distinct colors for visualization
   const generateDistinctColors = (numColors) => {
     const colors = [];
     if (!useColorMode) {
-      return Array(numColors).fill('#2466e0');
+      return Array(numColors).fill('#2466e0'); // Default blue if color mode is off
     }
 
+    // Generate HSL colors with distinct hues
     const hueStep = 360 / numColors;
     const saturation = 70;
     const lightness = 50;
@@ -92,27 +98,30 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
     return colors;
   };
 
+  // Generate colors based on data length
   const colors = generateDistinctColors(radarData.length);
 
+  // Filter and set data when dependencies change
   useEffect(() => {
     const filteredData = filterMostRecentData(radarData);
     setData(filteredData);
   }, [technology, homePage, radarData]);
 
+  // Filters data to show only the most recent entries for each field
   const filterMostRecentData = (data) => {
     const mostRecentData = {};
 
     data.forEach(item => {
-      // Remove the subfield_id check to include all fields
-      if (item.field_id !== 0) {
+      if (item.field_id !== 0) { // Skip fields with ID 0
         const fieldId = item.field_id;
         const currentDate = new Date(item.metric_date);
 
+        // Keep only the most recent entry for each field
         if (!mostRecentData[fieldId] || new Date(mostRecentData[fieldId].metric_date) < currentDate) {
           mostRecentData[fieldId] = {
             ...item,
             description: item.field_description,
-            metric_3_scaled: Math.pow(item.metric_3, 5),
+            metric_3_scaled: Math.pow(item.metric_3, 5), // Scale relevance metric for visualization
           };
         }
       }
@@ -120,12 +129,15 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
 
     return Object.values(mostRecentData);
   };
+
+  // Handles clicking on a data point to filter the view
   const handleFilterClick = async (point) => {
     setSelectedSubfieldDetails(null);
     setSelectedSubfield(null);
 
     const isCurrentlySelected = selectedTechnology === point.field_name;
     if (isCurrentlySelected) {
+      // Deselect if already selected
       setSelectedTechnology(null);
       setSelectedFieldId(null);
       setData(data.map(d => ({
@@ -139,6 +151,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
           metric_date: Date.parse(d.metric_date),
         })));
     } else {
+      // Select the clicked point
       setSelectedTechnology(point.field_name);
       setSelectedFieldId(point.field_id);
       setData(data.map(d => ({
@@ -146,6 +159,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
         fillOpacity: d.field_id === point.field_id ? 0.7 : 0.1,
       })));
       try {
+        // Fetch historical data for the selected field
         const response = await axios.get(`http://localhost:4000/api/db/metrics/field/${point.field_id}/all`);
         const historical = response.data.data.map(d => ({
           ...d,
@@ -156,26 +170,29 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
         console.error("Error fetching historical metrics:", error);
         setHistoricalData([]); // fallback to empty
       }
-      
     }
     setClickedDataPoint(null);
   };
 
+  // Formats date for display
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   };
 
+  // Handles clicking on a historical data point
   const handleHistoricalDataPointClick = (point) => {
     setClickedDataPoint(point);
   };
 
+  // Fetches article sources on component mount
   useEffect(() => {
     const fetchArticles = async () => {
       try {
         const response = await axios.get("http://localhost:4000/api/scraper/arxiv-papers");
         const articles = response.data;
 
+        // Organize articles by field
         const sourcesMap = {};
         articles.forEach(article => {
           if (!sourcesMap[article.field]) {
@@ -200,13 +217,12 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
     <div className="mb-8 p-6 bg-white rounded-xl shadow-lg">
       <div className="space-y-6 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
         <div style={{ width: '100%', height: '700px', display: 'flex', flexDirection: 'column' }}>
+          {/* Tab navigation */}
           <div style={{ height: '40px' }}>
             <div className="flex border-b">
               <button
                 className={`py-2 px-4 font-medium ${!selectedField || selectedField === 'radar' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
                 onClick={() => {
-                  // Keep the selected technology's opacity when switching to radar
-                  const selectedPoint = data.find(d => d.fillOpacity === 0.7);
                   setSelectedField('radar');
                 }}
               >
@@ -231,11 +247,12 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
               )}
             </div>
           </div>
+          
+          {/* Main chart area */}
           <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
-            {/* Left Container - Radar Tab */}
+            {/* Radar Chart Tab */}
             {(selectedField === 'radar' || !selectedField) && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                {/* Radar Chart */}
                 <div style={{ flex: 1 }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <ScatterChart margin={{ top: 20, right: 20, bottom: 40, left: 20 }}>
@@ -276,7 +293,6 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
                                   <p>Interest: {(selectedPoint.metric_1).toFixed(2)}</p>
                                   <p>Innovation: {(selectedPoint.metric_2).toFixed(2)}</p>
                                   <p>Relevance: {(selectedPoint.metric_3).toFixed(2)} </p>
-
                                 </div>
                               );
                             }
@@ -303,7 +319,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
                           return null;
                         }}
                       />
-                      {/* Map each data point to a Scatter component with a distinct color */}
+                      {/* Render scatter points for each data point */}
                       {data.map((point, index) => (
                         <Scatter
                           key={point.field_id}
@@ -311,7 +327,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
                           data={[point]}
                           fill={colors[index % colors.length]}
                           fillOpacity={0.7}
-                          onClick={() => handleFilterClick(point)} // Call handleFilterClick instead of handleFieldClick
+                          onClick={() => handleFilterClick(point)}
                           cursor="pointer"
                           shape="circle"
                         />
@@ -322,10 +338,9 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
               </div>
             )}
 
-            {/*Timeline Tab*/}
+            {/* Timeline Chart Tab */}
             {selectedField === 'timeline' && selectedTechnology && (
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
-                {/* Timeline Graph */}
                 <div style={{ flex: 1, height: '600px', marginBottom: '20px' }}>
                   <h3 className="font-semibold text-gray-800 mb-3 pt-4 text-center">
                     Historical Metrics for {selectedTechnology}
@@ -375,7 +390,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
                           return null;
                         }}
                       />
-                      {/* Group data by field_id and create separate lines for each technology */}
+                      {/* Render lines for each metric */}
                       {Object.entries(
                         historicalData.reduce((acc, item) => {
                           if (!acc[item.field_id]) {
@@ -421,11 +436,11 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
         </div>
       </div>
 
-      {/* Filter buttons - moved outside of tabs */}
+      {/* Filter and controls section */}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center', // Center horizontally
+        alignItems: 'center',
         width: '100%',
         marginBottom: '15px',
       }}>
@@ -435,7 +450,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
           justifyContent: 'flex-end',
           marginBottom: '10px',
           alignItems: 'center',
-          width: '100%', // Ensure it spans the full width
+          width: '100%',
         }}>
           <span style={{ marginRight: '10px', fontSize: '14px' }}>
             {useColorMode ? 'Color Legend' : 'Color Legend'}
@@ -466,18 +481,18 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
           </div>
         </div>
 
-        {/* Technology buttons */}
+        {/* Technology filter buttons */}
         <div style={{
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center', // Center horizontally
+          alignItems: 'center',
           width: '100%',
         }}>
           <div style={{
             display: 'flex',
             flexWrap: 'wrap',
             gap: '8px',
-            justifyContent: 'center', // Center buttons horizontally
+            justifyContent: 'center',
             overflowY: data.length > 15 ? 'hidden' : 'auto',
             borderTop: '1px solid #e1e4e8',
             width: '100%',
@@ -520,6 +535,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
               );
             })}
           </div>
+          {/* Show more/less button for long lists */}
           {data.length > 15 && (
             <button
               onClick={() => setShowAllTechnologies(!showAllTechnologies)}
@@ -559,7 +575,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
         </div>
       </div>
 
-      {/*Rationale section*/}
+      {/* Details panel showing rationale and sources */}
       <div style={{
         padding: '15px',
         backgroundColor: '#f8f9fa',
@@ -593,9 +609,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
                   articleSources[selectedTechnology].map((article, index) => (
                     <div key={index} style={{ marginBottom: "5px" }}>
                       <span style={{ display: "inline-flex", alignItems: "center" }}>
-                        <Link color="#1E90FF" // Nicer blue (DodgerBlue)
-                          strokeWidth={2} // Slightly thicker for visibility
-                        />
+                        <Link color="#1E90FF" strokeWidth={2} />
                         <a
                           href={article.link}
                           target="_blank"
@@ -611,6 +625,7 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
                   " No sources available. "
                 )}
                 <br></br>
+                {/* Generate subfields button */}
                 <button
                   onClick={() => handleGenerateSubfields(selectedTechnology)}
                   style={{
@@ -640,12 +655,14 @@ const Radar = ({ radarData, radarSearch, homePage, technology, fetchRadarData })
           }
         </div>
       </div>
+      
+      {/* Subfield chart component */}
       {selectedFieldId && (
         <SubfieldChart
           radarData={radarData}
           selectedFieldId={selectedFieldId}
           fieldName={data.find((field) => field.field_id === selectedFieldId)?.field_name || "Selected Field"}
-          useColorMode={useColorMode} // Pass the useColorMode state as a prop
+          useColorMode={useColorMode}
           selectedSubfieldDetails={selectedSubfieldDetails}
           setSelectedSubfieldDetails={setSelectedSubfieldDetails}
           selectedSubfield={selectedSubfield}

@@ -16,30 +16,33 @@ import axios from 'axios';
 import { ChartScatter } from 'lucide-react';
 import { tailChase, quantum, grid, helix } from 'ldrs';
 
-// Register the loaders
+// Register the loaders (spinners) from the ldrs library
 tailChase.register();
 quantum.register();
 grid.register();
 helix.register();
 
+// Main component for displaying subfield data visualization
 const SubfieldChart = ({
-  selectedFieldId,
-  fieldName,
-  useColorMode,
-  selectedSubfieldDetails,
-  setSelectedSubfieldDetails,
-  selectedSubfield,
-  setSelectedSubfield
+  selectedFieldId,          // ID of the currently selected field
+  fieldName,                // Name of the current field
+  useColorMode,             // Flag to determine if color mode should be used
+  selectedSubfieldDetails,  // Details of the selected subfield
+  setSelectedSubfieldDetails, // Setter for subfield details
+  selectedSubfield,         // ID of the selected subfield
+  setSelectedSubfield       // Setter for selected subfield
 }) => {
-  const [radarData, setRadarData] = useState([]);
-  const [historicalData, setHistoricalData] = useState([]);
-  const [selectedTab, setSelectedTab] = useState('scatter');
-  const [clickedTimelinePoint, setClickedTimelinePoint] = useState(null);
-  const [insight, setInsight] = useState(null);
-  const [articleSFSources, setArticleSFSources] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [currentLoaderIndex, setCurrentLoaderIndex] = useState(0);
+  // State variables
+  const [radarData, setRadarData] = useState([]); // Data for scatter plot
+  const [historicalData, setHistoricalData] = useState([]); // Timeline data
+  const [selectedTab, setSelectedTab] = useState('scatter'); // Current active tab
+  const [clickedTimelinePoint, setClickedTimelinePoint] = useState(null); // Clicked point on timeline
+  const [insight, setInsight] = useState(null); // Generated insight text
+  const [articleSFSources, setArticleSFSources] = useState({}); // Article sources by subfield
+  const [loading, setLoading] = useState(false); // Loading state
+  const [currentLoaderIndex, setCurrentLoaderIndex] = useState(0); // Current loading animation index
 
+  // Loading animations configuration
   const loaders = [
     {
       loader: <l-quantum size="30" stroke="3" bg-opacity="0" speed="2" color="#2466e0"></l-quantum>,
@@ -59,6 +62,7 @@ const SubfieldChart = ({
     }
   ];
 
+  // Fetch radar data when selectedFieldId changes
   useEffect(() => {
     const fetchRadarData = async () => {
       try {
@@ -74,9 +78,11 @@ const SubfieldChart = ({
     }
   }, [selectedFieldId]);
 
+  // Fetch most recent insight when fieldName changes
   useEffect(() => {
     const fetchMostRecentInsight = async () => {
       try {
+        // Dynamically import the insight text file
         const module = await import(`./Insights/MostRecent${fieldName}Insight.txt`);
         const response = await fetch(module.default);
         const text = await response.text();
@@ -90,6 +96,7 @@ const SubfieldChart = ({
     fetchMostRecentInsight();
   }, [fieldName]);
 
+  // Fetch article sources for subfields on component mount
   useEffect(() => {
     const fetchSFArticles = async () => {
       try {
@@ -97,6 +104,7 @@ const SubfieldChart = ({
         const articles = response.data;
         const sourcesMap = {};
 
+        // Organize articles by subfield
         articles.forEach(article => {
           if (!sourcesMap[article.subfield_name]) {
             sourcesMap[article.subfield_name] = [];
@@ -116,6 +124,7 @@ const SubfieldChart = ({
     fetchSFArticles();
   }, []);
 
+  // Rotate loading animations when in loading state
   useEffect(() => {
     if (loading) {
       const intervalId = setInterval(() => {
@@ -126,6 +135,7 @@ const SubfieldChart = ({
     }
   }, [loading]);
 
+  // Process radar data to get latest metrics for each subfield
   const latestMetricsBySubfield = radarData.reduce((acc, point) => {
     if (
       !acc[point.subfield_id] ||
@@ -133,7 +143,7 @@ const SubfieldChart = ({
     ) {
       acc[point.subfield_id] = {
         ...point,
-        metric_3_scaled: Math.pow(point.metric_3, 5),
+        metric_3_scaled: Math.pow(point.metric_3, 5), // Scale relevance metric for visualization
       };
     }
     return acc;
@@ -141,6 +151,7 @@ const SubfieldChart = ({
 
   const filteredData = Object.values(latestMetricsBySubfield);
 
+  // Generate distinct colors for subfields
   const generateDistinctColors = (numColors) => {
     if (!useColorMode) return Array(numColors).fill('#2466e0');
 
@@ -159,6 +170,7 @@ const SubfieldChart = ({
 
   const colors = generateDistinctColors(filteredData.length);
 
+  // Handle subfield selection
   const handleSubfieldClick = async (subfieldId) => {
     const isCurrentlySelected = selectedSubfield === subfieldId;
     const selected = isCurrentlySelected ? null : filteredData.find(point => point.subfield_id === subfieldId);
@@ -175,6 +187,7 @@ const SubfieldChart = ({
       setHistoricalData([]);
     } else {
       try {
+        // Fetch historical data for selected subfield
         const response = await axios.get(`http://localhost:4000/api/db/metrics/subfield/${subfieldId}/all`);
         const historical = response.data.data.map((point) => ({
           ...point,
@@ -187,19 +200,21 @@ const SubfieldChart = ({
         setHistoricalData([]);
       }
     }
-    
   };
 
+  // Format date for display
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   };
 
+  // Generate new insight and update metrics
   const handleGenerateInsight = async () => {
     setLoading(true);
     setCurrentLoaderIndex(0);
 
     try {
+      // Get all subfields for the current field
       const subfieldsResponse = await axios.get(`http://localhost:4000/api/db/fields/${selectedFieldId}/subfields`);
       const subfields = subfieldsResponse.data.data;
 
@@ -210,6 +225,7 @@ const SubfieldChart = ({
       let successfulUpdates = 0;
       let failedUpdates = 0;
 
+      // Update metrics for each subfield
       if (insight !== "Failed to load insight. Please try again.") {
         for (const subfield of subfields) {
           try {
@@ -227,12 +243,14 @@ const SubfieldChart = ({
 
       console.log(`Subfields updated: ${successfulUpdates} success, ${failedUpdates} failures`);
 
+      // Generate a new subfield
       const newSubfieldResponse = await axios.post('http://localhost:4000/api/ai/generate-subfield', {
         fieldId: selectedFieldId,
         fieldName: fieldName
       });
       console.log('New subfield generated:', newSubfieldResponse.data);
 
+      // Generate new insight
       const insightResponse = await axios.post('http://localhost:4000/api/ai/generate-sub-insight', {
         fieldId: selectedFieldId
       });
@@ -246,6 +264,7 @@ const SubfieldChart = ({
     }
   };
 
+  // Show message if no data is available
   if (!filteredData.length) {
     return (
       <div style={{
@@ -262,13 +281,16 @@ const SubfieldChart = ({
     );
   }
 
+  // Main component render
   return (
     <div style={{ marginTop: '20px' }}>
+      {/* Header */}
       <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b pb-2 flex items-center">
         <ChartScatter className="w-6 h-6 text-blue-600 mr-2" />
         Subfields for <span className="text-blue-600 ml-1">{fieldName}</span>
       </h2>
 
+      {/* Generate Insight Button */}
       <button
         onClick={handleGenerateInsight}
         style={{
@@ -296,6 +318,7 @@ const SubfieldChart = ({
         )}
       </button>
 
+      {/* Insight Display */}
       {insight && (
         <div style={{
           padding: '15px',
@@ -310,6 +333,7 @@ const SubfieldChart = ({
         </div>
       )}
 
+      {/* Subfield Selection Buttons */}
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
@@ -512,6 +536,7 @@ const SubfieldChart = ({
       }}>
         <p style={{ margin: 0, color: '#666' }}>
           {clickedTimelinePoint ? (
+            // Show details for clicked timeline point
             <>
               <strong>Date:</strong> {formatDate(clickedTimelinePoint.metric_date)}<br />
               <strong>Rationale:</strong> {clickedTimelinePoint.rationale || "No rationale available."}<br />
@@ -523,6 +548,7 @@ const SubfieldChart = ({
               ) : "No sources available."}
             </>
           ) : selectedSubfieldDetails ? (
+            // Show details for selected subfield
             <>
               <strong>Rationale:</strong> {selectedSubfieldDetails.rationale || "No rationale available."}<br />
               <strong>Description:</strong> {selectedSubfieldDetails.subfield_description || "No description available."}<br />
@@ -539,6 +565,7 @@ const SubfieldChart = ({
               )}
             </>
           ) : (
+            // Default message when nothing is selected
             "Select a subfield or click on a timeline data point to view details."
           )}
         </p>
